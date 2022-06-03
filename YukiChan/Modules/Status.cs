@@ -19,7 +19,7 @@ public class StatusModule : ModuleBase
     [Command("Status",
         Description = "Show bot status.",
         Example = "status")]
-    public static MessageBuilder ShowStatus(Bot bot, GroupMessageEvent e, string command)
+    public static MessageBuilder ShowStatus()
     {
         return new MessageBuilder()
             .Text("[YukiChan]\n")

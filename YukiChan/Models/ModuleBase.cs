@@ -47,7 +47,7 @@ public abstract class ModuleBase
             foreach (var attr in attrs)
             {
                 BotLogger.Debug($"    Processing attribute {attr.GetType()}");
-                
+
                 if (attr.GetType() != typeof(CommandAttribute)) continue;
                 if (attr is not CommandAttribute command) continue;
 
@@ -84,7 +84,8 @@ public abstract class ModuleBase
                     try
                     {
                         BotLogger.Debug($"Invoking command {command.CommandInfo.Name} with body \"{body}\".");
-                        var result = command.InnerMethod.Invoke(this, new object?[] { bot, e, body });
+                        var result = command.InnerMethod.Invoke(this,
+                            new object?[] { bot, e, body }[..command.InnerMethod.GetParameters().Length]);
                         return result as MessageBuilder ?? (result as Task<MessageBuilder>)?.Result;
                     }
                     catch (Exception exception)
