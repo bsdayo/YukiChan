@@ -11,21 +11,48 @@ public static class Response
 {
     public static async void OnGroupMessage(Bot bot, GroupMessageEvent e)
     {
-        if (e.MemberUin == bot.Uin) return;
+        if (e.Message.Sender.Uin == bot.Uin) return;
 
         Global.Information.MessageReceived++;
-        
-        BotLogger.Debug($"Received message from {e.MemberUin}, total {Global.Information.MessageReceived} message(s).");
+
+        BotLogger.ReceiveMessage(e);
 
         var textChain = e.Chain.GetChain<TextChain>();
         if (textChain is null) return;
 
         try
         {
-            if (ModuleManager.ParseCommand(bot, e) is { } mb)
+            if (ModuleManager.ParseCommand(bot, e.Message) is { } mb)
             {
                 Global.Information.MessageSent++;
+                BotLogger.SendMessage(e, mb.Build().ToString());
                 await bot.SendGroupMessage(e.GroupUin, mb);
+            }
+        }
+        catch (Exception exception)
+        {
+            BotLogger.Error(exception);
+        }
+    }
+    
+    public static async void OnFriendMessage(Bot bot, FriendMessageEvent e)
+    {
+        if (e.Message.Sender.Uin == bot.Uin) return;
+
+        Global.Information.MessageReceived++;
+
+        BotLogger.ReceiveMessage(e);
+
+        var textChain = e.Chain.GetChain<TextChain>();
+        if (textChain is null) return;
+
+        try
+        {
+            if (ModuleManager.ParseCommand(bot, e.Message) is { } mb)
+            {
+                Global.Information.MessageSent++;
+                BotLogger.SendMessage(e, mb.Build().ToString());
+                await bot.SendFriendMessage(e.FriendUin, mb);
             }
         }
         catch (Exception exception)

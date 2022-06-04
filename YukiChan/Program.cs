@@ -22,17 +22,22 @@ public static class Program
         ModuleManager.Bot = _bot;
         ModuleManager.InitializeModules();
 
-        // Logger
+        // Konata log
         // _bot.OnLog += (_, e) => BotLogger.Info(e.EventMessage);
 
         // Captcha
         _bot.OnCaptcha += CaptchaUtil.OnCaptcha;
 
         _bot.OnGroupMessage += Response.OnGroupMessage;
+        _bot.OnFriendMessage += Response.OnFriendMessage;
 
         if (await _bot.Login()) UpdateKeyStore(_bot.KeyStore);
+
+        var friendCount = (await _bot.GetFriendList(true)).Count;
+        var groupCount = (await _bot.GetGroupList(true)).Count;
+        BotLogger.Success($"当前共有 {friendCount} 个好友，{groupCount} 个群聊。");
         
-        BotLogger.Info($"Bot logined successfully as {_bot.Name} ({_bot.Uin}).");
+        BotLogger.Success($"登录成功，{_bot.Name} ({_bot.Uin})。");
     }
 
     private static BotConfig? GetKonataConfig()

@@ -22,13 +22,19 @@ public class StatusModule : ModuleBase
     public static MessageBuilder ShowStatus()
     {
         return new MessageBuilder()
-            .Text("[YukiChan]\n")
-            .Text($"Processed {Global.Information.MessageProcessed} message(s)\n")
-            .Text($"Received {Global.Information.MessageReceived} message(s)\n")
-            .Text($"Sent {Global.Information.MessageSent} message(s)\n\n")
-            .Text($"GC Memory {GC.GetTotalAllocatedBytes().Bytes2MiB(2)} MiB" +
+            .Text("[暮雪酱|YukiChan]\n\n")
+            //
+            .Text($"[Konata.Core] {BuildStamp.Version}\n")
+            .Text($"{BuildStamp.Branch}@{BuildStamp.CommitHash[..12]}\n\n")
+            //
+            .Text($"已处理 {Global.Information.MessageProcessed} 条消息\n")
+            .Text($"已接收 {Global.Information.MessageReceived} 条消息\n")
+            .Text($"已发送 {Global.Information.MessageSent} 条消息\n\n")
+            //
+            .Text($"GC 内存 {GC.GetTotalAllocatedBytes().Bytes2MiB(2)} MiB " +
                   $"({Math.Round((double)GC.GetTotalAllocatedBytes() / GC.GetTotalMemory(false) * 100, 2)}%)\n")
-            .Text($"Total Memory {Process.GetCurrentProcess().WorkingSet64.Bytes2MiB(2)} MiB\n\n")
-            .Text($"Powered by Konata.Core");
+            .Text($"总内存 {Process.GetCurrentProcess().WorkingSet64.Bytes2MiB(2)} MiB\n\n")
+            //
+            .Text("Made with love by b1acksoil");
     }
 }

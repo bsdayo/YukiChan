@@ -31,7 +31,7 @@ public abstract class ModuleBase
 
     public void Reload() => Init();
 
-    public void LoadCommands()
+    public int LoadCommands()
     {
         var t = GetType();
         var methods = t.GetMethods();
@@ -55,17 +55,17 @@ public abstract class ModuleBase
                 {
                     CommandBase commandBase = new(command, method);
                     _commands.Add(commandBase);
-                    BotLogger.Debug($"      Loading command: {t}.{method.Name} => {command.Name}");
+                    BotLogger.Debug($"      加载指令 {t}.{method.Name} => {command.Name}");
                 }
             }
         }
 
-        BotLogger.Info($"{CommandCount} commands loaded.");
+        return CommandCount;
     }
 
-    public MessageBuilder? DealCommand(Bot bot, GroupMessageEvent e)
+    public MessageBuilder? DealCommand(Bot bot, MessageStruct message)
     {
-        var commandStr = e.Chain.GetChain<TextChain>().Content.Trim();
+        var commandStr = message.Chain.GetChain<TextChain>().Content.Trim();
 
         foreach (var command in _commands)
         {
@@ -85,7 +85,7 @@ public abstract class ModuleBase
                     {
                         BotLogger.Debug($"Invoking command {command.CommandInfo.Name} with body \"{body}\".");
                         var result = command.InnerMethod.Invoke(this,
-                            new object?[] { bot, e, body }[..command.InnerMethod.GetParameters().Length]);
+                            new object?[] { bot, message, body }[..command.InnerMethod.GetParameters().Length]);
                         return result as MessageBuilder ?? (result as Task<MessageBuilder>)?.Result;
                     }
                     catch (Exception exception)
