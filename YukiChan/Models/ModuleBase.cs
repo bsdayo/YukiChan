@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Konata.Core;
-using Konata.Core.Events.Model;
 using Konata.Core.Message;
 using Konata.Core.Message.Model;
 using YukiChan.Attributes;
@@ -75,26 +75,37 @@ public abstract class ModuleBase
                               ? $" {command.CommandInfo.Command}"
                               : "");
 
-            if (commandStr.StartsWith(keyword))
-            {
-                var body = commandStr[keyword.Length..].Trim();
+            // 以标准指令格式开头
+            var startsWithFlag = commandStr.StartsWith(keyword);
+            // 匹配正则表达式
+            var regexMatchFlag = command.CommandInfo.Regex is not null &&
+                                 Regex.IsMatch(commandStr, command.CommandInfo.Regex);
+            // 匹配字符串包含
+            var containsFlag = command.CommandInfo.Contains is not null &&
+                               commandStr.Contains(command.CommandInfo.Contains);
 
-                return Task.Run(() =>
+            if (!startsWithFlag && !regexMatchFlag && !containsFlag)
+                continue;
+
+            var body = startsWithFlag
+                ? commandStr[keyword.Length..].Trim()
+                : commandStr;
+
+            return Task.Run(() =>
+            {
+                try
                 {
-                    try
-                    {
-                        BotLogger.Debug($"Invoking command {command.CommandInfo.Name} with body \"{body}\".");
-                        var result = command.InnerMethod.Invoke(this,
-                            new object?[] { bot, message, body }[..command.InnerMethod.GetParameters().Length]);
-                        return result as MessageBuilder ?? (result as Task<MessageBuilder>)?.Result;
-                    }
-                    catch (Exception exception)
-                    {
-                        BotLogger.Error(exception);
-                        return null;
-                    }
-                }).Result;
-            }
+                    BotLogger.Debug($"Invoking command {command.CommandInfo.Name} with body \"{body}\".");
+                    var result = command.InnerMethod.Invoke(this,
+                        new object?[] { bot, message, body }[..command.InnerMethod.GetParameters().Length]);
+                    return result as MessageBuilder ?? (result as Task<MessageBuilder>)?.Result;
+                }
+                catch (Exception exception)
+                {
+                    BotLogger.Error(exception);
+                    return null;
+                }
+            }).Result;
         }
 
         return null;

@@ -10,16 +10,16 @@ public class YukiConfig
 
     public static YukiConfig GetYukiConfig()
     {
-        if (File.Exists("yuki.config.json"))
+        if (File.Exists("Configs/YukiConfig.json"))
         {
             return JsonSerializer.Deserialize<YukiConfig>
-                (File.ReadAllText("yuki.config.json")) ?? new YukiConfig();
+                (File.ReadAllText("Configs/YukiConfig.json")) ?? new YukiConfig();
         }
 
         var config = new YukiConfig();
         var configJson = JsonSerializer.Serialize(config,
             new JsonSerializerOptions() { WriteIndented = true });
-        File.WriteAllText("yuki.config.json", configJson);
+        File.WriteAllText("Configs/YukiConfig.json", configJson);
 
         return config;
     }

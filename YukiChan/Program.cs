@@ -7,7 +7,6 @@ using Konata.Core.Common;
 using Konata.Core.Interfaces;
 using Konata.Core.Interfaces.Api;
 using YukiChan.Core;
-using YukiChan.Utils;
 
 namespace YukiChan;
 
@@ -17,67 +16,71 @@ public static class Program
 
     public static async Task Main()
     {
+        InitializeDirectories(new []
+        {
+            "Logs/Yuki", "Logs/Konata",
+            "Configs"
+        });
+        
         _bot = BotFather.Create(GetKonataConfig(), GetDevice(), GetKeyStore());
 
         ModuleManager.Bot = _bot;
         ModuleManager.InitializeModules();
 
         // Konata log
-        // _bot.OnLog += (_, e) => BotLogger.Info(e.EventMessage);
+        _bot.OnLog += EventHandlers.OnLog;
 
         // Captcha
-        _bot.OnCaptcha += CaptchaUtil.OnCaptcha;
-
-        _bot.OnGroupMessage += Response.OnGroupMessage;
-        _bot.OnFriendMessage += Response.OnFriendMessage;
-
-        if (await _bot.Login()) UpdateKeyStore(_bot.KeyStore);
-
-        var friendCount = (await _bot.GetFriendList(true)).Count;
-        var groupCount = (await _bot.GetGroupList(true)).Count;
-        BotLogger.Success($"当前共有 {friendCount} 个好友，{groupCount} 个群聊。");
+        _bot.OnCaptcha += EventHandlers.OnCaptcha;
         
-        BotLogger.Success($"登录成功，{_bot.Name} ({_bot.Uin})。");
+        _bot.OnBotOnline += EventHandlers.OnBotOnline;
+        _bot.OnBotOffline += EventHandlers.OnBotOffline;
+
+        _bot.OnGroupMessage += EventHandlers.OnGroupMessage;
+        _bot.OnFriendMessage += EventHandlers.OnFriendMessage;
+
+        
+        if (await _bot.Login()) UpdateKeyStore(_bot.KeyStore);
     }
 
     private static BotConfig? GetKonataConfig()
     {
-        if (File.Exists("konata.config.json"))
+        if (File.Exists("Configs/KonataConfig.json"))
         {
             return JsonSerializer.Deserialize<BotConfig>
-                (File.ReadAllText("konata.config.json"));
+                (File.ReadAllText("Configs/KonataConfig.json"));
         }
 
         var config = BotConfig.Default();
         var configJson = JsonSerializer.Serialize(config,
             new JsonSerializerOptions() { WriteIndented = true });
-        File.WriteAllText("konata.config.json", configJson);
+        File.WriteAllText("Configs/KonataConfig.json", configJson);
 
         return config;
     }
 
     private static BotDevice? GetDevice()
     {
-        if (File.Exists("device.json"))
+        if (File.Exists("Configs/Device.json"))
         {
             return JsonSerializer.Deserialize<BotDevice>
-                (File.ReadAllText("device.json"));
+                (File.ReadAllText("Configs/Device.json"));
         }
 
         var device = BotDevice.Default();
         var deviceJson = JsonSerializer.Serialize(device,
             new JsonSerializerOptions() { WriteIndented = true });
-        File.WriteAllText("device.json", deviceJson);
+        File.WriteAllText("Configs/Device.json", deviceJson);
 
         return device;
     }
 
     private static BotKeyStore? GetKeyStore()
     {
-        if (File.Exists("keystore.json"))
+        if (File.Exists("Configs/KeyStore.json"))
         {
             return JsonSerializer.Deserialize<BotKeyStore>
-                (File.ReadAllText("keystore.json"));
+                (File.ReadAllText("Configs/KeyStore.json"));
         }
 
         Console.WriteLine("For first running, please enter your account and password.");
@@ -94,7 +97,16 @@ public static class Program
     {
         var keystoreJson = JsonSerializer.Serialize(keystore,
             new JsonSerializerOptions() { WriteIndented = true });
-        File.WriteAllText("keystore.json", keystoreJson);
+        File.WriteAllText("Configs/KeyStore.json", keystoreJson);
         return keystore;
+    }
+
+    private static void InitializeDirectories(string[] directories)
+    {
+        foreach (string dir in directories)
+        {
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+        }
     }
 }

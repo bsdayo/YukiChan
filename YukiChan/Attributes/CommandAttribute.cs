@@ -10,6 +10,8 @@ public sealed class CommandAttribute : Attribute
 {
     public string Name { get; }
     public string? Command { get; set; } = null;
+    public string? Regex { get; set; } = null;
+    public string? Contains { get; set; } = null;
     public string Description { get; set; } = "";
     public string Example { get; set; } = "";
     public bool Disabled { get; set; } = false;
