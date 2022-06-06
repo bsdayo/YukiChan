@@ -21,11 +21,15 @@ public class StatusModule : ModuleBase
         Example = "status")]
     public static MessageBuilder ShowStatus()
     {
+        var konataBs = new BuildStamp { Type = typeof(Bot) };
+        var yukiBs = new BuildStamp { Type = typeof(Program) };
+
         return new MessageBuilder()
-            .Text("[暮雪酱|YukiChan]\n\n")
+            .Text($"[暮雪酱|YukiChan] {yukiBs.Version}\n")
+            .Text($"{yukiBs.Branch}@{yukiBs.CommitHash[..12]}\n\n")
             //
-            .Text($"[Konata.Core] {BuildStamp.Version}\n")
-            .Text($"{BuildStamp.Branch}@{BuildStamp.CommitHash[..12]}\n\n")
+            .Text($"[Konata.Core] {konataBs.Version}\n")
+            .Text($"{konataBs.Branch}@{konataBs.CommitHash[..12]}\n\n")
             //
             .Text($"已处理 {Global.Information.MessageProcessed} 条消息\n")
             .Text($"已接收 {Global.Information.MessageReceived} 条消息\n")

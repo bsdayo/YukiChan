@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using Konata.Core;
 using Konata.Core.Events;
 using Konata.Core.Events.Model;
@@ -63,12 +64,11 @@ public static class EventHandlers
 
         try
         {
-            if (ModuleManager.ParseCommand(bot, e.Message) is { } mb)
-            {
-                Global.Information.MessageSent++;
-                BotLogger.SendMessage(e, mb.Build().ToString());
-                await bot.SendFriendMessage(e.FriendUin, mb);
-            }
+            if (ModuleManager.ParseCommand(bot, e.Message) is not { } mb)
+                return;
+            Global.Information.MessageSent++;
+            BotLogger.SendMessage(e, mb.Build().ToString());
+            await bot.SendFriendMessage(e.FriendUin, mb);
         }
         catch (Exception exception)
         {
@@ -76,15 +76,28 @@ public static class EventHandlers
         }
     }
 
-    public static void OnLog(Bot bot, LogEvent e)
+    public static async void OnLog(Bot bot, LogEvent e)
     {
         var date = DateTime.Now.ToString("yyyy-MM-dd");
         var time = DateTime.Now.ToString("HH:mm:ss");
-        File.AppendAllText($"Logs/Konata/{date}.log",
-            time +
-            $" [{e.Level.ToString()[0]}]" +
-            $" <{e.Tag}> " +
-            e.EventMessage);
+        var logMessage = time +
+                         $" [{e.Level.ToString()[0]}]" +
+                         $" <{e.Tag}> " +
+                         e.EventMessage;
+        switch (e.Level)
+        {
+            case LogLevel.Warning:
+                BotLogger.Warn("[Konata] " + e.EventMessage);
+                break;
+            case LogLevel.Exception:
+            case LogLevel.Fatal:
+                BotLogger.Error("[Konata] " + e.EventMessage);
+                break;
+        }
+        var logFs = new FileStream($"Logs/Konata/{date}.log", FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
+        await using var sw = new StreamWriter(logFs, Encoding.UTF8);
+        await sw.WriteLineAsync(logMessage);
+        await sw.FlushAsync();
     }
     
     public static void OnCaptcha(Bot bot, CaptchaEvent e)

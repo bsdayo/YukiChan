@@ -7,6 +7,7 @@ using Konata.Core.Common;
 using Konata.Core.Interfaces;
 using Konata.Core.Interfaces.Api;
 using YukiChan.Core;
+using YukiChan.Utils;
 
 namespace YukiChan;
 
@@ -16,31 +17,38 @@ public static class Program
 
     public static async Task Main()
     {
-        InitializeDirectories(new []
+        try
         {
-            "Logs/Yuki", "Logs/Konata",
-            "Configs"
-        });
-        
-        _bot = BotFather.Create(GetKonataConfig(), GetDevice(), GetKeyStore());
+            InitializeDirectories(new[]
+            {
+                "Logs/YukiChan", "Logs/Konata",
+                "Configs"
+            });
 
-        ModuleManager.Bot = _bot;
-        ModuleManager.InitializeModules();
+            _bot = BotFather.Create(GetKonataConfig(), GetDevice(), GetKeyStore());
 
-        // Konata log
-        _bot.OnLog += EventHandlers.OnLog;
+            ModuleManager.Bot = _bot;
+            ModuleManager.InitializeModules();
 
-        // Captcha
-        _bot.OnCaptcha += EventHandlers.OnCaptcha;
-        
-        _bot.OnBotOnline += EventHandlers.OnBotOnline;
-        _bot.OnBotOffline += EventHandlers.OnBotOffline;
+            // Konata log
+            _bot.OnLog += EventHandlers.OnLog;
 
-        _bot.OnGroupMessage += EventHandlers.OnGroupMessage;
-        _bot.OnFriendMessage += EventHandlers.OnFriendMessage;
+            // Captcha
+            _bot.OnCaptcha += EventHandlers.OnCaptcha;
 
-        
-        if (await _bot.Login()) UpdateKeyStore(_bot.KeyStore);
+            _bot.OnBotOnline += EventHandlers.OnBotOnline;
+            _bot.OnBotOffline += EventHandlers.OnBotOffline;
+
+            _bot.OnGroupMessage += EventHandlers.OnGroupMessage;
+            _bot.OnFriendMessage += EventHandlers.OnFriendMessage;
+
+            if (await _bot.Login()) UpdateKeyStore(_bot.KeyStore);
+        }
+        catch (Exception e)
+        {
+            BotLogger.Error(e);
+            Environment.Exit(1);
+        }
     }
 
     private static BotConfig? GetKonataConfig()

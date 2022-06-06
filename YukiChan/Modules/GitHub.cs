@@ -22,7 +22,7 @@ public class GitHubModule : ModuleBase
     {
         if (!body.StartsWith("https://github.com/"))
             return MessageBuilder.Eval("Not a github repository link.");
-        
+
         try
         {
             var htmlBytes = await NetUtils.Download(body);
@@ -32,7 +32,7 @@ public class GitHubModule : ModuleBase
             var imageMeta = metaData["og:image"];
 
             var image = await NetUtils.Download(imageMeta);
-        
+
             return new MessageBuilder().Image(image);
         }
         catch

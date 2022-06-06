@@ -38,7 +38,7 @@ public abstract class ModuleBase
 
         foreach (var method in methods)
         {
-            BotLogger.Debug($"  Processing method {method.Name}");
+            BotLogger.Debug($"  检查方法 {method.Name}");
 
             if (method.ReturnType == typeof(void)) continue;
 
@@ -46,7 +46,7 @@ public abstract class ModuleBase
 
             foreach (var attr in attrs)
             {
-                BotLogger.Debug($"    Processing attribute {attr.GetType()}");
+                BotLogger.Debug($"    检查特性 {attr.GetType()}");
 
                 if (attr.GetType() != typeof(CommandAttribute)) continue;
                 if (attr is not CommandAttribute command) continue;

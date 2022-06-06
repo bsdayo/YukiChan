@@ -1,26 +1,28 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Reflection;
-using Konata.Core;
 
 // ReSharper disable ConvertToAutoProperty
 
 namespace YukiChan.Utils;
 
-public static class BuildStamp
+public class BuildStamp
 {
-    public static string Branch => Stamp[0];
+    public Type Type = null!;
 
-    public static string CommitHash => Stamp[1][..16];
+    public string Branch => Stamp[0];
 
-    public static string Version => InformationalVersion;
-    
-    private static readonly string[] Stamp = typeof(Bot)
+    public string CommitHash => Stamp[1][..16];
+
+    public string Version => InformationalVersion;
+
+    private string[] Stamp => Type
         .Assembly
         .GetCustomAttributes<AssemblyMetadataAttribute>()
         .First(x => x.Key is "BuildStamp")
         .Value!.Split(";");
 
-    private static readonly string InformationalVersion = typeof(Bot)
+    private string InformationalVersion => Type
         .Assembly
         .GetCustomAttribute<AssemblyInformationalVersionAttribute>()!
         .InformationalVersion;
