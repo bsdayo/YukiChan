@@ -12,10 +12,10 @@ public sealed class CommandAttribute : Attribute
     public string? Command { get; set; } = null;
     public string? Regex { get; set; } = null;
     public string? Contains { get; set; } = null;
-    public string Description { get; set; } = "";
-    public string Example { get; set; } = "";
-    public bool Disabled { get; set; } = false;
-    public SendType SendType { get; set; } = SendType.Send;
+    public string? Description { get; set; } = null;
+    public string? Usage { get; set; } = null;
+    public string? Example { get; set; } = null;
+    public bool? Disabled { get; set; } = null;
 
     public CommandAttribute(string name)
     {

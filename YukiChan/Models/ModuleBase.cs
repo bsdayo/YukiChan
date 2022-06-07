@@ -19,11 +19,11 @@ public abstract class ModuleBase
 {
     internal Bot? Bot { get; set; }
 
-    private readonly List<CommandBase> _commands = new();
+    public readonly List<CommandBase> Commands = new();
 
     public ModuleAttribute ModuleInfo { get; set; } = null!;
 
-    public int CommandCount => _commands.Count;
+    public int CommandCount => Commands.Count;
 
     public void Init()
     {
@@ -50,13 +50,12 @@ public abstract class ModuleBase
 
                 if (attr.GetType() != typeof(CommandAttribute)) continue;
                 if (attr is not CommandAttribute command) continue;
+                
+                if (command.Disabled ?? false) continue;
 
-                if (!command.Disabled)
-                {
-                    CommandBase commandBase = new(command, method);
-                    _commands.Add(commandBase);
-                    BotLogger.Debug($"      加载指令 {t}.{method.Name} => {command.Name}");
-                }
+                CommandBase commandBase = new(ModuleInfo.Command, command, method);
+                Commands.Add(commandBase);
+                BotLogger.Debug($"      加载指令 {t}.{method.Name} => {command.Name}");
             }
         }
 
@@ -67,7 +66,7 @@ public abstract class ModuleBase
     {
         var commandStr = message.Chain.GetChain<TextChain>().Content.Trim();
 
-        foreach (var command in _commands)
+        foreach (var command in Commands)
         {
             var keyword = Global.YukiConfig.CommandPrefix +
                           ModuleInfo.Command +
@@ -98,7 +97,8 @@ public abstract class ModuleBase
                     BotLogger.Debug($"Invoking command {command.CommandInfo.Name} with body \"{body}\".");
                     var result = command.InnerMethod.Invoke(this,
                         new object?[] { bot, message, body }[..command.InnerMethod.GetParameters().Length]);
-                    return result as MessageBuilder ?? (result as Task<MessageBuilder>)?.Result;
+                    
+                    return result as MessageBuilder ?? (result as Task<MessageBuilder>)?.Result ?? null;
                 }
                 catch (Exception exception)
                 {
@@ -111,16 +111,31 @@ public abstract class ModuleBase
         return null;
     }
 
-    public string GetName()
+    public MessageBuilder GetHelp()
     {
-        var attr = GetType().GetCustomAttribute<ModuleAttribute>();
-        if (attr is not null) return attr.Name;
-        return GetType().FullName ?? "Unknown Module";
-    }
+        var helpStr = "[帮助 - 模块]\n";
+        helpStr += $"{ModuleInfo.Name} {ModuleInfo.Version ?? "1.0.0"}\n";
+        helpStr += $"{ModuleInfo.Description}";
 
-    public string GetVersion()
-    {
-        var attr = GetType().GetCustomAttribute<ModuleAttribute>();
-        return attr is not null ? attr.Version : "0.0.0";
+        bool isSubcommandTitleAdded = false;
+        foreach (var command in Commands)
+        {
+            if (command.CommandInfo.Command is null)
+            {
+                helpStr += $"\n\n{Global.YukiConfig.CommandPrefix}{command.CommandInfo.Usage ?? ModuleInfo.Command}\n";
+                helpStr += $"{command.CommandInfo.Description}";
+                continue;
+            }
+            
+            if (!isSubcommandTitleAdded)
+            {
+                helpStr += "\n\nSubcommands:";
+                isSubcommandTitleAdded = true;
+            }
+
+            helpStr += $"\n{command.CommandInfo.Command} {command.CommandInfo.Description}";
+        }
+
+        return MessageBuilder.Eval(helpStr);
     }
 }

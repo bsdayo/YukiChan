@@ -16,7 +16,7 @@ public static class ModuleManager
     public static readonly List<ModuleBase> Modules = new();
 
     public static int ModuleCount => Modules.Count;
-    public static int CommandCount = 0;
+    public static int CommandCount;
     
     public static void InitializeModules()
     {
@@ -57,14 +57,26 @@ public static class ModuleManager
     {
         foreach (var module in Modules)
         {
-            if (module.DealCommand(bot, message) is { } mb)
-            {
-                Global.Information.MessageProcessed++;
-                BotLogger.Debug($"Total {Global.Information.MessageProcessed} message(s) processed");
-                return mb;
-            }
+            var msgBuilder = module.DealCommand(bot, message);
+            if (msgBuilder is null) continue;
+            Global.Information.MessageProcessed++;
+            BotLogger.Debug($"Total {Global.Information.MessageProcessed} message(s) processed");
+            return msgBuilder;
         }
         
         return null;
+    }
+
+    public static MessageBuilder GetHelp()
+    {
+        var helpStr = $"[帮助]\n当前已加载 {ModuleCount} 个模块，{CommandCount} 个指令\n";
+
+        foreach (var module in Modules)
+        {
+            helpStr +=
+                $"\n{Global.YukiConfig.CommandPrefix}{module.ModuleInfo.Command} {module.ModuleInfo.Description}";
+        }
+        
+        return MessageBuilder.Eval(helpStr);
     }
 }

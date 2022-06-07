@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using Konata.Core;
-using Konata.Core.Events.Model;
 using Konata.Core.Message;
+using Konata.Core.Message.Model;
 using YukiChan.Attributes;
 using YukiChan.Core;
 using YukiChan.Models;
@@ -12,19 +12,21 @@ namespace YukiChan.Modules;
 
 [Module("Status",
     Command = "status",
-    Description = "Show bot status.",
+    Description = "查看暮雪酱状态",
     Version = "1.0.0")]
 public class StatusModule : ModuleBase
 {
     [Command("Status",
-        Description = "Show bot status.",
+        Description = "查看暮雪酱状态",
+        Usage = "status",
         Example = "status")]
-    public static MessageBuilder ShowStatus()
+    public static MessageBuilder ShowStatus(Bot bot, MessageStruct message)
     {
         var konataBs = new BuildStamp { Type = typeof(Bot) };
         var yukiBs = new BuildStamp { Type = typeof(Program) };
 
         return new MessageBuilder()
+            .Add(ReplyChain.Create(message))
             .Text($"[暮雪酱|YukiChan] {yukiBs.Version}\n")
             .Text($"{yukiBs.Branch}@{yukiBs.CommitHash[..12]}\n\n")
             //

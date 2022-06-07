@@ -6,6 +6,7 @@ using Konata.Core.Events;
 using Konata.Core.Events.Model;
 using Konata.Core.Interfaces.Api;
 using Konata.Core.Message.Model;
+using YukiChan.Attributes;
 using YukiChan.Utils;
 
 namespace YukiChan.Core;
@@ -38,12 +39,11 @@ public static class EventHandlers
 
         try
         {
-            if (ModuleManager.ParseCommand(bot, e.Message) is { } mb)
-            {
-                Global.Information.MessageSent++;
-                BotLogger.SendMessage(e, mb.Build().ToString());
-                await bot.SendGroupMessage(e.GroupUin, mb);
-            }
+            var msgBuilder = ModuleManager.ParseCommand(bot, e.Message);
+            if (msgBuilder is null) return;
+            Global.Information.MessageSent++;
+            BotLogger.SendMessage(e, msgBuilder.Build().ToString());
+            await bot.SendGroupMessage(e.GroupUin, msgBuilder);
         }
         catch (Exception exception)
         {
@@ -64,11 +64,11 @@ public static class EventHandlers
 
         try
         {
-            if (ModuleManager.ParseCommand(bot, e.Message) is not { } mb)
-                return;
+            var msgBuilder = ModuleManager.ParseCommand(bot, e.Message);
+            if (msgBuilder is null) return;
             Global.Information.MessageSent++;
-            BotLogger.SendMessage(e, mb.Build().ToString());
-            await bot.SendFriendMessage(e.FriendUin, mb);
+            BotLogger.SendMessage(e, msgBuilder.Build().ToString());
+            await bot.SendFriendMessage(e.FriendUin, msgBuilder);
         }
         catch (Exception exception)
         {
