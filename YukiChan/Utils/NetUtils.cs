@@ -8,7 +8,7 @@ namespace YukiChan.Utils;
 
 public static class NetUtils
 {
-    public static async Task<byte[]> Download(string url,
+    public static async Task<byte[]> DownloadBytes(string url,
         Dictionary<string, string>? header = null,
         int timeout = 8000, long limitLen = ((long)2 << 30) - 1)
     {

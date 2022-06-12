@@ -83,7 +83,7 @@ public static class BotLogger
         _onLog = true;
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.Write(DateTime.Now.ToString("HH:mm:ss ") +
-                      $"[M] <R:G> {e.GroupName} ({e.GroupUin}) | {e.Message.Sender.Name} ({e.Message.Sender.Uin}) => ");
+                      $"[M] <R:G> {e.GroupName} ({e.GroupUin}) {e.Message.Sender.Name} ({e.Message.Sender.Uin}) => ");
         Console.ForegroundColor = ConsoleColor.Gray;
         Console.WriteLine(e.Message.Chain.ToString().ReplaceLineEndings("\\n"));
         _onLog = false;

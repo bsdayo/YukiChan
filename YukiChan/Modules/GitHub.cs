@@ -28,13 +28,13 @@ public class GitHubModule : ModuleBase
 
         try
         {
-            var htmlBytes = await NetUtils.Download(body);
+            var htmlBytes = await NetUtils.DownloadBytes(body);
             var html = Encoding.UTF8.GetString(htmlBytes);
 
             var metaData = html.GetMetaData("property");
             var imageMeta = metaData["og:image"];
 
-            var image = await NetUtils.Download(imageMeta);
+            var image = await NetUtils.DownloadBytes(imageMeta);
 
             return new MessageBuilder()
                 .Add(ReplyChain.Create(message))

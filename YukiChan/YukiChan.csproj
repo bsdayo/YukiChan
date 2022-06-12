@@ -17,6 +17,10 @@
       <ProjectReference Include="../Konata.Core/Konata.Core/Konata.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="ArcaeaUnlimitedAPI.Lib" Version="1.0.0" />
+    </ItemGroup>
+
     <Target Name="GetBuildStamp" BeforeTargets="GenerateBuildStamp" Condition="'$(BuildHash)' == ''">
         <PropertyGroup>
             <BuildStampFile>$(IntermediateOutputPath)BuildStamp</BuildStampFile>
