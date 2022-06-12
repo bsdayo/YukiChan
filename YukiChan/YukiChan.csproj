@@ -6,6 +6,7 @@
         <TargetFramework>net6.0</TargetFramework>
         <PublishSingleFile>True</PublishSingleFile>
         <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
         <Authors>b1acksoil</Authors>
         <Description>Simple QQ bot using Konata.Core</Description>
         <RepositoryUrl>https://github.com/b1acksoil/YukiChan</RepositoryUrl>

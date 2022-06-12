@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿using System.Text.Json;
 using Konata.Core;
 using Konata.Core.Common;
 using Konata.Core.Interfaces;
@@ -22,7 +19,8 @@ public static class Program
             InitializeDirectories(new[]
             {
                 "Logs/YukiChan", "Logs/Konata",
-                "Configs"
+                "Configs",
+                "Assets/Images/Cats"
             });
 
             _bot = BotFather.Create(GetKonataConfig(), GetDevice(), GetKeyStore());
