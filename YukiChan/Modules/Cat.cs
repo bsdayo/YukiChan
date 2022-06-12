@@ -25,7 +25,7 @@ public class CatModule : ModuleBase
                 .Text("现在没有可用的猫猫图呢...");
 
         var image = images[new Random().Next(images.Length)];
-        
+
         return new MessageBuilder()
             .Image(image);
     }

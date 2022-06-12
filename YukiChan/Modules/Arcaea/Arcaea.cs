@@ -11,7 +11,7 @@ namespace YukiChan.Modules.Arcaea;
     Version = "1.0.0")]
 public partial class ArcaeaModule : ModuleBase
 {
-    private static AuaClient _auaClient = new AuaClient
+    private static readonly AuaClient AuaClient = new AuaClient
     {
         ApiUrl = Global.YukiConfig.Arcaea.AuaApiUrl,
         UserAgent = Global.YukiConfig.Arcaea.UserAgent,

@@ -52,14 +52,12 @@ public static class Program
     private static BotConfig? GetKonataConfig()
     {
         if (File.Exists("Configs/KonataConfig.json"))
-        {
             return JsonSerializer.Deserialize<BotConfig>
                 (File.ReadAllText("Configs/KonataConfig.json"));
-        }
 
         var config = BotConfig.Default();
         var configJson = JsonSerializer.Serialize(config,
-            new JsonSerializerOptions() { WriteIndented = true });
+            new JsonSerializerOptions { WriteIndented = true });
         File.WriteAllText("Configs/KonataConfig.json", configJson);
 
         return config;
@@ -68,14 +66,12 @@ public static class Program
     private static BotDevice? GetDevice()
     {
         if (File.Exists("Configs/Device.json"))
-        {
             return JsonSerializer.Deserialize<BotDevice>
                 (File.ReadAllText("Configs/Device.json"));
-        }
 
         var device = BotDevice.Default();
         var deviceJson = JsonSerializer.Serialize(device,
-            new JsonSerializerOptions() { WriteIndented = true });
+            new JsonSerializerOptions { WriteIndented = true });
         File.WriteAllText("Configs/Device.json", deviceJson);
 
         return device;
@@ -84,10 +80,8 @@ public static class Program
     private static BotKeyStore? GetKeyStore()
     {
         if (File.Exists("Configs/KeyStore.json"))
-        {
             return JsonSerializer.Deserialize<BotKeyStore>
                 (File.ReadAllText("Configs/KeyStore.json"));
-        }
 
         Console.WriteLine("For first running, please enter your account and password.");
         Console.Write("Account: ");
@@ -102,17 +96,15 @@ public static class Program
     private static BotKeyStore UpdateKeyStore(BotKeyStore keystore)
     {
         var keystoreJson = JsonSerializer.Serialize(keystore,
-            new JsonSerializerOptions() { WriteIndented = true });
+            new JsonSerializerOptions { WriteIndented = true });
         File.WriteAllText("Configs/KeyStore.json", keystoreJson);
         return keystore;
     }
 
     private static void InitializeDirectories(string[] directories)
     {
-        foreach (string dir in directories)
-        {
+        foreach (var dir in directories)
             if (!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
-        }
     }
 }

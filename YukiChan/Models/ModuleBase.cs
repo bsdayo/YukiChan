@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 using Konata.Core;
 using Konata.Core.Message;
 using Konata.Core.Message.Model;
@@ -29,7 +25,10 @@ public abstract class ModuleBase
     {
     }
 
-    public void Reload() => Init();
+    public void Reload()
+    {
+        Init();
+    }
 
     public int LoadCommands()
     {
@@ -50,7 +49,7 @@ public abstract class ModuleBase
 
                 if (attr.GetType() != typeof(CommandAttribute)) continue;
                 if (attr is not CommandAttribute command) continue;
-                
+
                 if (command.Disabled ?? false) continue;
 
                 CommandBase commandBase = new(ModuleInfo.Command, command, method);
@@ -97,7 +96,7 @@ public abstract class ModuleBase
                     BotLogger.Debug($"Invoking command {command.CommandInfo.Name} with body \"{body}\".");
                     var result = command.InnerMethod.Invoke(this,
                         new object?[] { bot, message, body }[..command.InnerMethod.GetParameters().Length]);
-                    
+
                     return result as MessageBuilder ?? (result as Task<MessageBuilder>)?.Result ?? null;
                 }
                 catch (Exception exception)
@@ -117,7 +116,7 @@ public abstract class ModuleBase
         helpStr += $"{ModuleInfo.Name} {ModuleInfo.Version ?? "1.0.0"}\n";
         helpStr += $"{ModuleInfo.Description}";
 
-        bool isSubcommandTitleAdded = false;
+        var isSubcommandTitleAdded = false;
         foreach (var command in Commands)
         {
             if (command.CommandInfo.Command is null)
@@ -126,7 +125,7 @@ public abstract class ModuleBase
                 helpStr += $"{command.CommandInfo.Description}";
                 continue;
             }
-            
+
             if (!isSubcommandTitleAdded)
             {
                 helpStr += "\n\nSubcommands:";

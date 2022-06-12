@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using ArcaeaUnlimitedAPI.Lib.Models;
+﻿using ArcaeaUnlimitedAPI.Lib.Models;
 using ArcaeaUnlimitedAPI.Lib.Responses;
 using ArcaeaUnlimitedAPI.Lib.Utils;
 using Konata.Core;
@@ -24,8 +22,8 @@ public partial class ArcaeaModule
 
         try
         {
-            songInfo = await _auaClient.Song.Info(body);
-            songCover = await _auaClient.Assets.Song(body);
+            songInfo = await AuaClient.Song.Info(body);
+            songCover = await AuaClient.Assets.Song(body);
         }
         catch (AuaException auae)
         {

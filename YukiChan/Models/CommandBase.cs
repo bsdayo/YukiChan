@@ -28,13 +28,11 @@ public class CommandBase
             .Text(
                 $"{Global.YukiConfig.CommandPrefix}{CommandInfo.Usage ?? (CommandInfo.Command is null ? ModuleCommand : ModuleCommand + " " + CommandInfo.Command)}\n")
             .Text($"{CommandInfo.Description}");
-        
+
         if (CommandInfo.Example is not null)
-        {
             return mb
                 .Text("\n\n示例：\n")
                 .Text(CommandInfo.Example);
-        }
 
         return mb;
     }

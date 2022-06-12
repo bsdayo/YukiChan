@@ -15,15 +15,13 @@ public static class ModuleManager
 
     public static int ModuleCount => Modules.Count;
     public static int CommandCount;
-    
+
     public static void InitializeModules()
     {
         var types = Assembly.GetExecutingAssembly().GetTypes();
         foreach (var type in types)
-        {
             // BotLogger.Debug($"Processing type {type.FullName}");
             // BotLogger.Debug($"  Base Class: {type.BaseType}");
-            
             if (type.IsClass && type.BaseType == typeof(ModuleBase))
             {
                 BotLogger.Debug($"正在加载模块 {type.Name}");
@@ -46,8 +44,8 @@ public static class ModuleManager
                                     + e.Message + "\n" + e.StackTrace);
                 }
             }
-            // BotLogger.Debug("");
-        }
+
+        // BotLogger.Debug("");
         BotLogger.Success($"成功加载 {ModuleCount} 个模块，{CommandCount} 个指令。");
     }
 
@@ -61,7 +59,7 @@ public static class ModuleManager
             BotLogger.Debug($"Total {Global.Information.MessageProcessed} message(s) processed");
             return msgBuilder;
         }
-        
+
         return null;
     }
 
@@ -70,11 +68,9 @@ public static class ModuleManager
         var helpStr = $"[帮助]\n当前已加载 {ModuleCount} 个模块，{CommandCount} 个指令\n";
 
         foreach (var module in Modules)
-        {
             helpStr +=
                 $"\n{Global.YukiConfig.CommandPrefix}{module.ModuleInfo.Command} {module.ModuleInfo.Description}";
-        }
-        
+
         return MessageBuilder.Eval(helpStr);
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+﻿
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable MemberCanBePrivate.Global
@@ -26,5 +26,5 @@ public sealed class CommandAttribute : Attribute
 public enum SendType
 {
     Send,
-    Reply,
+    Reply
 }

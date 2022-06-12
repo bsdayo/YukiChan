@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Konata.Core;
+﻿using Konata.Core;
 using Konata.Core.Message;
 using Konata.Core.Message.Model;
 using YukiChan.Attributes;

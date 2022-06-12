@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Konata.Core;
 using Konata.Core.Message;
 using Konata.Core.Message.Model;

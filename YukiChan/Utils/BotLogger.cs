@@ -10,10 +10,7 @@ public static class BotLogger
 
     private static async void Log(string message, bool writeToFile)
     {
-        while (_onLog)
-        {
-            await Task.Delay(10);
-        }
+        while (_onLog) await Task.Delay(10);
 
         _onLog = true;
         var date = DateTime.Now.ToString("yyyy-MM-dd");
@@ -72,10 +69,7 @@ public static class BotLogger
 
     public static async void ReceiveMessage(GroupMessageEvent e)
     {
-        while (_onLog)
-        {
-            await Task.Delay(10);
-        }
+        while (_onLog) await Task.Delay(10);
 
         _onLog = true;
         Console.ForegroundColor = ConsoleColor.Blue;
@@ -88,10 +82,7 @@ public static class BotLogger
 
     public static async void ReceiveMessage(FriendMessageEvent e)
     {
-        while (_onLog)
-        {
-            await Task.Delay(10);
-        }
+        while (_onLog) await Task.Delay(10);
 
         _onLog = true;
         Console.ForegroundColor = ConsoleColor.Blue;
@@ -104,10 +95,7 @@ public static class BotLogger
 
     public static async void SendMessage(GroupMessageEvent e, string? message)
     {
-        while (_onLog)
-        {
-            await Task.Delay(10);
-        }
+        while (_onLog) await Task.Delay(10);
 
         _onLog = true;
         Console.ForegroundColor = ConsoleColor.Blue;
@@ -120,10 +108,7 @@ public static class BotLogger
 
     public static async void SendMessage(FriendMessageEvent e, string? message)
     {
-        while (_onLog)
-        {
-            await Task.Delay(10);
-        }
+        while (_onLog) await Task.Delay(10);
 
         _onLog = true;
         Console.ForegroundColor = ConsoleColor.Blue;

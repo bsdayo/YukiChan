@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
+﻿using System.Net;
 
 namespace YukiChan.Utils;
 
@@ -17,7 +13,7 @@ public static class NetUtils
             Timeout = new TimeSpan(0, 0, 0, timeout),
             MaxResponseContentBufferSize = limitLen
         };
-        
+
         request.DefaultRequestHeaders.Add("User-Agent", new[]
         {
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
@@ -25,11 +21,11 @@ public static class NetUtils
             "Chrome/100.0.4896.127 Safari/537.36 Edg/100.0.1185.50",
             "YukiChan/1.0.0"
         });
-        
+
         if (header is not null)
             foreach (var (k, v) in header)
                 request.DefaultRequestHeaders.Add(k, v);
- 
+
         var response = await request.GetByteArrayAsync(url);
 
         return response;
