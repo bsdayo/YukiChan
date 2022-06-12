@@ -1,7 +1,5 @@
 ﻿using ArcaeaUnlimitedAPI.Lib;
-using YukiChan.Attributes;
 using YukiChan.Core;
-using YukiChan.Models;
 
 namespace YukiChan.Modules.Arcaea;
 

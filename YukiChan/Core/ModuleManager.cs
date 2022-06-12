@@ -1,8 +1,6 @@
 ﻿using System.Reflection;
 using Konata.Core;
 using Konata.Core.Message;
-using YukiChan.Attributes;
-using YukiChan.Models;
 using YukiChan.Utils;
 
 namespace YukiChan.Core;

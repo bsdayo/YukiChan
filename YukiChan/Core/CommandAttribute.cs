@@ -1,9 +1,7 @@
-﻿
-
-// ReSharper disable UnusedAutoPropertyAccessor.Global
+﻿// ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable MemberCanBePrivate.Global
 
-namespace YukiChan.Attributes;
+namespace YukiChan.Core;
 
 [AttributeUsage(AttributeTargets.Method)]
 public sealed class CommandAttribute : Attribute

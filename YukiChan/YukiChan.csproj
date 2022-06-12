@@ -15,11 +15,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="../Konata.Core/Konata.Core/Konata.Core.csproj"/>
+        <ProjectReference Include="../Konata.Core/Konata.Core/Konata.Core.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="ArcaeaUnlimitedAPI.Lib" Version="1.0.0"/>
+        <PackageReference Include="ArcaeaUnlimitedAPI.Lib" Version="1.0.0" />
     </ItemGroup>
 
     <Target Name="GetBuildStamp" BeforeTargets="GenerateBuildStamp" Condition="'$(BuildHash)' == ''">
@@ -28,13 +28,13 @@
         </PropertyGroup>
 
         <!-- Git Branch -->
-        <Exec Command="git -C $(ProjectDir) rev-parse --abbrev-ref HEAD &gt; $(BuildStampFile)"/>
+        <Exec Command="git -C $(ProjectDir) rev-parse --abbrev-ref HEAD &gt; $(BuildStampFile)" />
 
         <!-- Git Commit Hash -->
-        <Exec Command="git -C $(ProjectDir) rev-parse HEAD &gt;&gt; $(BuildStampFile)"/>
+        <Exec Command="git -C $(ProjectDir) rev-parse HEAD &gt;&gt; $(BuildStampFile)" />
 
         <ReadLinesFromFile File="$(BuildStampFile)">
-            <Output TaskParameter="Lines" ItemName="Stamp"/>
+            <Output TaskParameter="Lines" ItemName="Stamp" />
         </ReadLinesFromFile>
 
         <PropertyGroup>
@@ -49,7 +49,7 @@
         </PropertyGroup>
 
         <ItemGroup>
-            <Compile Include="$(CustomAssemblyInfoFile)"/>
+            <Compile Include="$(CustomAssemblyInfoFile)" />
         </ItemGroup>
 
         <ItemGroup>
@@ -59,6 +59,6 @@
             </AssemblyAttributes>
         </ItemGroup>
 
-        <WriteCodeFragment Language="C#" OutputFile="$(CustomAssemblyInfoFile)" AssemblyAttributes="@(AssemblyAttributes)"/>
+        <WriteCodeFragment Language="C#" OutputFile="$(CustomAssemblyInfoFile)" AssemblyAttributes="@(AssemblyAttributes)" />
     </Target>
 </Project>

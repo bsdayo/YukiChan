@@ -2,14 +2,12 @@
 using Konata.Core;
 using Konata.Core.Message;
 using Konata.Core.Message.Model;
-using YukiChan.Attributes;
-using YukiChan.Core;
 using YukiChan.Utils;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable MemberCanBePrivate.Global
 
-namespace YukiChan.Models;
+namespace YukiChan.Core;
 
 public abstract class ModuleBase
 {

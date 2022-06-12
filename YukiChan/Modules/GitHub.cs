@@ -2,8 +2,7 @@
 using Konata.Core;
 using Konata.Core.Message;
 using Konata.Core.Message.Model;
-using YukiChan.Attributes;
-using YukiChan.Models;
+using YukiChan.Core;
 using YukiChan.Utils;
 
 namespace YukiChan.Modules;

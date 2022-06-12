@@ -1,12 +1,10 @@
 ﻿using System.Reflection;
 using Konata.Core.Message;
-using YukiChan.Attributes;
-using YukiChan.Core;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable MemberCanBePrivate.Global
 
-namespace YukiChan.Models;
+namespace YukiChan.Core;
 
 public class CommandBase
 {
