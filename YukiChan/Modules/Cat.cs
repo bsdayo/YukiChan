@@ -12,6 +12,7 @@ namespace YukiChan.Modules;
 public class CatModule : ModuleBase
 {
     [Command("Cat",
+        Contains = "猫猫图",
         Description = "随机猫猫图",
         Usage = "cat")]
     public static MessageBuilder CatCat(Bot bot, MessageStruct message, string body)
