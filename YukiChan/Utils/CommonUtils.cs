@@ -25,3 +25,10 @@ public static class CommonUtils
         return metaDict;
     }
 }
+
+public class YukiException : Exception
+{
+    public YukiException(string message) : base(message)
+    {
+    }
+}

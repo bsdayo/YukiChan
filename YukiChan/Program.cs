@@ -20,7 +20,7 @@ public static class Program
             {
                 "Logs/YukiChan", "Logs/Konata",
                 "Configs",
-                "Assets/Images/Cats"
+                "Assets/Cats", "Assets/Arcaea"
             });
 
             _bot = BotFather.Create(GetKonataConfig(), GetDevice(), GetKeyStore());

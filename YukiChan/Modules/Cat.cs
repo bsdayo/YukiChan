@@ -16,7 +16,7 @@ public class CatModule : ModuleBase
         Usage = "cat")]
     public static MessageBuilder CatCat(Bot bot, MessageStruct message, string body)
     {
-        var images = Directory.GetFiles("Assets/Images/Cats/");
+        var images = Directory.GetFiles("Assets/Cats/");
 
         if (images.Length == 0)
             return new MessageBuilder()
