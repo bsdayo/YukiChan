@@ -30,9 +30,9 @@ public class StatusModule : ModuleBase
             .Text($"[Konata.Core] {konataBs.Version}\n")
             .Text($"{konataBs.Branch}@{konataBs.CommitHash[..12]}\n\n")
             //
-            .Text($"已处理 {Global.Information.MessageProcessed} 条消息\n")
+            .Text($"已处理 {Global.Information.MessageProcessed + 1} 条消息\n")
             .Text($"已接收 {Global.Information.MessageReceived} 条消息\n")
-            .Text($"已发送 {Global.Information.MessageSent} 条消息\n\n")
+            .Text($"已发送 {Global.Information.MessageSent + 1} 条消息\n\n")
             //
             .Text($"GC 内存 {GC.GetTotalAllocatedBytes().Bytes2MiB(2)} MiB " +
                   $"({Math.Round((double)GC.GetTotalAllocatedBytes() / GC.GetTotalMemory(false) * 100, 2)}%)\n")
