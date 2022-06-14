@@ -59,7 +59,8 @@ public partial class ArcaeaModule
                         new MessageBuilder()
                             .Image(songCoverOverride ?? songCover)
                             .Text($"{chart.NameEn}\n")
-                            .Text($"{(ArcaeaDifficulty)i} {chart.Rating.GetDifficulty()} [{(double)chart.Rating / 10}]\n\n")
+                            .Text(
+                                $"{(ArcaeaDifficulty)i} {chart.Rating.GetDifficulty()} [{(double)chart.Rating / 10}]\n\n")
                             //
                             .Text($"BPM: {chart.Bpm}\n")
                             .Text($"物量: {chart.Note}\n")
@@ -73,7 +74,8 @@ public partial class ArcaeaModule
                             .Text($"世界模式解锁: {(chart.WorldUnlock ? "是" : "否")}\n\n")
                             //
                             .Text($"发布版本: {chart.Version}\n")
-                            .Text($"发布时间: {DateTimeOffset.FromUnixTimeSeconds(chart.Date).LocalDateTime:yyyy.MM.dd HH:mm:ss}")
+                            .Text(
+                                $"发布时间: {DateTimeOffset.FromUnixTimeSeconds(chart.Date).LocalDateTime:yyyy.MM.dd HH:mm:ss}")
                             .Build()));
                 }
 

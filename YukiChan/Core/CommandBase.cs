@@ -30,7 +30,7 @@ public class CommandBase
         if (CommandInfo.Example is not null)
             return mb
                 .Text("\n\n示例：\n")
-                .Text(CommandInfo.Example);
+                .Text(Global.YukiConfig.CommandPrefix + CommandInfo.Example);
 
         return mb;
     }

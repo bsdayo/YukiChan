@@ -26,6 +26,7 @@ public class PokeModule : ModuleBase
                 bot.SendFriendPoke(message.Sender.Uin);
                 break;
         }
+
         return MessageBuilder.Eval("戳戳~");
     }
 }

@@ -5,7 +5,8 @@ namespace YukiChan.Database.Models;
 [Table("users")]
 public class YukiUser
 {
-    [PrimaryKey, AutoIncrement]
+    [PrimaryKey]
+    [AutoIncrement]
     [Column("id")]
     public uint Id { get; set; }
 

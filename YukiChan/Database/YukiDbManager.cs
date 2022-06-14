@@ -19,7 +19,7 @@ public class YukiDbManager
         return _database.FindWithQuery<YukiUser>(
             "SELECT * FROM users WHERE uin = ?", userUin);
     }
-    
+
     public YukiGroup? GetGroup(uint groupUin)
     {
         return _database.FindWithQuery<YukiGroup>(
@@ -30,7 +30,7 @@ public class YukiDbManager
     {
         _database.Insert(user);
     }
-    
+
     public void AddGroup(YukiGroup group)
     {
         _database.Insert(group);

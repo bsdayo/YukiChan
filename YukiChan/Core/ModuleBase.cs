@@ -66,8 +66,6 @@ public abstract class ModuleBase
 
         foreach (var command in Commands)
         {
-            
-            
             var keyword = Global.YukiConfig.CommandPrefix +
                           ModuleInfo.Command +
                           (command.CommandInfo.Command is not null
@@ -85,9 +83,9 @@ public abstract class ModuleBase
 
             if (!startsWithFlag && !regexMatchFlag && !containsFlag)
                 continue;
-            
+
             var user = Global.YukiDb.GetUser(message.Sender.Uin);
-            
+
             if (user is null)
             {
                 Global.YukiDb.AddUser(new YukiUser
@@ -95,7 +93,7 @@ public abstract class ModuleBase
                     Uin = message.Sender.Uin,
                     Authority = YukiUserAuthority.User
                 });
-                
+
                 if (command.CommandInfo.Authority > YukiUserAuthority.User)
                     return new MessageBuilder()
                         .Add(ReplyChain.Create(message))
@@ -153,7 +151,7 @@ public abstract class ModuleBase
                 helpStr += $"{command.CommandInfo.Description}";
                 continue;
             }
-            
+
             if (command.CommandInfo.Disabled || command.CommandInfo.Hidden)
                 continue;
 

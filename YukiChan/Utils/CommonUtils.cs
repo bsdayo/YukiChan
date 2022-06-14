@@ -19,7 +19,7 @@ public static class CommonUtils
         return new MessageBuilder()
             .Add(ReplyChain.Create(message));
     }
-    
+
     public static double Bytes2MiB(this long bytes, int round)
     {
         return Math.Round(bytes / 1048576.0, round);
