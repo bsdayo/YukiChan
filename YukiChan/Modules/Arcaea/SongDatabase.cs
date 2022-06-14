@@ -46,14 +46,16 @@ public static class ArcaeaSongDatabase
         if (string.IsNullOrWhiteSpace(source))
             return null;
 
-        source = source.Replace(" ", "").ToLower();
+        source = source.RemoveString(" ").ToLower();
+        List<ArcaeaSongDbChart> charts = new();
 
         var aliases = GetAllAliases()
             .Where(alias => alias.SongId == source ||
                             alias.Alias.ToLower() == source)
             .ToArray();
 
-        var charts = GetChartsById(aliases[0].SongId);
+        if (aliases.Length > 0)
+            charts = GetChartsById(aliases[0].SongId);
 
         if (charts.Count == 0)
         {
@@ -66,7 +68,7 @@ public static class ArcaeaSongDatabase
                 charts = allCharts.FindAll(chart => chart.NameEn.GetAbbreviation().ToLower() == source);
             if (charts.Count == 0)
                 charts = allCharts.FindAll(chart => source.Length > 4 &&
-                                                    chart.NameEn.RemoveString(" ").Contains(source));
+                                                    chart.NameEn.RemoveString(" ").ToLower().Contains(source));
             if (charts.Count == 0) return null;
         }
 

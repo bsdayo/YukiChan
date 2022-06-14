@@ -16,7 +16,8 @@ public sealed class CommandAttribute : Attribute
     public string? Description { get; set; } = null;
     public string? Usage { get; set; } = null;
     public string? Example { get; set; } = null;
-    public bool? Disabled { get; set; } = null;
+    public bool Disabled { get; set; } = false;
+    public bool Hidden { get; set; } = false;
 
     public CommandAttribute(string name)
     {

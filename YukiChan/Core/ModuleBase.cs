@@ -49,7 +49,7 @@ public abstract class ModuleBase
                 if (attr.GetType() != typeof(CommandAttribute)) continue;
                 if (attr is not CommandAttribute command) continue;
 
-                if (command.Disabled ?? false) continue;
+                if (command.Disabled) continue;
 
                 CommandBase commandBase = new(ModuleInfo.Command, command, method);
                 Commands.Add(commandBase);
@@ -103,7 +103,8 @@ public abstract class ModuleBase
             }
             else
             {
-                if (user.Authority == YukiUserAuthority.Banned)
+                if (command.CommandInfo.Authority != YukiUserAuthority.Banned &&
+                    user.Authority == YukiUserAuthority.Banned)
                     return null;
 
                 if (user.Authority < command.CommandInfo.Authority)
@@ -152,6 +153,9 @@ public abstract class ModuleBase
                 helpStr += $"{command.CommandInfo.Description}";
                 continue;
             }
+            
+            if (command.CommandInfo.Disabled || command.CommandInfo.Hidden)
+                continue;
 
             if (!isSubcommandTitleAdded)
             {

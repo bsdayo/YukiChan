@@ -35,4 +35,18 @@ public class YukiDbManager
     {
         _database.Insert(group);
     }
+
+    public void UpdateUser(YukiUser user)
+    {
+        _database.Update(user);
+    }
+
+    public bool BanUser(uint userUin)
+    {
+        var user = GetUser(userUin);
+        if (user is null) return false;
+        user.Authority = YukiUserAuthority.Banned;
+        _database.Update(user);
+        return true;
+    }
 }

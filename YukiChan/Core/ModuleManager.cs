@@ -66,8 +66,11 @@ public static class ModuleManager
         var helpStr = $"[帮助]\n当前已加载 {ModuleCount} 个模块，{CommandCount} 个指令\n";
 
         foreach (var module in Modules)
+        {
+            if (module.ModuleInfo.Hidden) continue;
             helpStr +=
                 $"\n{Global.YukiConfig.CommandPrefix}{module.ModuleInfo.Command} {module.ModuleInfo.Description}";
+        }
 
         return MessageBuilder.Eval(helpStr);
     }
