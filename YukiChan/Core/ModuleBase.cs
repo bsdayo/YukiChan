@@ -2,6 +2,7 @@
 using Konata.Core;
 using Konata.Core.Message;
 using Konata.Core.Message.Model;
+using YukiChan.Database.Models;
 using YukiChan.Utils;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -65,6 +66,8 @@ public abstract class ModuleBase
 
         foreach (var command in Commands)
         {
+            
+            
             var keyword = Global.YukiConfig.CommandPrefix +
                           ModuleInfo.Command +
                           (command.CommandInfo.Command is not null
@@ -82,6 +85,32 @@ public abstract class ModuleBase
 
             if (!startsWithFlag && !regexMatchFlag && !containsFlag)
                 continue;
+            
+            var user = Global.YukiDb.GetUser(message.Sender.Uin);
+            
+            if (user is null)
+            {
+                Global.YukiDb.AddUser(new YukiUser
+                {
+                    Uin = message.Sender.Uin,
+                    Authority = YukiUserAuthority.User
+                });
+                
+                if (command.CommandInfo.Authority > YukiUserAuthority.User)
+                    return new MessageBuilder()
+                        .Add(ReplyChain.Create(message))
+                        .Text("权限不足哦~");
+            }
+            else
+            {
+                if (user.Authority == YukiUserAuthority.Banned)
+                    return null;
+
+                if (user.Authority < command.CommandInfo.Authority)
+                    return new MessageBuilder()
+                        .Add(ReplyChain.Create(message))
+                        .Text("权限不足哦~");
+            }
 
             var body = startsWithFlag
                 ? commandStr[keyword.Length..].Trim()

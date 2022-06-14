@@ -30,6 +30,7 @@ public class StatusModule : ModuleBase
             .Text($"[Konata.Core] {konataBs.Version}\n")
             .Text($"{konataBs.Branch}@{konataBs.CommitHash[..12]}\n\n")
             //
+            .Text($"已加载 {ModuleManager.ModuleCount} 个模块，{ModuleManager.CommandCount} 个指令\n")
             .Text($"已处理 {Global.Information.MessageProcessed + 1} 条消息\n")
             .Text($"已接收 {Global.Information.MessageReceived} 条消息\n")
             .Text($"已发送 {Global.Information.MessageSent + 1} 条消息\n\n")
