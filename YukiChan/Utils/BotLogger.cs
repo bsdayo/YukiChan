@@ -32,7 +32,7 @@ public static class BotLogger
 
     public static void Info(string message, bool writeToFile = true)
     {
-        Console.ForegroundColor = ConsoleColor.Magenta;
+        Console.ForegroundColor = ConsoleColor.Cyan;
         Log($"[I] {message}", writeToFile);
     }
 
@@ -63,7 +63,7 @@ public static class BotLogger
     public static void Debug(string message, bool writeToFile = true)
     {
         if (!Global.YukiConfig.EnableDebugLog) return;
-        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.ForegroundColor = ConsoleColor.DarkGray;
         Log($"[D] {message}", writeToFile);
     }
 

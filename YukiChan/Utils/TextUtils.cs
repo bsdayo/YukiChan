@@ -17,6 +17,12 @@ public static class TextUtils
         return str;
     }
 
+    /// <summary>
+    ///     从文本中删除指定的字符串
+    /// </summary>
+    /// <param name="source">源文本</param>
+    /// <param name="remove">要删除的字符串</param>
+    /// <returns>删除字符串后的文本</returns>
     public static string RemoveString(this string source, string remove)
     {
         return source.Replace(remove, "");
