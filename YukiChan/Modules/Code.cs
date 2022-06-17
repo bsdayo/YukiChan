@@ -48,6 +48,7 @@ public class CodeModule : ModuleBase
 
     private static readonly string[] BannedStatements =
     {
+        "Environment",
         "Console.",
         "Pow",
         "typeof"
