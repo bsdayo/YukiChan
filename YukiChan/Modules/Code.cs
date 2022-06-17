@@ -20,10 +20,15 @@ public class CodeModule : ModuleBase
 
     private static readonly ScriptOptions UserOptions = ScriptOptions.Default
         .WithFileEncoding(Encoding.UTF8)
-        .WithImports("System");
+        .AddReferences("Microsoft.CSharp")
+        .AddImports("System")
+        .AddImports("System.Collections.Generic")
+        .AddImports("System.Linq");
 
-    private static readonly Lazy<ScriptOptions> ExecOptions = new(() => UserOptions
-        .AddImports("System.IO", "System.Net", "System.Reflection"));
+    private static readonly ScriptOptions ExecOptions = UserOptions
+        .AddImports("System.IO")
+        .AddImports("System.Reflection")
+        .AddImports("System.Net");
 
     private static readonly string[] BannedNamespaces =
     {
@@ -107,8 +112,8 @@ public class CodeModule : ModuleBase
         try
         {
             _execState = _execState is null
-                ? await CSharpScript.RunAsync(body, ExecOptions.Value)
-                : await _execState.ContinueWithAsync(body, ExecOptions.Value);
+                ? await CSharpScript.RunAsync(body, ExecOptions)
+                : await _execState.ContinueWithAsync(body, ExecOptions);
         }
         catch (Exception e)
         {
@@ -135,5 +140,22 @@ public class CodeModule : ModuleBase
         if (body == "exec") _execState = null;
         return CommonUtils.ReplyMessage(message)
             .Text("成功重置命名空间。");
+    }
+
+    [Command("Variables",
+        Command = "vars",
+        Description = "查看全局变量")]
+    public static MessageBuilder Vars(Bot bot, MessageStruct message, string body)
+    {
+        if (_userState is null)
+            return CommonUtils.ReplyMessage(message)
+                .Text("命名空间尚未初始化，请执行一次代码后重试。");
+
+        var mb = CommonUtils.ReplyMessage(message)
+            .Text($"共 {_userState.Variables.Length} 个变量");
+
+        foreach (var variable in _userState.Variables) mb.Text($"\n{variable.Name}: {variable.Type}");
+
+        return mb;
     }
 }
