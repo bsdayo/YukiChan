@@ -33,8 +33,8 @@ public partial class ArcaeaModule
                 BotLogger.Debug("arcsong.db Exists.");
 
             var song = ArcaeaSongDatabase.Exists()
-                ? ArcaeaSongDatabase.FuzzySearchSong(args[0])
-                : ArcaeaSong.FromAua(await AuaClient.Song.Info(args[0]));
+                ? ArcaeaSongDatabase.FuzzySearchSong(string.Join(' ', args[..^1]))
+                : ArcaeaSong.FromAua(await AuaClient.Song.Info(string.Join(' ', args[..^1])));
 
             if (song is null)
                 throw new YukiException("没有找到指定的曲目哦~");
@@ -46,7 +46,7 @@ public partial class ArcaeaModule
                 await CacheManager.SaveBytes(songCover, "Arcaea", "Song", $"{song.SongId}.jpg");
             }
 
-            if (args.Length == 2 && (args[1] == "detail" || args[1] == "details"))
+            if (args.Length >= 2 && (args[^1] == "detail" || args[^1] == "details"))
             {
                 var multiMsg = new MultiMsgChain();
 
@@ -78,7 +78,7 @@ public partial class ArcaeaModule
                             .Image(songCoverOverride ?? songCover)
                             .Text($"{chart.NameEn}\n")
                             .Text(
-                                $"{(ArcaeaDifficulty)i} {chart.Rating.GetDifficulty()} [{(double)chart.Rating / 10}]\n\n")
+                                $"{(ArcaeaDifficulty)i} {chart.Rating.GetDifficulty()} [{Math.Round((double)chart.Rating / 10, 1)}]\n\n")
                             //
                             .Text($"BPM: {chart.Bpm}\n")
                             .Text($"物量: {chart.Note}\n")
@@ -97,7 +97,14 @@ public partial class ArcaeaModule
                             .Build()));
                 }
 
-                return new MessageBuilder(multiMsg);
+                var msgb = new MessageBuilder(multiMsg);
+                
+                // if (File.Exists($"Assets/Arcaea/AudioPreview/{song.SongId}.ogg"))
+                //     msgb.Record($"Assets/Arcaea/AudioPreview/{song.SongId}.ogg");
+                // if (File.Exists($"Assets/Arcaea/AudioPreview/{song.SongId}-beyond.ogg"))
+                //     msgb.Record($"Assets/Arcaea/AudioPreview/{song.SongId}-beyond.ogg");
+
+                return msgb;
             }
 
             if (song.Difficulties.Length > 3 && song.Difficulties[3].JacketOverride)
@@ -116,8 +123,11 @@ public partial class ArcaeaModule
             for (var i = 0; i < song.Difficulties.Length; i++)
             {
                 var rating = song.Difficulties[i].Rating;
-                mb.Text($"\n{(ArcaeaDifficulty)i} {rating.GetDifficulty()} [{(double)rating / 10}]");
+                mb.Text($"\n{(ArcaeaDifficulty)i} {rating.GetDifficulty()} [{Math.Round((double)rating / 10, 1)}]");
             }
+            
+            // if (File.Exists($"Assets/Arcaea/AudioPreview/{song.SongId}.ogg"))
+            //     mb.Record($"Assets/Arcaea/AudioPreview/{song.SongId}.ogg");
 
             return mb;
         }

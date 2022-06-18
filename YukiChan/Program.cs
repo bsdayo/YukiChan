@@ -18,9 +18,15 @@ public static class Program
         {
             InitializeDirectories(new[]
             {
+                // Logs - Yuki and Konata's log
                 "Logs/YukiChan", "Logs/Konata",
+                // Configs - Yuki and Konata's configs
                 "Configs",
-                "Assets/Cats", "Assets/Arcaea"
+                // Assets - Module assets
+                "Assets/Cats",
+                "Assets/Arcaea/AudioPreview", "Assets/Arcaea/Aff",
+                // Cache - Download cache
+                "Cache/Arcaea/Song/"
             });
 
             _bot = BotFather.Create(GetKonataConfig(), GetDevice(), GetKeyStore());
