@@ -38,8 +38,13 @@ public partial class ArcaeaModule
 
             if (song is null)
                 throw new YukiException("没有找到指定的曲目哦~");
-
-            var songCover = await AuaClient.Assets.Song(song.SongId, AuaSongQueryType.SongId);
+            
+            var songCover = await CacheManager.GetBytes("Arcaea", "Song", $"{song.SongId}.jpg");
+            if (songCover is null)
+            {
+                songCover = await AuaClient.Assets.Song(song.SongId, AuaSongQueryType.SongId);
+                await CacheManager.SaveBytes(songCover, "Arcaea", "Song", $"{song.SongId}.jpg");
+            }
 
             if (args.Length == 2 && (args[1] == "detail" || args[1] == "details"))
             {
@@ -51,8 +56,21 @@ public partial class ArcaeaModule
                     var chart = song.Difficulties[i];
 
                     if (chart.JacketOverride)
-                        songCoverOverride = await AuaClient.Assets.Song(song.SongId, AuaSongQueryType.SongId,
-                            (ArcaeaDifficulty)chart.RatingClass);
+                    {
+                        songCoverOverride = await CacheManager.GetBytes(
+                            "Arcaea", "Song",
+                            $"{song.SongId}-{((ArcaeaDifficulty)chart.RatingClass).ToString().ToLower()}.jpg");
+                        
+                        if (songCoverOverride is null)
+                        {
+                            songCoverOverride = await AuaClient.Assets.Song(song.SongId, AuaSongQueryType.SongId,
+                                (ArcaeaDifficulty)chart.RatingClass);
+                            
+                            await CacheManager.SaveBytes(songCoverOverride,
+                                "Arcaea", "Song",
+                                $"{song.SongId}-{((ArcaeaDifficulty)chart.RatingClass).ToString().ToLower()}.jpg");
+                        }
+                    }
 
 
                     multiMsg.AddMessage(new MessageStruct(bot.Uin, bot.Name,

@@ -32,6 +32,7 @@ public class CodeModule : ModuleBase
 
     private static readonly string[] BannedNamespaces =
     {
+        "System.Threading",
         "System.IO",
         "System.Net",
         "Konata.Core",
@@ -49,7 +50,7 @@ public class CodeModule : ModuleBase
     private static readonly string[] BannedStatements =
     {
         "Environment",
-        "Console.",
+        "Console",
         "Pow",
         "typeof"
     };
