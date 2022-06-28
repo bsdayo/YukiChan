@@ -11,16 +11,24 @@ Made with love by [b1acksoil](https://github.com/b1acksoil/).
 
 ---
 
+## Features
+- Arcaea
+  - Song information query
+  - ...still working!
+- C# code runner
+- Random cat image
+
+...etc.
+
 ## Build
-Clone this repository, and execute
-```shell
-dotnet build
-```
+Select one build script (build-*.sh) to execute.
 
 ## Special Thanks
 Some structures are inspired by these projects:  
-- [AimuBot](https://github.com/InariAimu/AimuBot/)  
-- [Kagami](https://github.com/KonataDev/Kagami/)  
+
+- [InariAimu/AimuBot](https://github.com/InariAimu/AimuBot/)  
+- [ProjektRin/RinBot](https://github.com/ProjektRin/RinBot)  
+- [KonataDev/Kagami](https://github.com/KonataDev/Kagami/)  
 
 ## License
 This project is under [GNU GPL v3](./LICENSE) license.
