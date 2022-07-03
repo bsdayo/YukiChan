@@ -40,6 +40,13 @@ public static class CommonUtils
 
         return metaDict;
     }
+
+    public static string FormatTimestamp(long timestamp)
+    {
+        return DateTimeOffset.FromUnixTimeSeconds(timestamp)
+            .LocalDateTime
+            .ToString("yyyy.MM.dd HH:mm:ss");
+    }
 }
 
 public class YukiException : Exception

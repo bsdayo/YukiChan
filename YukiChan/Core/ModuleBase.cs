@@ -74,6 +74,9 @@ public abstract class ModuleBase
 
             // 以标准指令格式开头
             var startsWithFlag = commandStr.StartsWith(keyword);
+            // 匹配字符串包含
+            var customStartFlag = command.CommandInfo.StartsWith is not null &&
+                               commandStr.StartsWith(command.CommandInfo.StartsWith);
             // 匹配正则表达式
             var regexMatchFlag = command.CommandInfo.Regex is not null &&
                                  Regex.IsMatch(commandStr, command.CommandInfo.Regex);
@@ -81,7 +84,7 @@ public abstract class ModuleBase
             var containsFlag = command.CommandInfo.Contains is not null &&
                                commandStr.Contains(command.CommandInfo.Contains);
 
-            if (!startsWithFlag && !regexMatchFlag && !containsFlag)
+            if (!startsWithFlag && !regexMatchFlag && !customStartFlag && !containsFlag)
                 continue;
 
             var user = Global.YukiDb.GetUser(message.Sender.Uin);

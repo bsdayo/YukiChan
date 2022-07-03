@@ -10,6 +10,7 @@ public sealed class CommandAttribute : Attribute
 {
     public string Name { get; }
     public string? Command { get; set; } = null;
+    public string? StartsWith { get; set; } = null;
     public string? Regex { get; set; } = null;
     public string? Contains { get; set; } = null;
     public YukiUserAuthority Authority { get; set; } = YukiUserAuthority.User;
