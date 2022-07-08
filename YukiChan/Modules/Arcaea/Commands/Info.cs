@@ -33,8 +33,8 @@ public partial class ArcaeaModule
                 BotLogger.Debug("arcsong.db Exists.");
 
             var song = ArcaeaSongDatabase.Exists()
-                ? ArcaeaSongDatabase.FuzzySearchSong(string.Join(' ', args[..^1]))
-                : ArcaeaSong.FromAua(await AuaClient.Song.Info(string.Join(' ', args[..^1])));
+                ? ArcaeaSongDatabase.FuzzySearchSong(args.Length > 1 ? string.Join(' ', args[..^1]) : args[0])
+                : ArcaeaSong.FromAua(await AuaClient.Song.Info(args.Length > 1 ? string.Join(' ', args[..^1]) : args[0]));
 
             if (song is null)
                 throw new YukiException("没有找到指定的曲目哦~");
@@ -78,7 +78,7 @@ public partial class ArcaeaModule
                             .Image(songCoverOverride ?? songCover)
                             .Text($"{chart.NameEn}\n")
                             .Text(
-                                $"{(ArcaeaDifficulty)i} {chart.Rating.GetDifficulty()} [{Math.Round((double)chart.Rating / 10, 1)}]\n\n")
+                                $"{(ArcaeaDifficulty)i} {chart.Rating.GetDifficulty()} [{((double)chart.Rating / 10).ToString("0.0")}]\n\n")
                             //
                             .Text($"BPM: {chart.Bpm}\n")
                             .Text($"物量: {chart.Note}\n")
@@ -123,7 +123,7 @@ public partial class ArcaeaModule
             for (var i = 0; i < song.Difficulties.Length; i++)
             {
                 var rating = song.Difficulties[i].Rating;
-                mb.Text($"\n{(ArcaeaDifficulty)i} {rating.GetDifficulty()} [{Math.Round((double)rating / 10, 1)}]");
+                mb.Text($"\n{(ArcaeaDifficulty)i} {rating.GetDifficulty()} [{((double)rating / 10).ToString("0.0")}]");
             }
             
             // if (File.Exists($"Assets/Arcaea/AudioPreview/{song.SongId}.ogg"))
