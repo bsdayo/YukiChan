@@ -86,6 +86,7 @@ public class ArcaeaSong
     }
 }
 
+[Table("charts")]
 public class ArcaeaSongDbChart : ArcaeaChart
 {
     [Column("song_id")] [PrimaryKey] public string SongId { get; init; }

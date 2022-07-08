@@ -1,12 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using SQLite;
 
 namespace YukiChan.Modules.Arcaea.Models;
 
 #pragma warning disable CS8618
 
+[Table("packages")]
 public class ArcaeaSongDbPackage
 {
-    [Column("id")] public string Set { get; set; }
+    [PrimaryKey] [Column("id")] public string Set { get; set; }
 
     [Column("name")] public string Name { get; set; }
 }

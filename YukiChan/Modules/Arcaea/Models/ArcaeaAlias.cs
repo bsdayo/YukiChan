@@ -9,5 +9,5 @@ public class ArcaeaSongDbAlias
 {
     [Column("sid")] public string SongId { get; set; }
 
-    [Column("alias")] public string Alias { get; set; }
+    [PrimaryKey] [Column("alias")] public string Alias { get; set; }
 }
