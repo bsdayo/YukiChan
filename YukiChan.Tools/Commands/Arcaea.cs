@@ -148,12 +148,15 @@ public class ArcaeaCommand
             var packageList = newDb.Query<ArcaeaSongDbPackage>(
                 "SELECT * FROM packages");
 
-            foreach (var chart in chartList)
-                oldDb.InsertOrReplace(chart, typeof(ArcaeaSongDbChart));
-            foreach (var alias in aliasList)
-                oldDb.InsertOrReplace(alias, typeof(ArcaeaSongDbAlias));
-            foreach (var package in packageList)
-                oldDb.InsertOrReplace(package, typeof(ArcaeaSongDbPackage));
+            oldDb.RunInTransaction(() =>
+            {
+                foreach (var chart in chartList)
+                    oldDb.InsertOrReplace(chart, typeof(ArcaeaSongDbChart));
+                foreach (var alias in aliasList)
+                    oldDb.InsertOrReplace(alias, typeof(ArcaeaSongDbAlias));
+                foreach (var package in packageList)
+                    oldDb.InsertOrReplace(package, typeof(ArcaeaSongDbPackage));
+            });
 
             Console.WriteLine(
                 $"Total {chartList.Count} charts, {aliasList.Count} alias, {packageList.Count} packages.");
