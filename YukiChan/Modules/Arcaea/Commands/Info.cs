@@ -14,6 +14,7 @@ public partial class ArcaeaModule
 {
     [Command("Info",
         Command = "info",
+        Shortcut = "查定数",
         Description = "查询曲目信息",
         Usage = "a info <曲目名称>",
         Example = "a info pragmatism")]
@@ -34,11 +35,12 @@ public partial class ArcaeaModule
 
             var song = ArcaeaSongDatabase.Exists()
                 ? ArcaeaSongDatabase.FuzzySearchSong(args.Length > 1 ? string.Join(' ', args[..^1]) : args[0])
-                : ArcaeaSong.FromAua(await AuaClient.Song.Info(args.Length > 1 ? string.Join(' ', args[..^1]) : args[0]));
+                : ArcaeaSong.FromAua(
+                    await AuaClient.Song.Info(args.Length > 1 ? string.Join(' ', args[..^1]) : args[0]));
 
             if (song is null)
                 throw new YukiException("没有找到指定的曲目哦~");
-            
+
             var songCover = await CacheManager.GetBytes("Arcaea", "Song", $"{song.SongId}.jpg");
             if (songCover is null)
             {
@@ -60,12 +62,12 @@ public partial class ArcaeaModule
                         songCoverOverride = await CacheManager.GetBytes(
                             "Arcaea", "Song",
                             $"{song.SongId}-{((ArcaeaDifficulty)chart.RatingClass).ToString().ToLower()}.jpg");
-                        
+
                         if (songCoverOverride is null)
                         {
                             songCoverOverride = await AuaClient.Assets.Song(song.SongId, AuaSongQueryType.SongId,
                                 (ArcaeaDifficulty)chart.RatingClass);
-                            
+
                             await CacheManager.SaveBytes(songCoverOverride,
                                 "Arcaea", "Song",
                                 $"{song.SongId}-{((ArcaeaDifficulty)chart.RatingClass).ToString().ToLower()}.jpg");
@@ -98,7 +100,7 @@ public partial class ArcaeaModule
                 }
 
                 var msgb = new MessageBuilder(multiMsg);
-                
+
                 // if (File.Exists($"Assets/Arcaea/AudioPreview/{song.SongId}.ogg"))
                 //     msgb.Record($"Assets/Arcaea/AudioPreview/{song.SongId}.ogg");
                 // if (File.Exists($"Assets/Arcaea/AudioPreview/{song.SongId}-beyond.ogg"))
@@ -125,7 +127,7 @@ public partial class ArcaeaModule
                 var rating = song.Difficulties[i].Rating;
                 mb.Text($"\n{(ArcaeaDifficulty)i} {rating.GetDifficulty()} [{((double)rating / 10).ToString("0.0")}]");
             }
-            
+
             // if (File.Exists($"Assets/Arcaea/AudioPreview/{song.SongId}.ogg"))
             //     mb.Record($"Assets/Arcaea/AudioPreview/{song.SongId}.ogg");
 
