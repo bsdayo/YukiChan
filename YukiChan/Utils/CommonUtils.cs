@@ -8,10 +8,33 @@ public static class CommonUtils
 {
     public static string[] ParseCommandBody(string body)
     {
-        return body
+        var args = body
             .Split(" ")
             .Where(elem => elem != "")
             .ToArray();
+
+        BotLogger.Debug($"Raw args: {string.Join(", ", args)}");
+
+        return args;
+    }
+
+    public static (string[] args, string[] subFlags) ParseCommandBody(string body, string[] allSubFlags)
+    {
+        var args = ParseCommandBody(body);
+
+        var subFlags = new List<string>();
+
+        for (var i = 1; i <= args.Length; i++)
+            if (allSubFlags.Contains(args[^i]))
+                subFlags.Add(args[^i]);
+            else break;
+
+        args = args[..^subFlags.Count];
+
+        BotLogger.Debug($"Result args: {string.Join(", ", args)}");
+        BotLogger.Debug($"Sub flags: {string.Join(", ", subFlags)}");
+
+        return (args, subFlags.ToArray());
     }
 
     public static MessageBuilder ReplyMessage(MessageStruct message)

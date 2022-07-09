@@ -20,7 +20,8 @@ public partial class ArcaeaModule
         Example = "a info pragmatism")]
     public static async Task<MessageBuilder> Info(Bot bot, MessageStruct message, string body)
     {
-        var args = CommonUtils.ParseCommandBody(body);
+        var allSubFlags = new[] { "details", "detail" };
+        var (args, subFlags) = CommonUtils.ParseCommandBody(body, allSubFlags);
 
         if (args.Length == 0)
             return CommonUtils.ReplyMessage(message)
@@ -33,10 +34,11 @@ public partial class ArcaeaModule
             if (ArcaeaSongDatabase.Exists())
                 BotLogger.Debug("arcsong.db Exists.");
 
+            var songname = string.Join(' ', args);
+
             var song = ArcaeaSongDatabase.Exists()
-                ? ArcaeaSongDatabase.FuzzySearchSong(args.Length > 1 ? string.Join(' ', args[..^1]) : args[0])
-                : ArcaeaSong.FromAua(
-                    await AuaClient.Song.Info(args.Length > 1 ? string.Join(' ', args[..^1]) : args[0]));
+                ? ArcaeaSongDatabase.FuzzySearchSong(songname)
+                : ArcaeaSong.FromAua(await AuaClient.Song.Info(songname));
 
             if (song is null)
                 throw new YukiException("没有找到指定的曲目哦~");
@@ -48,7 +50,7 @@ public partial class ArcaeaModule
                 await CacheManager.SaveBytes(songCover, "Arcaea", "Song", $"{song.SongId}.jpg");
             }
 
-            if (args.Length >= 2 && (args[^1] == "detail" || args[^1] == "details"))
+            if (subFlags.Contains("detail") || subFlags.Contains("details"))
             {
                 var multiMsg = new MultiMsgChain();
 
