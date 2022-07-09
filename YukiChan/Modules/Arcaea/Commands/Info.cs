@@ -24,8 +24,7 @@ public partial class ArcaeaModule
         var (args, subFlags) = CommonUtils.ParseCommandBody(body, allSubFlags);
 
         if (args.Length == 0)
-            return CommonUtils.ReplyMessage(message)
-                .Text("请输入要查询的曲目哦~");
+            return message.Reply("请输入要查询的曲目哦~");
 
         byte[]? songCoverByd = null;
 
@@ -138,23 +137,17 @@ public partial class ArcaeaModule
         catch (AuaException e)
         {
             BotLogger.Error(e);
-            return new MessageBuilder()
-                .Add(ReplyChain.Create(message))
-                .Text($"API 发生了错误呢... ({e.Status}) {e.Message}");
+            return message.Reply($"API 发生了错误呢... ({e.Status}) {e.Message}");
         }
         catch (YukiException e)
         {
             BotLogger.Error(e);
-            return new MessageBuilder()
-                .Add(ReplyChain.Create(message))
-                .Text(e.Message);
+            return message.Reply(e.Message);
         }
         catch (Exception e)
         {
             BotLogger.Error(e);
-            return new MessageBuilder()
-                .Add(ReplyChain.Create(message))
-                .Text($"发生了奇怪的错误！({e.Message})");
+            return message.Reply($"发生了奇怪的错误！({e.Message})");
         }
     }
 }

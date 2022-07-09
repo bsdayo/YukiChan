@@ -1,6 +1,4 @@
-﻿using System.Text;
-using BiliSharp;
-using BiliSharp.Models;
+﻿using BiliSharp;
 using BiliSharp.Utils;
 using Konata.Core;
 using Konata.Core.Message;
@@ -40,7 +38,7 @@ public class BilibiliModule : ModuleBase
             return MessageBuilder.Eval("发生了奇怪的错误... " + exception.Message);
         }
     }
-    
+
     [Command("Fetch Cover From BV Code",
         Command = "bv",
         StartsWith = "BV",
@@ -69,7 +67,7 @@ public class BilibiliModule : ModuleBase
     {
         var info = await video.GetInfoAsync();
         var cover = await NetUtils.DownloadBytes(info.PictureUrl);
-        return CommonUtils.ReplyMessage(message)
+        return message.Reply()
             .Image(cover)
             .Text($"{info.Title}\n")
             .Text($"by {info.Owner.Name}\n")

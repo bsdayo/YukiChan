@@ -61,18 +61,13 @@ public class CodeModule : ModuleBase
     public static async Task<MessageBuilder?> RunCode(Bot bot, MessageStruct message, string body)
     {
         if (string.IsNullOrWhiteSpace(body))
-            return CommonUtils.ReplyMessage(message)
-                .Text("请输入需要运行的代码哦~");
+            return message.Reply("请输入需要运行的代码哦~");
 
-        foreach (var ns in BannedNamespaces)
-            if (body.Contains(ns))
-                return CommonUtils.ReplyMessage(message)
-                    .Text("不可以使用这些命名空间哦~");
+        if (BannedNamespaces.Any(body.Contains))
+            return message.Reply("不可以使用这些命名空间哦~");
 
-        foreach (var st in BannedStatements)
-            if (body.Contains(st))
-                return CommonUtils.ReplyMessage(message)
-                    .Text("不可以使用这些语句哦~");
+        if (BannedStatements.Any(body.Contains))
+            return message.Reply("不可以使用这些语句哦~");
 
         BotLogger.Info($"Running Code: {body}");
 
@@ -84,18 +79,15 @@ public class CodeModule : ModuleBase
         }
         catch (Exception e)
         {
-            return CommonUtils.ReplyMessage(message)
-                .Text(e.Message);
+            return message.Reply(e.Message);
         }
 
         BotLogger.Info(
             $"...with return value: {_userState?.ReturnValue?.ToString()?.ReplaceLineEndings("\\n") ?? "null"}");
 
-        if (_userState?.ReturnValue is not null)
-            return CommonUtils.ReplyMessage(message)
-                .Text(_userState.ReturnValue?.ToString());
-
-        return null;
+        return _userState?.ReturnValue is not null
+            ? message.Reply(_userState.ReturnValue.ToString()!)
+            : null;
     }
 
     [Command("Execute Code (Admin Mode)",
@@ -106,8 +98,7 @@ public class CodeModule : ModuleBase
     public static async Task<MessageBuilder?> ExecCode(Bot bot, MessageStruct message, string body)
     {
         if (string.IsNullOrWhiteSpace(body))
-            return CommonUtils.ReplyMessage(message)
-                .Text("请输入需要运行的代码哦~");
+            return message.Reply("请输入需要运行的代码哦~");
 
         BotLogger.Info($"Executing Code: {body}");
 
@@ -119,17 +110,14 @@ public class CodeModule : ModuleBase
         }
         catch (Exception e)
         {
-            return CommonUtils.ReplyMessage(message)
-                .Text(e.Message);
+            return message.Reply(e.Message);
         }
 
         BotLogger.Info($"...with return value: {_execState?.ReturnValue?.ToString() ?? "null"}");
 
-        if (_execState?.ReturnValue is not null)
-            return CommonUtils.ReplyMessage(message)
-                .Text(_execState.ReturnValue?.ToString());
-
-        return null;
+        return _execState?.ReturnValue is not null
+            ? message.Reply(_execState.ReturnValue.ToString()!)
+            : null;
     }
 
     [Command("Reset state",
@@ -140,8 +128,7 @@ public class CodeModule : ModuleBase
     {
         _userState = null;
         if (body == "exec") _execState = null;
-        return CommonUtils.ReplyMessage(message)
-            .Text("成功重置命名空间。");
+        return message.Reply("成功重置命名空间。");
     }
 
     [Command("Variables",
@@ -150,11 +137,9 @@ public class CodeModule : ModuleBase
     public static MessageBuilder Vars(Bot bot, MessageStruct message, string body)
     {
         if (_userState is null)
-            return CommonUtils.ReplyMessage(message)
-                .Text("命名空间尚未初始化，请执行一次代码后重试。");
+            return message.Reply("命名空间尚未初始化，请执行一次代码后重试。");
 
-        var mb = CommonUtils.ReplyMessage(message)
-            .Text($"共 {_userState.Variables.Length} 个变量");
+        var mb = message.Reply($"共 {_userState.Variables.Length} 个变量");
 
         foreach (var variable in _userState.Variables) mb.Text($"\n{variable.Name}: {variable.Type}");
 

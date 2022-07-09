@@ -37,10 +37,15 @@ public static class CommonUtils
         return (args, subFlags.ToArray());
     }
 
-    public static MessageBuilder ReplyMessage(MessageStruct message)
+    public static MessageBuilder Reply(this MessageStruct message)
     {
         return new MessageBuilder()
             .Add(ReplyChain.Create(message));
+    }
+
+    public static MessageBuilder Reply(this MessageStruct message, string text)
+    {
+        return message.Reply().Text(text);
     }
 
     public static double Bytes2MiB(this long bytes, int round)
