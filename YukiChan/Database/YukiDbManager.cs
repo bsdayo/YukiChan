@@ -1,17 +1,33 @@
-﻿using SQLite;
+﻿using System.Reflection;
+using SQLite;
 using YukiChan.Database.Models;
+using YukiChan.Utils;
 
 namespace YukiChan.Database;
 
-public class YukiDbManager
+[YukiDbTable(typeof(YukiUser))]
+[YukiDbTable(typeof(YukiGroup))]
+public partial class YukiDbManager
 {
-    private readonly SQLiteConnection _database;
+    protected readonly SQLiteConnection _database;
 
     public YukiDbManager()
     {
         _database = new SQLiteConnection("Database.db");
-        _database.CreateTable<YukiUser>();
-        _database.CreateTable<YukiGroup>();
+
+        var attrs = GetType().GetCustomAttributes(typeof(YukiDbTableAttribute), false);
+
+        foreach (var attr in attrs)
+        {
+            if (attr is not YukiDbTableAttribute table) continue;
+
+            _database.CreateTable(table.TableType);
+
+            var tableAttr = table.TableType.GetCustomAttribute<TableAttribute>();
+            var tableName = tableAttr is not null ? tableAttr.Name : table.TableType.Name;
+
+            BotLogger.Debug($"通过类 {table.TableType.Name} 创建数据库表 {tableName}");
+        }
     }
 
     public YukiUser? GetUser(uint userUin)
@@ -26,13 +42,22 @@ public class YukiDbManager
             "SELECT * FROM groups WHERE uin = ?", groupUin);
     }
 
-    public void AddUser(YukiUser user)
+    public void AddUser(uint uin, YukiUserAuthority authority = YukiUserAuthority.User)
     {
-        _database.Insert(user);
+        var user = new YukiUser
+        {
+            Uin = uin,
+            Authority = authority
+        };
+        _database.Insert(user, typeof(YukiUser));
     }
 
-    public void AddGroup(YukiGroup group)
+    public void AddGroup(uint groupUin)
     {
+        var group = new YukiGroup
+        {
+            Uin = groupUin
+        };
         _database.Insert(group);
     }
 
@@ -48,5 +73,16 @@ public class YukiDbManager
         user.Authority = YukiUserAuthority.Banned;
         _database.Update(user);
         return true;
+    }
+}
+
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+public class YukiDbTableAttribute : Attribute
+{
+    public Type TableType { get; set; }
+
+    public YukiDbTableAttribute(Type tableType)
+    {
+        TableType = tableType;
     }
 }

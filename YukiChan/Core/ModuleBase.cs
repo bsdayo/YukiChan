@@ -94,11 +94,7 @@ public abstract class ModuleBase
 
             if (user is null)
             {
-                Global.YukiDb.AddUser(new YukiUser
-                {
-                    Uin = message.Sender.Uin,
-                    Authority = YukiUserAuthority.User
-                });
+                Global.YukiDb.AddUser(message.Sender.Uin);
 
                 if (command.CommandInfo.Authority > YukiUserAuthority.User)
                     return new MessageBuilder()

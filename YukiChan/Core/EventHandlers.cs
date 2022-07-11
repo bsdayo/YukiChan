@@ -4,7 +4,6 @@ using Konata.Core.Events;
 using Konata.Core.Events.Model;
 using Konata.Core.Interfaces.Api;
 using Konata.Core.Message.Model;
-using YukiChan.Database.Models;
 using YukiChan.Utils;
 
 namespace YukiChan.Core;
@@ -27,10 +26,7 @@ public static class EventHandlers
     public static async void OnGroupMessage(Bot bot, GroupMessageEvent e)
     {
         if (Global.YukiDb.GetGroup(e.GroupUin) is null)
-            Global.YukiDb.AddGroup(new YukiGroup
-            {
-                Uin = e.GroupUin
-            });
+            Global.YukiDb.AddGroup(e.GroupUin);
 
         if (e.Message.Sender.Uin == bot.Uin) return;
 

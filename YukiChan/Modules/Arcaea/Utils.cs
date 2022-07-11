@@ -19,4 +19,34 @@ public static class ArcaeaUtils
 
         return (rating / 10).ToString();
     }
+
+    /// <summary>
+    ///     转换难度文本 (eg. 9+) 为难度区间 (eg. 97 ~ 99)
+    /// </summary>
+    /// <param name="difficulty">难度文本</param>
+    /// <returns>难度区间</returns>
+    public static (int Start, int End) GetRatingRange(string difficulty)
+    {
+        return difficulty switch
+        {
+            "1" => (10, 19),
+            "2" => (20, 29),
+            "3" => (30, 39),
+            "4" => (40, 49),
+            "5" => (50, 59),
+            "6" => (60, 69),
+            "7" => (70, 79),
+            "8" => (80, 89),
+            "9" => (90, 96),
+            "9+" => (97, 99),
+            "10" => (100, 106),
+            "10+" => (107, 109),
+            "11" => (110, 116),
+            "11+" => (117, 119),
+            "12" => (120, 126),
+            _ => double.TryParse(difficulty, out var rating)
+                ? ((int)(rating * 10), (int)(rating * 10))
+                : (-1, -1)
+        };
+    }
 }

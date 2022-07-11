@@ -69,9 +69,11 @@ public static class CommonUtils
         return metaDict;
     }
 
-    public static string FormatTimestamp(long timestamp)
+    public static string FormatTimestamp(long timestamp, bool inMilliseconds = false)
     {
-        return DateTimeOffset.FromUnixTimeSeconds(timestamp)
+        return (inMilliseconds
+                ? DateTimeOffset.FromUnixTimeMilliseconds(timestamp)
+                : DateTimeOffset.FromUnixTimeSeconds(timestamp))
             .LocalDateTime
             .ToString("yyyy.MM.dd HH:mm:ss");
     }
