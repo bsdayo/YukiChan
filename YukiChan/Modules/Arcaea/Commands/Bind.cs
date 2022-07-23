@@ -37,25 +37,27 @@ public partial class ArcaeaModule
         }
         catch (AuaException e)
         {
-            BotLogger.Error(e);
+            Logger.Error(e);
 
-            return message.Reply(e.Status switch
+            var errMsg = AuaErrorStatus.GetMessage(e.Status, e.Message);
+
+            errMsg = e.Status switch
             {
-                -1 => "用户名或好友码输入错误。",
-                -2 => "好友码输入错误，请检查格式。",
-                -3 => "用户未找到，请检查是否输入有误。\n如果您使用用户名绑定，可以更换为好友码重试。",
-                -4 => "查询到的用户过多，请换用更为精确的名称或好友码绑定。",
-                _ => $"请求用户信息时发生了错误。\n({e.Status}: {e.Message})"
-            });
+                -3 => $"{errMsg}\n如果您使用用户名绑定，可以更换为好友码重试。",
+                -4 => $"{errMsg[..^1]}，请换用更为精确的名称或好友码绑定。",
+                _ => errMsg
+            };
+
+            return message.Reply(errMsg);
         }
         catch (YukiException e)
         {
-            BotLogger.Error(e);
+            Logger.Error(e);
             return message.Reply(e.Message);
         }
         catch (Exception e)
         {
-            BotLogger.Error(e);
+            Logger.Error(e);
             return message.Reply($"发生了奇怪的错误！({e.Message})");
         }
     }

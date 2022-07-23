@@ -1,21 +1,17 @@
-﻿using File = System.IO.File;
-
-namespace YukiChan.Utils;
+﻿namespace YukiChan.Utils;
 
 public static class CacheManager
 {
     private static void LogCacheSave(string path)
     {
-        BotLogger.Info($"保存缓存: {path}");
+        YukiLogger.Info($"保存缓存: {path}");
     }
-    
-    public static async Task<byte[]?> GetBytes(params string[] position)
-    {
-        var filename = string.Join('/', position);
 
+    public static async Task<byte[]?> GetBytes(string path)
+    {
         try
         {
-            return await File.ReadAllBytesAsync($"Cache/{filename}");
+            return await File.ReadAllBytesAsync($"Cache/{path}");
         }
         catch
         {
@@ -37,22 +33,13 @@ public static class CacheManager
         }
     }
 
-    public static async Task<bool> SaveBytes(byte[] data, params string[] position)
+    public static async Task SaveBytes(byte[] data, string path)
     {
-        var filename = string.Join('/', position);
-        var directory = string.Join('/', position[..^1]);
+        var directory = string.Join('/', path.Split("/")[..^1]);
 
-        try
-        {
-            Directory.CreateDirectory($"Cache/{directory}");
-            await File.WriteAllBytesAsync($"Cache/{filename}", data);
-            LogCacheSave(filename);
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
+        Directory.CreateDirectory($"Cache/{directory}");
+        await File.WriteAllBytesAsync($"Cache/{path}", data);
+        LogCacheSave(path);
     }
 
     public static async Task<bool> SaveText(string data, params string[] position)

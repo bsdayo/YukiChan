@@ -26,7 +26,7 @@ public partial class YukiDbManager
             var tableAttr = table.TableType.GetCustomAttribute<TableAttribute>();
             var tableName = tableAttr is not null ? tableAttr.Name : table.TableType.Name;
 
-            BotLogger.Debug($"通过类 {table.TableType.Name} 创建数据库表 {tableName}");
+            YukiLogger.Debug($"通过类 {table.TableType.Name} 创建数据库表 {tableName}");
         }
     }
 

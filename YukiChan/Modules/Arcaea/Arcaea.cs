@@ -1,5 +1,6 @@
 ﻿using ArcaeaUnlimitedAPI.Lib;
 using YukiChan.Core;
+using YukiChan.Utils;
 
 namespace YukiChan.Modules.Arcaea;
 
@@ -15,4 +16,6 @@ public partial class ArcaeaModule : ModuleBase
         UserAgent = Global.YukiConfig.Arcaea.UserAgent,
         Timeout = Global.YukiConfig.Arcaea.Timeout
     }.Initialize();
+
+    private static readonly ModuleLogger Logger = new("Arcaea");
 }

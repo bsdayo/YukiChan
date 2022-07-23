@@ -4,7 +4,7 @@ using YukiChan.Core;
 
 namespace YukiChan.Utils;
 
-public static class BotLogger
+public static class YukiLogger
 {
     private static bool _onLog;
 
@@ -57,7 +57,7 @@ public static class BotLogger
     public static void Error(Exception exception, bool writeToFile = true)
     {
         Console.ForegroundColor = ConsoleColor.Red;
-        Log($"[E] {exception.Message}\n{exception.StackTrace}", writeToFile);
+        Log($"[E] {exception.GetType().Name}: {exception.Message}\n{exception.StackTrace}", writeToFile);
     }
 
     public static void Debug(string message, bool writeToFile = true)
@@ -117,5 +117,46 @@ public static class BotLogger
         Console.ForegroundColor = ConsoleColor.Gray;
         Console.WriteLine(message?.ReplaceLineEndings("\\n"));
         _onLog = false;
+    }
+}
+
+public class ModuleLogger
+{
+    private string ModuleName { get; }
+
+    public ModuleLogger(string moduleName)
+    {
+        ModuleName = moduleName;
+    }
+
+    public void Info(string message, bool writeToFile = true)
+    {
+        YukiLogger.Info($"[{ModuleName}] {message}", writeToFile);
+    }
+
+    public void Success(string message, bool writeToFile = true)
+    {
+        YukiLogger.Success($"[{ModuleName}] {message}", writeToFile);
+    }
+
+    public void Warn(string message, bool writeToFile = true)
+    {
+        YukiLogger.Warn($"[{ModuleName}] {message}", writeToFile);
+    }
+
+    public void Error(string message, bool writeToFile = true)
+    {
+        YukiLogger.Error($"[{ModuleName}] {message}", writeToFile);
+    }
+
+    public void Error(Exception exception, bool writeToFile = true)
+    {
+        YukiLogger.Error($"[{ModuleName}] {exception.GetType().Name}: {exception.Message}\n{exception.StackTrace}",
+            writeToFile);
+    }
+
+    public void Debug(string message, bool writeToFile = true)
+    {
+        YukiLogger.Debug($"[{ModuleName}] {message}", writeToFile);
     }
 }

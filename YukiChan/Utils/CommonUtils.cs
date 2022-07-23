@@ -1,4 +1,6 @@
 ﻿using System.Text.RegularExpressions;
+using Konata.Core;
+using Konata.Core.Interfaces.Api;
 using Konata.Core.Message;
 using Konata.Core.Message.Model;
 
@@ -13,7 +15,7 @@ public static class CommonUtils
             .Where(elem => elem != "")
             .ToArray();
 
-        BotLogger.Debug($"Raw args: {string.Join(", ", args)}");
+        YukiLogger.Debug($"Raw args: {string.Join(", ", args)}");
 
         return args;
     }
@@ -31,8 +33,8 @@ public static class CommonUtils
 
         args = args[..^subFlags.Count];
 
-        BotLogger.Debug($"Result args: {string.Join(", ", args)}");
-        BotLogger.Debug($"Sub flags: {string.Join(", ", subFlags)}");
+        YukiLogger.Debug($"Result args: {string.Join(", ", args)}");
+        YukiLogger.Debug($"Sub flags: {string.Join(", ", subFlags)}");
 
         return (args, subFlags.ToArray());
     }
@@ -46,6 +48,23 @@ public static class CommonUtils
     public static MessageBuilder Reply(this MessageStruct message, string text)
     {
         return message.Reply().Text(text);
+    }
+
+    public static async Task Send(this Bot bot, MessageStruct message, string text)
+    {
+        if (message.Type == MessageStruct.SourceType.Friend)
+            await bot.SendFriendMessage(message.Sender.Uin, text);
+        else if (message.Type == MessageStruct.SourceType.Group)
+            await bot.SendGroupMessage(message.Receiver.Uin, text);
+    }
+
+    public static async Task SendReply(this Bot bot, MessageStruct message, string text)
+    {
+        var mb = message.Reply(text);
+        if (message.Type == MessageStruct.SourceType.Friend)
+            await bot.SendFriendMessage(message.Sender.Uin, mb);
+        else if (message.Type == MessageStruct.SourceType.Group)
+            await bot.SendGroupMessage(message.Receiver.Uin, mb);
     }
 
     public static double Bytes2MiB(this long bytes, int round)

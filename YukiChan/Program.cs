@@ -50,7 +50,7 @@ public static class Program
         }
         catch (Exception e)
         {
-            BotLogger.Error(e);
+            YukiLogger.Error(e);
             Environment.Exit(1);
         }
     }

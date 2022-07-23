@@ -1,21 +1,17 @@
-﻿using File = System.IO.File;
-
-namespace YukiChan.Utils;
+﻿namespace YukiChan.Utils;
 
 public static class AssetsManager
 {
     private static void LogAssetsSave(string path)
     {
-        BotLogger.Info($"保存资源: {path}");
+        YukiLogger.Info($"保存资源: {path}");
     }
-    
-    public static async Task<byte[]?> GetBytes(params string[] position)
-    {
-        var filename = string.Join('/', position);
 
+    public static async Task<byte[]?> GetBytes(string path)
+    {
         try
         {
-            return await File.ReadAllBytesAsync($"Assets/{filename}");
+            return await File.ReadAllBytesAsync($"Assets/{path}");
         }
         catch
         {
@@ -23,13 +19,11 @@ public static class AssetsManager
         }
     }
 
-    public static async Task<string?> GetText(params string[] position)
+    public static async Task<string?> GetText(string path)
     {
-        var filename = string.Join('/', position);
-
         try
         {
-            return await File.ReadAllTextAsync($"Assets/{filename}");
+            return await File.ReadAllTextAsync($"Assets/{path}");
         }
         catch
         {
@@ -37,39 +31,21 @@ public static class AssetsManager
         }
     }
 
-    public static async Task<bool> SaveBytes(byte[] data, params string[] position)
+    public static async Task SaveBytes(byte[] data, string path)
     {
-        var filename = string.Join('/', position);
-        var directory = string.Join('/', position[..^1]);
+        var directory = string.Join('/', path.Split("/")[..^1]);
 
-        try
-        {
-            Directory.CreateDirectory($"Assets/{directory}");
-            await File.WriteAllBytesAsync($"Assets/{filename}", data);
-            LogAssetsSave(filename);
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
+        Directory.CreateDirectory($"Assets/{directory}");
+        await File.WriteAllBytesAsync($"Assets/{path}", data);
+        LogAssetsSave(path);
     }
 
-    public static async Task<bool> SaveText(string data, params string[] position)
+    public static async Task SaveText(string data, string path)
     {
-        var filename = string.Join('/', position);
-        var directory = string.Join('/', position[..^1]);
+        var directory = string.Join('/', path.Split("/")[..^1]);
 
-        try
-        {
-            Directory.CreateDirectory($"Assets/{directory}");
-            await File.WriteAllTextAsync($"Assets/{filename}", data);
-            LogAssetsSave(filename);
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
+        Directory.CreateDirectory($"Assets/{directory}");
+        await File.WriteAllTextAsync($"Assets/{path}", data);
+        LogAssetsSave(path);
     }
 }

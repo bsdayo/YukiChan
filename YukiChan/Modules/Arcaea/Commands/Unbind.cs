@@ -24,12 +24,12 @@ public partial class ArcaeaModule
         }
         catch (YukiException e)
         {
-            BotLogger.Error(e);
+            Logger.Error(e);
             return message.Reply(e.Message);
         }
         catch (Exception e)
         {
-            BotLogger.Error(e);
+            Logger.Error(e);
             return message.Reply($"发生了奇怪的错误！({e.Message})");
         }
     }

@@ -13,6 +13,8 @@ namespace YukiChan.Modules;
     Version = "1.0.0")]
 public class BilibiliModule : ModuleBase
 {
+    private static readonly ModuleLogger Logger = new("Bilibili");
+
     [Command("Fetch Info From AV Code",
         Command = "av",
         StartsWith = "av",
@@ -29,12 +31,12 @@ public class BilibiliModule : ModuleBase
         }
         catch (BiliException exception)
         {
-            BotLogger.Error(exception);
+            Logger.Error(exception);
             return MessageBuilder.Eval("视频解析失败: " + exception.Message);
         }
         catch (Exception exception)
         {
-            BotLogger.Error(exception);
+            Logger.Error(exception);
             return MessageBuilder.Eval("发生了奇怪的错误... " + exception.Message);
         }
     }
@@ -53,12 +55,12 @@ public class BilibiliModule : ModuleBase
         }
         catch (BiliException exception)
         {
-            BotLogger.Error(exception);
+            Logger.Error(exception);
             return MessageBuilder.Eval("视频解析失败: " + exception.Message);
         }
         catch (Exception exception)
         {
-            BotLogger.Error(exception);
+            Logger.Error(exception);
             return MessageBuilder.Eval("发生了奇怪的错误... " + exception.Message);
         }
     }

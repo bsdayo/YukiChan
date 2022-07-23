@@ -39,7 +39,7 @@ public class GitHubModule : ModuleBase
         }
         catch (Exception exception)
         {
-            BotLogger.Error(exception);
+            YukiLogger.Error(exception);
             return MessageBuilder.Eval("Error occurred: " + exception.Message);
         }
     }

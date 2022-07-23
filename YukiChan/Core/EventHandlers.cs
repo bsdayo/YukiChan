@@ -14,13 +14,13 @@ public static class EventHandlers
     {
         var friendCount = (await bot.GetFriendList(true)).Count;
         var groupCount = (await bot.GetGroupList(true)).Count;
-        BotLogger.Success($"当前共有 {friendCount} 个好友，{groupCount} 个群聊。");
-        BotLogger.Success($"登录成功，{bot.Name} ({bot.Uin})。");
+        YukiLogger.Success($"当前共有 {friendCount} 个好友，{groupCount} 个群聊。");
+        YukiLogger.Success($"登录成功，{bot.Name} ({bot.Uin})。");
     }
 
     public static void OnBotOffline(Bot bot, BotOfflineEvent e)
     {
-        BotLogger.Warn("Bot 已离线，正在尝试重连...");
+        YukiLogger.Warn("Bot 已离线，正在尝试重连...");
     }
 
     public static async void OnGroupMessage(Bot bot, GroupMessageEvent e)
@@ -32,7 +32,7 @@ public static class EventHandlers
 
         Global.Information.MessageReceived++;
 
-        BotLogger.ReceiveMessage(e);
+        YukiLogger.ReceiveMessage(e);
 
         var textChain = e.Chain.GetChain<TextChain>();
         if (textChain is null) return;
@@ -42,12 +42,12 @@ public static class EventHandlers
             var msgBuilder = ModuleManager.ParseCommand(bot, e.Message);
             if (msgBuilder is null) return;
             Global.Information.MessageSent++;
-            BotLogger.SendMessage(e, msgBuilder.Build().ToString());
+            YukiLogger.SendMessage(e, msgBuilder.Build().ToString());
             await bot.SendGroupMessage(e.GroupUin, msgBuilder);
         }
         catch (Exception exception)
         {
-            BotLogger.Error(exception);
+            YukiLogger.Error(exception);
         }
     }
 
@@ -57,7 +57,7 @@ public static class EventHandlers
 
         Global.Information.MessageReceived++;
 
-        BotLogger.ReceiveMessage(e);
+        YukiLogger.ReceiveMessage(e);
 
         var textChain = e.Chain.GetChain<TextChain>();
         if (textChain is null) return;
@@ -67,12 +67,12 @@ public static class EventHandlers
             var msgBuilder = ModuleManager.ParseCommand(bot, e.Message);
             if (msgBuilder is null) return;
             Global.Information.MessageSent++;
-            BotLogger.SendMessage(e, msgBuilder.Build().ToString());
+            YukiLogger.SendMessage(e, msgBuilder.Build().ToString());
             await bot.SendFriendMessage(e.FriendUin, msgBuilder);
         }
         catch (Exception exception)
         {
-            BotLogger.Error(exception);
+            YukiLogger.Error(exception);
         }
     }
 
@@ -87,11 +87,11 @@ public static class EventHandlers
         switch (e.Level)
         {
             case LogLevel.Warning:
-                BotLogger.Warn("[Konata] " + e.EventMessage);
+                YukiLogger.Warn("[Konata] " + e.EventMessage);
                 break;
             case LogLevel.Exception:
             case LogLevel.Fatal:
-                BotLogger.Error("[Konata] " + e.EventMessage);
+                YukiLogger.Error("[Konata] " + e.EventMessage);
                 break;
         }
 

@@ -55,6 +55,8 @@ public class CodeModule : ModuleBase
         "typeof"
     };
 
+    private static readonly ModuleLogger Logger = new("Code");
+
     [Command("Run Code",
         Command = "run",
         Description = "运行 C# 代码")]
@@ -69,7 +71,7 @@ public class CodeModule : ModuleBase
         if (BannedStatements.Any(body.Contains))
             return message.Reply("不可以使用这些语句哦~");
 
-        BotLogger.Info($"Running Code: {body}");
+        Logger.Info($"Running Code: {body}");
 
         try
         {
@@ -82,7 +84,7 @@ public class CodeModule : ModuleBase
             return message.Reply(e.Message);
         }
 
-        BotLogger.Info(
+        Logger.Info(
             $"...with return value: {_userState?.ReturnValue?.ToString()?.ReplaceLineEndings("\\n") ?? "null"}");
 
         return _userState?.ReturnValue is not null
@@ -100,7 +102,7 @@ public class CodeModule : ModuleBase
         if (string.IsNullOrWhiteSpace(body))
             return message.Reply("请输入需要运行的代码哦~");
 
-        BotLogger.Info($"Executing Code: {body}");
+        Logger.Info($"Executing Code: {body}");
 
         try
         {
@@ -113,7 +115,7 @@ public class CodeModule : ModuleBase
             return message.Reply(e.Message);
         }
 
-        BotLogger.Info($"...with return value: {_execState?.ReturnValue?.ToString() ?? "null"}");
+        Logger.Info($"...with return value: {_execState?.ReturnValue?.ToString() ?? "null"}");
 
         return _execState?.ReturnValue is not null
             ? message.Reply(_execState.ReturnValue.ToString()!)

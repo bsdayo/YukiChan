@@ -36,7 +36,7 @@ public abstract class ModuleBase
 
         foreach (var method in methods)
         {
-            BotLogger.Debug($"  检查方法 {method.Name}");
+            YukiLogger.Debug($"  检查方法 {method.Name}");
 
             if (method.ReturnType == typeof(void)) continue;
 
@@ -44,7 +44,7 @@ public abstract class ModuleBase
 
             foreach (var attr in attrs)
             {
-                BotLogger.Debug($"    检查特性 {attr.GetType()}");
+                YukiLogger.Debug($"    检查特性 {attr.GetType()}");
 
                 if (attr.GetType() != typeof(CommandAttribute)) continue;
                 if (attr is not CommandAttribute command) continue;
@@ -53,7 +53,7 @@ public abstract class ModuleBase
 
                 CommandBase commandBase = new(ModuleInfo.Command, command, method);
                 Commands.Add(commandBase);
-                BotLogger.Debug($"      加载指令 {t}.{method.Name} => {command.Name}");
+                YukiLogger.Debug($"      加载指令 {t}.{method.Name} => {command.Name}");
             }
         }
 
@@ -126,7 +126,7 @@ public abstract class ModuleBase
             {
                 try
                 {
-                    BotLogger.Debug($"Invoking command {command.CommandInfo.Name} with body \"{body}\".");
+                    YukiLogger.Debug($"Invoking command {command.CommandInfo.Name} with body \"{body}\".");
                     var result = command.InnerMethod.Invoke(this,
                         new object?[] { bot, message, body }[..command.InnerMethod.GetParameters().Length]);
 
@@ -134,7 +134,7 @@ public abstract class ModuleBase
                 }
                 catch (Exception exception)
                 {
-                    BotLogger.Error(exception);
+                    YukiLogger.Error(exception);
                     return null;
                 }
             }).Result;

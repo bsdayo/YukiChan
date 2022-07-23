@@ -13,7 +13,7 @@ public partial class ArcaeaModule
     [Command("Random",
         Command = "random",
         Shortcut = "随机曲目",
-        Description = "随即推荐曲目",
+        Description = "随机推荐曲目",
         Usage = "a random [最低定数] [最高定数]",
         Example = "a random 9.2 10+")]
     public static async Task<MessageBuilder> Random(Bot bot, MessageStruct message, string body)
@@ -65,12 +65,12 @@ public partial class ArcaeaModule
         }
         catch (YukiException e)
         {
-            BotLogger.Error(e);
+            Logger.Error(e);
             return message.Reply(e.Message);
         }
         catch (Exception e)
         {
-            BotLogger.Error(e);
+            Logger.Error(e);
             return message.Reply($"发生了奇怪的错误！({e.Message})");
         }
     }
@@ -82,34 +82,8 @@ public partial class ArcaeaModule
 
         var chart = allCharts[new Random().Next(allCharts.Length)];
 
-        byte[]? songCover;
-
-        if (chart.JacketOverride)
-        {
-            songCover = await CacheManager.GetBytes(
-                "Arcaea", "Song",
-                $"{chart.SongId}-{((ArcaeaDifficulty)chart.RatingClass).ToString().ToLower()}.jpg");
-
-            if (songCover is null)
-            {
-                songCover = await AuaClient.Assets.Song(chart.SongId, AuaSongQueryType.SongId,
-                    (ArcaeaDifficulty)chart.RatingClass);
-
-                await CacheManager.SaveBytes(songCover,
-                    "Arcaea", "Song",
-                    $"{chart.SongId}-{((ArcaeaDifficulty)chart.RatingClass).ToString().ToLower()}.jpg");
-            }
-        }
-        else
-        {
-            songCover = await CacheManager.GetBytes("Arcaea", "Song", $"{chart.SongId}.jpg");
-            if (songCover is null)
-            {
-                songCover = await AuaClient.Assets.Song(chart.SongId, AuaSongQueryType.SongId);
-                await CacheManager.SaveBytes(songCover, "Arcaea", "Song", $"{chart.SongId}.jpg");
-            }
-        }
-
+        var songCover = await AuaClient.GetSongCover(
+            chart.SongId, chart.JacketOverride, (ArcaeaDifficulty)chart.RatingClass);
 
         return message.Reply()
             .Text("随机推荐曲目：\n")
