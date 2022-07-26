@@ -7,7 +7,7 @@ namespace YukiChan.Modules.Arcaea.Images;
 
 internal static partial class ArcaeaImageGenerator
 {
-    internal static async Task<byte[]> Best30(ArcaeaBest30 best30, AuaClient client)
+    internal static async Task<byte[]> Best30(ArcaeaBest30 best30, AuaClient client, bool dark)
     {
         return await Task.Run(() =>
         {
@@ -17,10 +17,10 @@ internal static partial class ArcaeaImageGenerator
 
             {
                 using var background = SKBitmap.Decode(
-                    "Assets/Arcaea/Images/Best30Background-Light.jpg");
+                    $"Assets/Arcaea/Images/Best30Background-{(dark ? "Dark" : "Light")}.jpg");
 
                 if (background is null)
-                    YukiLogger.Warn("资源文件缺失: Assets/Arcaea/Images/Best30Background-Light.jpg");
+                    YukiLogger.Warn($"资源文件缺失: Assets/Arcaea/Images/Best30Background-{(dark ? "Dark" : "Light")}.jpg");
 
                 using var scaledBackground = new SKBitmap(
                     3400, background!.Height * (3400 / background.Width));
@@ -33,7 +33,7 @@ internal static partial class ArcaeaImageGenerator
                 // 名称 / ptt
                 using var paint = new SKPaint
                 {
-                    Color = SKColors.Black,
+                    Color = dark ? SKColors.White : SKColors.Black,
                     TextSize = 128,
                     IsAntialias = true,
                     Typeface = FontBold
@@ -46,7 +46,7 @@ internal static partial class ArcaeaImageGenerator
                 // 账号信息
                 using var paint = new SKPaint
                 {
-                    Color = SKColors.Black,
+                    Color = dark ? SKColors.White : SKColors.Black,
                     TextSize = 62,
                     IsAntialias = true,
                     Typeface = FontBold
@@ -73,7 +73,7 @@ internal static partial class ArcaeaImageGenerator
                 // Player Best30
                 using var paint = new SKPaint
                 {
-                    Color = SKColors.Black,
+                    Color = dark ? SKColors.White : SKColors.Black,
                     TextSize = 130,
                     IsAntialias = true,
                     Typeface = FontBold
@@ -85,7 +85,9 @@ internal static partial class ArcaeaImageGenerator
                 // 分割线
                 using var linePaint = new SKPaint
                 {
-                    Color = new SKColor(0, 0, 0, 128)
+                    Color = dark
+                        ? new SKColor(255, 255, 255, 128)
+                        : new SKColor(0, 0, 0, 128)
                 };
                 canvas.DrawRect(120, 500, 3160, 10, linePaint);
                 canvas.DrawRect(120, 4698, 3160, 10, linePaint);
@@ -95,7 +97,7 @@ internal static partial class ArcaeaImageGenerator
                 // 时间
                 using var paint = new SKPaint
                 {
-                    Color = SKColors.Black,
+                    Color = dark ? SKColors.White : SKColors.Black,
                     IsAntialias = true,
                     TextSize = 80,
                     Typeface = FontRegular
@@ -121,7 +123,7 @@ internal static partial class ArcaeaImageGenerator
                     .Result;
 
                 canvas.DrawMiniScoreCard(
-                    100 + col * 1100, 635 + row * 400, record, songCover, index + 1);
+                    100 + col * 1100, 635 + row * 400, record, songCover, index + 1, dark);
             }
 
             // Overflow
@@ -141,7 +143,7 @@ internal static partial class ArcaeaImageGenerator
                         .Result;
 
                     canvas.DrawMiniScoreCard(
-                        100 + col * 1100, 4840 + row * 400, record, songCover, index + 31);
+                        100 + col * 1100, 4840 + row * 400, record, songCover, index + 31, dark);
                 }
 
             var data = surface
@@ -154,7 +156,7 @@ internal static partial class ArcaeaImageGenerator
     }
 
     internal static void DrawMiniScoreCard(this SKCanvas canvas, int x, int y,
-        ArcaeaRecord record, byte[] songCover, int rank = 0)
+        ArcaeaRecord record, byte[] songCover, int rank = 0, bool dark = false)
     {
         var (colorLight, colorDark) = DifficultyColors[(int)record.Difficulty];
 
@@ -162,7 +164,9 @@ internal static partial class ArcaeaImageGenerator
             // 背景
             using var backgroundPaint = new SKPaint
             {
-                Color = new SKColor(255, 255, 255, 200),
+                Color = dark
+                    ? new SKColor(40, 40, 40, 200)
+                    : new SKColor(255, 255, 255, 200),
                 IsAntialias = true,
                 ImageFilter = SKImageFilter.CreateDropShadow(
                     0, 0, 35, 35, new SKColor(0, 0, 0, 50))
@@ -192,14 +196,14 @@ internal static partial class ArcaeaImageGenerator
             textPaint.Color = SKColor.Parse(rank switch
             {
                 3 => "#ffffff",
-                _ => "#333333"
+                _ => dark ? "#ffffff" : "#333333"
             });
             rectPaint.Color = SKColor.Parse(rank switch
             {
                 1 => "#ffcc00",
                 2 => "#c0c0c0",
                 3 => "#a57c50",
-                _ => "#dddddd"
+                _ => dark ? "#333333" : "#dddddd"
             });
 
             canvas.DrawRoundRect(x + 320, y + 15, 665, 60, 10, 10, rectPaint);
@@ -235,7 +239,7 @@ internal static partial class ArcaeaImageGenerator
             };
             using var textPaint = new SKPaint
             {
-                Color = SKColor.Parse("#ffffff"),
+                Color = SKColors.White,
                 TextSize = 45,
                 IsAntialias = true,
                 Typeface = FontBold
@@ -248,7 +252,7 @@ internal static partial class ArcaeaImageGenerator
             // 曲名
             using var textPaint = new SKPaint
             {
-                Color = SKColor.Parse("#333333"),
+                Color = dark ? SKColors.White : SKColor.Parse("#333333"),
                 TextSize = 60,
                 IsAntialias = true,
                 Typeface = FontBold
@@ -277,7 +281,7 @@ internal static partial class ArcaeaImageGenerator
 
             using var textPaint = new SKPaint
             {
-                Color = SKColor.Parse("#333333"),
+                Color = dark ? SKColors.White : SKColor.Parse("#333333"),
                 TextSize = 97,
                 IsAntialias = true,
                 Typeface = FontRegular
@@ -289,7 +293,7 @@ internal static partial class ArcaeaImageGenerator
             // Pure/Far/Lost 信息
             using var textPaint = new SKPaint
             {
-                Color = SKColor.Parse("#333333"),
+                Color = dark ? SKColors.White : SKColor.Parse("#333333"),
                 TextSize = 40,
                 IsAntialias = true,
                 Typeface = FontRegular

@@ -19,7 +19,7 @@ public partial class ArcaeaModule
         Example = "a b30 ToasterKoishi")]
     public static async Task<MessageBuilder> Best30(Bot bot, MessageStruct message, string body)
     {
-        var allSubFlags = new[] { "official" };
+        var allSubFlags = new[] { "official", "dark" };
         var (args, subFlags) = CommonUtils.ParseCommandBody(body, allSubFlags);
 
         try
@@ -54,7 +54,7 @@ public partial class ArcaeaModule
 
             Logger.Info($"正在为 {best30.Name}({best30.Id}) 生成 Best30 图片...");
 
-            var image = await ArcaeaImageGenerator.Best30(best30, AuaClient);
+            var image = await ArcaeaImageGenerator.Best30(best30, AuaClient, subFlags.Contains("dark"));
 
             return new MessageBuilder().Image(image);
         }
