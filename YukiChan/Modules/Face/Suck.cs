@@ -12,7 +12,7 @@ public partial class FaceModule
         Description = "吸~",
         Usage = "吸 <@目标>",
         Example = "吸 @bs睡醒了吗")]
-    public static async Task<MessageBuilder> Suck(Bot bot, MessageStruct message, string body)
+    public static async Task<MessageBuilder?> Suck(Bot bot, MessageStruct message, string body)
     {
         return await GetFromFancyPig(message, body,
             "https://api.iculture.cc/api/face_suck/?QQ=", "吸");

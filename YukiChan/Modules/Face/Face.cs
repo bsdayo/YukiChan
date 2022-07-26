@@ -13,15 +13,21 @@ public partial class FaceModule : ModuleBase
 {
     private static readonly ModuleLogger Logger = new("Face");
 
-    private static async Task<MessageBuilder> GetFromFancyPig(MessageStruct message, string body, string apiUrl,
+    private static async Task<MessageBuilder?> GetFromFancyPig(MessageStruct message, string body, string apiUrl,
         string prefix)
     {
         var atChain = message.Chain.GetChain<AtChain>();
         var targetUin = body.Replace(prefix, "").Trim();
 
-        if (atChain is null && string.IsNullOrWhiteSpace(targetUin))
-            return message.Reply("请指定目标哦~");
-
+        if (atChain is null)
+        {
+            if (!uint.TryParse(targetUin, out _))
+                return null;
+            
+            if (string.IsNullOrWhiteSpace(targetUin))
+                return message.Reply("请指定目标哦~");
+        }
+        
         try
         {
             var image = await NetUtils.DownloadBytes(

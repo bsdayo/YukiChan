@@ -12,7 +12,7 @@ public partial class FaceModule
         Description = "顶~",
         Usage = "顶 <@目标>",
         Example = "顶 @霜霜今天睡多久")]
-    public static async Task<MessageBuilder> Head(Bot bot, MessageStruct message, string body)
+    public static async Task<MessageBuilder?> Head(Bot bot, MessageStruct message, string body)
     {
         return await GetFromFancyPig(message, body,
             "https://api.iculture.cc/api/face_play/?QQ=", "顶");
