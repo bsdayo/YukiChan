@@ -32,7 +32,7 @@ public partial class ArcaeaModule
 
             return message.Reply()
                 .Text("绑定成功！\n")
-                .Text($"{userInfo.AccountInfo.Name} ({(rating >= 0 ? rating : "--")})\n")
+                .Text($"{userInfo.AccountInfo.Name} ({(rating >= 0 ? rating : "?")})\n")
                 .Text($"注册时间: {CommonUtils.FormatTimestamp(userInfo.AccountInfo.JoinDate, true)}");
         }
         catch (AuaException e)

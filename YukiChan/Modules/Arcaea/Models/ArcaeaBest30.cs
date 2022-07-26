@@ -28,7 +28,9 @@ public class ArcaeaBest30
         {
             Name = content.AccountInfo.Name,
             Id = content.AccountInfo.Code,
-            Potential = ((double)content.AccountInfo.Rating / 100).ToString("0.00"),
+            Potential = content.AccountInfo.Rating >= 0
+                ? ((double)content.AccountInfo.Rating / 100).ToString("0.00")
+                : "?",
 
             Recent10Avg = content.Recent10Avg,
             Best30Avg = content.Best30Avg,

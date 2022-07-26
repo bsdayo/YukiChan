@@ -65,45 +65,66 @@ public static class ArcaeaUtils
     public static async Task<byte[]> GetSongCover(this AuaClient client,
         string songId, bool jacketOverride = false, ArcaeaDifficulty difficulty = ArcaeaDifficulty.Future)
     {
-        byte[]? songCover;
+        byte[] songCover;
 
         try
         {
             if (jacketOverride)
             {
-                songCover = await CacheManager.GetBytes(
-                    $"Arcaea/Song/{songId}-{difficulty.ToString().ToLower()}.jpg");
+                try
+                {
+                    return await File.ReadAllBytesAsync(
+                        $"Cache/Arcaea/Song/{songId}-{difficulty.ToString().ToLower()}.jpg");
+                }
+                catch
+                {
+                    songCover = await client.Assets.Song(songId, AuaSongQueryType.SongId, difficulty);
 
-                if (songCover is not null) return songCover;
-
-                songCover = await client.Assets.Song(songId, AuaSongQueryType.SongId, difficulty);
-
-                await CacheManager.SaveBytes(songCover,
-                    $"Arcaea/Song/{songId}-{difficulty.ToString().ToLower()}.jpg");
+                    await File.WriteAllBytesAsync(
+                        $"Arcaea/Song/{songId}-{difficulty.ToString().ToLower()}.jpg",
+                        songCover);
+                }
             }
             else
             {
-                songCover = await CacheManager.GetBytes($"Arcaea/Song/{songId}.jpg");
-
-                if (songCover is not null) return songCover;
-
-                songCover = await client.Assets.Song(songId, AuaSongQueryType.SongId);
-                await CacheManager.SaveBytes(songCover, $"Arcaea/Song/{songId}.jpg");
+                try
+                {
+                    return await File.ReadAllBytesAsync($"Cache/Arcaea/Song/{songId}.jpg");
+                }
+                catch
+                {
+                    songCover = await client.Assets.Song(songId, AuaSongQueryType.SongId);
+                    await File.WriteAllBytesAsync($"Arcaea/Song/{songId}.jpg", songCover);
+                }
             }
         }
         catch
         {
-            songCover = await AssetsManager.GetBytes("Arcaea/Images/SongCoverPlaceholder.jpg");
+            songCover = await File.ReadAllBytesAsync("Assets/Arcaea/Images/SongCoverPlaceholder.jpg");
         }
 
-        return songCover!;
+        return songCover;
     }
 
     public static string FormatScore(this int score)
     {
         return score
             .ToString("N0")
-            .PadLeft(8, '0')
+            .PadLeft(10, '0')
             .Replace(',', '\'');
+    }
+
+    public static string ReplaceNotSupportedChar(string text)
+    {
+        return text
+            .Replace('：', ':')
+            .Replace('α', 'a')
+            .Replace('β', 'b')
+            .Replace('έ', 'e')
+            .Replace('ό', 'o')
+            .Replace('γ', 'g')
+            .Replace('Ä', 'A')
+            .Replace('ö', 'o')
+            .Replace('δ', 'd');
     }
 }

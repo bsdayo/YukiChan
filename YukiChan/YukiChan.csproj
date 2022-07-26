@@ -16,16 +16,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="../Konata.Core/Konata.Core/Konata.Core.csproj"/>
+        <ProjectReference Include="../Konata.Core/Konata.Core/Konata.Core.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="ArcaeaUnlimitedAPI.Lib" Version="1.0.1"/>
-        <PackageReference Include="BiliSharp" Version="0.0.2"/>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.2.0"/>
-        <PackageReference Include="SkiaSharp" Version="2.88.0"/>
-        <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.0"/>
-        <PackageReference Include="sqlite-net-pcl" Version="1.8.116"/>
+        <PackageReference Include="ArcaeaUnlimitedAPI.Lib" Version="1.0.1" />
+        <PackageReference Include="BiliSharp" Version="0.0.2" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.2.0" />
+        <PackageReference Include="SkiaSharp" Version="2.88.0" />
+        <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.0" />
+        <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
     </ItemGroup>
 
     <Target Name="GetBuildStamp" BeforeTargets="GenerateBuildStamp" Condition="'$(BuildHash)' == ''">
@@ -34,13 +34,13 @@
         </PropertyGroup>
 
         <!-- Git Branch -->
-        <Exec Command="git -C $(ProjectDir) rev-parse --abbrev-ref HEAD &gt; $(BuildStampFile)"/>
+        <Exec Command="git -C $(ProjectDir) rev-parse --abbrev-ref HEAD &gt; $(BuildStampFile)" />
 
         <!-- Git Commit Hash -->
-        <Exec Command="git -C $(ProjectDir) rev-parse HEAD &gt;&gt; $(BuildStampFile)"/>
+        <Exec Command="git -C $(ProjectDir) rev-parse HEAD &gt;&gt; $(BuildStampFile)" />
 
         <ReadLinesFromFile File="$(BuildStampFile)">
-            <Output TaskParameter="Lines" ItemName="Stamp"/>
+            <Output TaskParameter="Lines" ItemName="Stamp" />
         </ReadLinesFromFile>
 
         <PropertyGroup>
@@ -55,7 +55,7 @@
         </PropertyGroup>
 
         <ItemGroup>
-            <Compile Include="$(CustomAssemblyInfoFile)"/>
+            <Compile Include="$(CustomAssemblyInfoFile)" />
         </ItemGroup>
 
         <ItemGroup>
@@ -65,6 +65,6 @@
             </AssemblyAttributes>
         </ItemGroup>
 
-        <WriteCodeFragment Language="C#" OutputFile="$(CustomAssemblyInfoFile)" AssemblyAttributes="@(AssemblyAttributes)"/>
+        <WriteCodeFragment Language="C#" OutputFile="$(CustomAssemblyInfoFile)" AssemblyAttributes="@(AssemblyAttributes)" />
     </Target>
 </Project>

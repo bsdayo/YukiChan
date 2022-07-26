@@ -33,8 +33,8 @@ public partial class ArcaeaModule
             {
                 var user = Global.YukiDb.GetArcaeaUser(message.Sender.Uin);
                 if (user is null)
-                    return message.Reply("请先使用 #a bind <名称/好友码> 绑定您的账号哦\n")
-                        .Text("您也可以使用 #a b30 [名称/好友码] 直接进行查询");
+                    return message.Reply("请先使用 #a bind <名称/好友码> 绑定您的账号哦~\n")
+                        .Text("您也可以使用 #a b30 <名称/好友码> 直接进行查询。");
 
                 await bot.SendReply(message, $"正在查询 {user.Name} 的 Best30 成绩，请耐心等候...");
                 Logger.Info(
