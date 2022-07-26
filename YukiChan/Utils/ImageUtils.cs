@@ -8,10 +8,10 @@ public static class ImageUtils
         float x, float y, SKPaint paint, float widthLimit)
     {
         var originalWidth = paint.MeasureText(text);
-        
+
         if (originalWidth > widthLimit)
             paint.TextScaleX = widthLimit / originalWidth;
-        
+
         canvas.DrawText(text, x, y, paint);
     }
 }

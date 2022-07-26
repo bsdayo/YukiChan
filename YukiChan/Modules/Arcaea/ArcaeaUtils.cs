@@ -1,6 +1,5 @@
 ﻿using ArcaeaUnlimitedAPI.Lib;
 using ArcaeaUnlimitedAPI.Lib.Models;
-using YukiChan.Utils;
 
 namespace YukiChan.Modules.Arcaea;
 
@@ -70,7 +69,6 @@ public static class ArcaeaUtils
         try
         {
             if (jacketOverride)
-            {
                 try
                 {
                     return await File.ReadAllBytesAsync(
@@ -84,9 +82,7 @@ public static class ArcaeaUtils
                         $"Arcaea/Song/{songId}-{difficulty.ToString().ToLower()}.jpg",
                         songCover);
                 }
-            }
             else
-            {
                 try
                 {
                     return await File.ReadAllBytesAsync($"Cache/Arcaea/Song/{songId}.jpg");
@@ -96,7 +92,6 @@ public static class ArcaeaUtils
                     songCover = await client.Assets.Song(songId, AuaSongQueryType.SongId);
                     await File.WriteAllBytesAsync($"Arcaea/Song/{songId}.jpg", songCover);
                 }
-            }
         }
         catch
         {

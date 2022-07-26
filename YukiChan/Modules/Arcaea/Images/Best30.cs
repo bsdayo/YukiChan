@@ -18,10 +18,14 @@ internal static partial class ArcaeaImageGenerator
             {
                 using var background = SKBitmap.Decode(
                     "Assets/Arcaea/Images/Best30Background-Light.jpg");
+
+                if (background is null)
+                    YukiLogger.Warn("资源文件缺失: Assets/Arcaea/Images/Best30Background-Light.jpg");
+
                 using var scaledBackground = new SKBitmap(
-                    3400, background.Height * (3400 / background.Width));
+                    3400, background!.Height * (3400 / background.Width));
                 background.ScalePixels(scaledBackground, SKFilterQuality.Medium);
-                
+
                 canvas.DrawBitmap(scaledBackground, 0, 0);
             }
 
@@ -61,7 +65,7 @@ internal static partial class ArcaeaImageGenerator
                 canvas.DrawText(
                     $"B30Avg / {best30.Best30Avg:0.0000}   " +
                     $"R10Avg / {best30.Recent10Avg:0.0000}   " +
-                    $"MaxPtt / {((best10Total + 30 * best30.Best30Avg) / 40):0.0000}",
+                    $"MaxPtt / {(best10Total + 30 * best30.Best30Avg) / 40:0.0000}",
                     295, 365, paint);
             }
 
@@ -214,7 +218,7 @@ internal static partial class ArcaeaImageGenerator
                 Color = SKColor.Parse("#ffffff"),
                 TextSize = 45,
                 IsAntialias = true,
-                Typeface = FontRegular,
+                Typeface = FontRegular
             };
 
             canvas.DrawRoundRect(x + 320, y + 15, rank != 0 ? 560 : 665, 60, 10, 10, rectPaint);

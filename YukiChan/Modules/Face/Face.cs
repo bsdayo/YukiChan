@@ -23,11 +23,11 @@ public partial class FaceModule : ModuleBase
         {
             if (!uint.TryParse(targetUin, out _))
                 return null;
-            
+
             if (string.IsNullOrWhiteSpace(targetUin))
                 return message.Reply("请指定目标哦~");
         }
-        
+
         try
         {
             var image = await NetUtils.DownloadBytes(
