@@ -23,7 +23,7 @@ public static class Program
                 // Configs - Yuki and Konata's configs
                 "Configs",
                 // Assets - Module assets
-                "Assets/Cats",
+                "Assets/Cats", "Assets/Capoo",
                 "Assets/Arcaea/AudioPreview", "Assets/Arcaea/Aff",
                 // Cache - Download cache
                 "Cache/Arcaea/Song", "Cache/Arcaea/Preview"
