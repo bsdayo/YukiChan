@@ -57,6 +57,10 @@ public abstract class ModuleBase
             }
         }
 
+        Commands.Sort((commandA, commandB) =>
+            string.Compare(commandA.CommandInfo.Command, commandB.CommandInfo.Command,
+                StringComparison.CurrentCulture));
+
         return CommandCount;
     }
 
@@ -143,9 +147,13 @@ public abstract class ModuleBase
         return null;
     }
 
-    public MessageBuilder GetHelp()
+    [Command("Help",
+        Command = "help",
+        Description = "获取模块帮助信息",
+        Hidden = true)]
+    public MessageBuilder GetHelp(bool addHeader = true)
     {
-        var helpStr = "[帮助 - 模块]\n";
+        var helpStr = addHeader ? "[帮助 - 模块]\n" : "";
         helpStr += $"{ModuleInfo.Name} {ModuleInfo.Version ?? "1.0.0"}\n";
         helpStr += $"{ModuleInfo.Description}";
 
@@ -164,12 +172,15 @@ public abstract class ModuleBase
 
             if (!isSubcommandTitleAdded)
             {
-                helpStr += "\n\nSubcommands:";
+                helpStr += "\n\nSubcommands:\n";
                 isSubcommandTitleAdded = true;
             }
 
-            helpStr += $"\n{command.CommandInfo.Command} {command.CommandInfo.Description}";
+            helpStr += $"{command.CommandInfo.Command} {command.CommandInfo.Description}\n";
         }
+
+        if (isSubcommandTitleAdded)
+            helpStr += $"\n请输入 {Global.YukiConfig.CommandPrefix}help {ModuleInfo.Command} <子指令名> 查看详细信息。";
 
         return MessageBuilder.Eval(helpStr);
     }

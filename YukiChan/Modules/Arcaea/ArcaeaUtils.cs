@@ -1,5 +1,6 @@
 ﻿using ArcaeaUnlimitedAPI.Lib;
 using ArcaeaUnlimitedAPI.Lib.Models;
+using YukiChan.Utils;
 
 namespace YukiChan.Modules.Arcaea;
 
@@ -69,29 +70,34 @@ public static class ArcaeaUtils
         try
         {
             if (jacketOverride)
+            {
+                var path = $"Cache/Arcaea/Song/{songId}-{difficulty.ToString().ToLower()}.jpg";
                 try
                 {
-                    return await File.ReadAllBytesAsync(
-                        $"Cache/Arcaea/Song/{songId}-{difficulty.ToString().ToLower()}.jpg");
+                    return await File.ReadAllBytesAsync(path);
                 }
                 catch
                 {
                     songCover = await client.Assets.Song(songId, AuaSongQueryType.SongId, difficulty);
 
-                    await File.WriteAllBytesAsync(
-                        $"Arcaea/Song/{songId}-{difficulty.ToString().ToLower()}.jpg",
-                        songCover);
+                    await File.WriteAllBytesAsync(path, songCover);
+                    YukiLogger.SaveCache(path);
                 }
+            }
             else
+            {
+                var path = $"Cache/Arcaea/Song/{songId}.jpg";
                 try
                 {
-                    return await File.ReadAllBytesAsync($"Cache/Arcaea/Song/{songId}.jpg");
+                    return await File.ReadAllBytesAsync(path);
                 }
                 catch
                 {
                     songCover = await client.Assets.Song(songId, AuaSongQueryType.SongId);
-                    await File.WriteAllBytesAsync($"Arcaea/Song/{songId}.jpg", songCover);
+                    await File.WriteAllBytesAsync(path, songCover);
+                    YukiLogger.SaveCache(path);
                 }
+            }
         }
         catch
         {
@@ -109,6 +115,31 @@ public static class ArcaeaUtils
             .Replace(',', '\'');
     }
 
+    public static ArcaeaDifficulty? GetRatingClass(string difficultyText)
+    {
+        return difficultyText.ToLower() switch
+        {
+            "0" => ArcaeaDifficulty.Past,
+            "pst" => ArcaeaDifficulty.Past,
+            "past" => ArcaeaDifficulty.Past,
+
+            "1" => ArcaeaDifficulty.Present,
+            "prs" => ArcaeaDifficulty.Present,
+            "present" => ArcaeaDifficulty.Present,
+
+            "2" => ArcaeaDifficulty.Future,
+            "ftr" => ArcaeaDifficulty.Future,
+            "future" => ArcaeaDifficulty.Future,
+
+            "3" => ArcaeaDifficulty.Beyond,
+            "byd" => ArcaeaDifficulty.Beyond,
+            "byn" => ArcaeaDifficulty.Beyond,
+            "beyond" => ArcaeaDifficulty.Beyond,
+
+            _ => null
+        };
+    }
+
     public static string ReplaceNotSupportedChar(string text)
     {
         return text
@@ -120,6 +151,7 @@ public static class ArcaeaUtils
             .Replace('γ', 'g')
             .Replace('Ä', 'A')
             .Replace('ö', 'o')
-            .Replace('δ', 'd');
+            .Replace('δ', 'd')
+            .Replace('ω', 'w');
     }
 }

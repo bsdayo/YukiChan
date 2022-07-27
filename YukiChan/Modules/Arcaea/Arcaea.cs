@@ -7,7 +7,7 @@ namespace YukiChan.Modules.Arcaea;
 [Module("Arcaea",
     Command = "a",
     Description = "Arcaea 相关功能",
-    Version = "1.0.0")]
+    Version = "1.2.0")]
 public partial class ArcaeaModule : ModuleBase
 {
     private static readonly AuaClient AuaClient = new AuaClient

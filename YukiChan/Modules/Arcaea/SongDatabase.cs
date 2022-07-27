@@ -89,8 +89,12 @@ public static class ArcaeaSongDatabase
 
         source = source.Replace(" ", "").ToLower();
 
-        var aliases = GetAllAliases().ToArray();
-        if (aliases.Any())
+        var aliases = GetAllAliases()
+            .Where(alias => alias.SongId == source ||
+                            alias.Alias.ToLower() == source)
+            .ToArray();
+
+        if (aliases.Length > 0)
             return aliases[0].SongId;
 
         var allCharts = GetAllCharts().ToArray();

@@ -118,6 +118,11 @@ public static class YukiLogger
         Console.WriteLine(message?.ReplaceLineEndings("\\n"));
         _onLog = false;
     }
+
+    public static void SaveCache(string path)
+    {
+        Info($"[Cache] 保存缓存: {path}");
+    }
 }
 
 public class ModuleLogger

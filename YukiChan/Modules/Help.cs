@@ -2,6 +2,7 @@
 using Konata.Core.Message;
 using Konata.Core.Message.Model;
 using YukiChan.Core;
+using YukiChan.Utils;
 
 namespace YukiChan.Modules;
 
@@ -15,19 +16,18 @@ public class HelpModule : ModuleBase
         Description = "显示帮助")]
     public static MessageBuilder? Help(Bot bot, MessageStruct message, string body)
     {
-        var helpCommands = body
-            .Split(' ')
-            .Where(item => !string.IsNullOrEmpty(item))
-            .ToArray();
+        var args = CommonUtils.ParseCommandBody(body);
 
-        switch (helpCommands.Length)
+        switch (args.Length)
         {
             case 0:
                 return ModuleManager.GetHelp();
 
             case 1:
+                if (args[0] == "all")
+                    return GetAllHelps(bot);
                 return ModuleManager.Modules
-                           .FirstOrDefault(module => module.ModuleInfo.Command == helpCommands[0])
+                           .FirstOrDefault(module => module.ModuleInfo.Command == args[0])
                            ?.GetHelp()
                        ?? new MessageBuilder()
                            .Add(ReplyChain.Create(message))
@@ -35,9 +35,9 @@ public class HelpModule : ModuleBase
 
             case 2:
                 return ModuleManager.Modules
-                           .FirstOrDefault(module => module.ModuleInfo.Command == helpCommands[0])
+                           .FirstOrDefault(module => module.ModuleInfo.Command == args[0])
                            ?.Commands
-                           .FirstOrDefault(command => command.CommandInfo.Command == helpCommands[1])
+                           .FirstOrDefault(command => command.CommandInfo.Command == args[1])
                            ?.GetHelp()
                        ?? new MessageBuilder()
                            .Add(ReplyChain.Create(message))
@@ -48,5 +48,14 @@ public class HelpModule : ModuleBase
                     .Add(ReplyChain.Create(message))
                     .Text("Invalid parameter length.");
         }
+    }
+
+    private static MessageBuilder GetAllHelps(Bot bot)
+    {
+        var multiMsgChain = MultiMsgChain.Create();
+        foreach (var module in ModuleManager.Modules)
+            multiMsgChain.Add(((bot.Uin, module.ModuleInfo.Name), module.GetHelp(false).Build()));
+
+        return new MessageBuilder(multiMsgChain);
     }
 }

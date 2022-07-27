@@ -44,6 +44,9 @@ public static class ModuleManager
             }
 
         // BotLogger.Debug("");
+        Modules.Sort((moduleA, moduleB) =>
+            string.Compare(moduleA.ModuleInfo.Name, moduleB.ModuleInfo.Name, StringComparison.CurrentCulture));
+
         YukiLogger.Success($"成功加载 {ModuleCount} 个模块，{CommandCount} 个指令。");
     }
 

@@ -26,7 +26,7 @@ public static class Program
                 "Assets/Cats",
                 "Assets/Arcaea/AudioPreview", "Assets/Arcaea/Aff",
                 // Cache - Download cache
-                "Cache/Arcaea/Song/"
+                "Cache/Arcaea/Song", "Cache/Arcaea/Preview"
             });
 
             _bot = BotFather.Create(GetKonataConfig(), GetDevice(), GetKeyStore());
