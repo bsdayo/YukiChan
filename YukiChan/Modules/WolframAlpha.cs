@@ -39,21 +39,36 @@ public class WolframAlphaModule : ModuleBase
     {
         return await Task.Run(() =>
         {
-            var totalHeight = 30;
-            var maxWidth = 400;
+            var totalHeight = 0;
+            var maxWidth = 500;
+            var imageTasks = new List<Task>();
+            var images = new Dictionary<int, byte[]>();
 
             foreach (var pod in result.Pods)
             {
                 totalHeight += 30;
                 foreach (var subPod in pod.SubPods)
                 {
+                    var y = totalHeight;
+                    var task = Task.Run(() =>
+                    {
+                        var image = NetUtils.DownloadBytes(subPod.Image.Src).Result;
+                        images[y] = image;
+                        Logger.Debug($"Downloaded image: {subPod.Image.Src}");
+                    });
+                    imageTasks.Add(task);
+
                     totalHeight += subPod.Image.Height + 10;
                     if (subPod.Image.Width > maxWidth)
                         maxWidth = subPod.Image.Width + 50;
                 }
             }
 
-            var imageInfo = new SKImageInfo(500, totalHeight);
+            totalHeight += 30;
+
+            Task.WaitAll(imageTasks.ToArray());
+
+            var imageInfo = new SKImageInfo(maxWidth, totalHeight);
             using var surface = SKSurface.Create(imageInfo);
             var canvas = surface.Canvas;
 
@@ -86,17 +101,16 @@ public class WolframAlphaModule : ModuleBase
                 yPosition += 30;
 
                 foreach (var subPod in pod.SubPods)
-                {
-                    Logger.Debug($"Downloading image: {subPod.Image.Src}");
-                    var image = NetUtils.DownloadBytes(subPod.Image.Src).Result;
-                    using var imageBitmap = SKBitmap.Decode(image);
-                    canvas.DrawBitmap(imageBitmap, 16, yPosition + 5);
                     yPosition += subPod.Image.Height + 10;
-                }
+            }
+
+            foreach (var (y, image) in images)
+            {
+                using var imageBitmap = SKBitmap.Decode(image);
+                canvas.DrawBitmap(imageBitmap, 16, y + 5);
             }
 
             titlePaint.Color = SKColor.Parse("#dd0e00");
-            Logger.Debug($"TextWidth: {titlePaint.MeasureText("by YukiChan & Wolfram Alpha Non-Commercial API")}");
             canvas.DrawText("by YukiChan & Wolfram Alpha Non-Commercial API", 8, yPosition + 20, titlePaint);
 
             var data = surface
