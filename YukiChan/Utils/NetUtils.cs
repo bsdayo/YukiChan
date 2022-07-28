@@ -1,14 +1,12 @@
-﻿using System.Net;
-
-namespace YukiChan.Utils;
+﻿namespace YukiChan.Utils;
 
 public static class NetUtils
 {
-    public static async Task<byte[]> DownloadBytes(string url,
+    public static async Task<byte[]> DownloadBytes(Uri url,
         Dictionary<string, string>? header = null,
         int timeout = 8000, long limitLen = ((long)2 << 30) - 1)
     {
-        var request = new HttpClient(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.All })
+        var request = new HttpClient
         {
             Timeout = new TimeSpan(0, 0, 0, timeout),
             MaxResponseContentBufferSize = limitLen
@@ -29,5 +27,12 @@ public static class NetUtils
         var response = await request.GetByteArrayAsync(url);
 
         return response;
+    }
+
+    public static async Task<byte[]> DownloadBytes(string url,
+        Dictionary<string, string>? header = null,
+        int timeout = 8000, long limitLen = ((long)2 << 30) - 1)
+    {
+        return await DownloadBytes(new Uri(url), header, timeout, limitLen);
     }
 }

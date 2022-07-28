@@ -9,6 +9,8 @@ public class YukiConfig
 
     public YukiConfigArcaea Arcaea { get; init; } = new();
 
+    public YukiConfigWolframAlpha WolframAlpha { get; init; } = new();
+
     public static YukiConfig GetYukiConfig()
     {
         var config = new YukiConfig();
@@ -30,4 +32,9 @@ public class YukiConfigArcaea
     public string AuaApiUrl { get; init; } = "";
     public string UserAgent { get; init; } = "";
     public int Timeout { get; init; } = 60;
+}
+
+public class YukiConfigWolframAlpha
+{
+    public string AppId { get; init; } = "";
 }

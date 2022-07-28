@@ -5,10 +5,10 @@ namespace YukiChan.Modules.Arcaea.Images;
 internal static partial class ArcaeaImageGenerator
 {
     private static SKTypeface FontRegular =>
-        SKTypeface.FromFile("Assets/Arcaea/Fonts/TitilliumWeb-Regular.ttf");
+        SKTypeface.FromFile("Assets/Fonts/TitilliumWeb-Regular.ttf");
 
     private static SKTypeface FontBold =>
-        SKTypeface.FromFile("Assets/Arcaea/Fonts/TitilliumWeb-SemiBold.ttf");
+        SKTypeface.FromFile("Assets/Fonts/TitilliumWeb-SemiBold.ttf");
 
     // 避免使用枚举类型作为 Dictionary 的键，以免隐式装箱导致不必要的性能损耗
     // 显式转换为 int 即可避免该问题 
