@@ -11,6 +11,8 @@ public class YukiConfig
 
     public YukiConfigWolframAlpha WolframAlpha { get; init; } = new();
 
+    public YukiConfigBaiduTranslate BaiduTranslate { get; init; } = new();
+
     public static YukiConfig GetYukiConfig()
     {
         var config = new YukiConfig();
@@ -37,4 +39,10 @@ public class YukiConfigArcaea
 public class YukiConfigWolframAlpha
 {
     public string AppId { get; init; } = "";
+}
+
+public class YukiConfigBaiduTranslate
+{
+    public string AppId { get; init; } = "";
+    public string Token { get; init; } = "";
 }
