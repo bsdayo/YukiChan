@@ -68,6 +68,8 @@ public class BaiduTranslateModule : ModuleBase
         Usage = "trans [目标语言] <文本>")]
     public static async Task<MessageBuilder> BaiduTranslate(Bot bot, MessageStruct message, string body)
     {
+        if (body.StartsWith("翻译"))
+            body = body[2..].Trim();
         var args = CommonUtils.ParseCommandBody(body);
 
         string sourceLang, targetLang, text;
