@@ -61,7 +61,7 @@ public partial class ArcaeaModule
             _ => rating + (score - 9500000) / 300000
         };
 
-        ptt = Math.Min(0, ptt);
+        ptt = Math.Max(0, ptt);
 
         return message.Reply()
             .Text($"在曲目 {song.Difficulties[(int)difficulty].NameEn} [{difficulty}] 中，")
