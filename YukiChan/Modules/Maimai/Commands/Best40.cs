@@ -43,7 +43,7 @@ public partial class MaimaiModule
             var infoMsg = new MessageBuilder()
                 .Text($"{best40.Username}\n")
                 .Text($"底分: {best40.Rating}\n")
-                .Text($"段位分: {best40.AdditionalRating}\n")
+                .Text($"段位分: {best40.AdditionalRating}")
                 .Build();
 
             rootMultiMsgChain.AddMessage(new MessageStruct(bot.Uin, "基本信息", infoMsg));
