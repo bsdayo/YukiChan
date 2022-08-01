@@ -46,6 +46,9 @@ public static class Program
             _bot.OnGroupMessage += EventHandlers.OnGroupMessage;
             _bot.OnFriendMessage += EventHandlers.OnFriendMessage;
 
+            _bot.OnGroupInvite += EventHandlers.OnGroupInvite;
+            _bot.OnFriendRequest += EventHandlers.OnFriendRequest;
+
             if (await _bot.Login()) UpdateKeyStore(_bot.KeyStore);
         }
         catch (Exception e)

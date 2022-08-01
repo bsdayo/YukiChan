@@ -76,6 +76,34 @@ public static class EventHandlers
         }
     }
 
+    public static async void OnGroupInvite(Bot bot, GroupInviteEvent e)
+    {
+        if (Global.YukiConfig.GroupInvitationProtect)
+        {
+            await bot.DeclineGroupInvitation(e.GroupUin, e.InviterUin, e.Token,
+                "本 Bot 为限制范围使用，暂不通过群聊邀请，敬请谅解。");
+            YukiLogger.Info($"由于开启群聊邀请保护，已拒绝加群 {e.GroupName} ({e.GroupUin})，邀请人为 {e.InviterNick} ({e.InviterUin})。");
+            return;
+        }
+
+        if (Global.YukiConfig.GroupInvitationAdminRequired && !e.InviterIsAdmin) return;
+        await bot.ApproveGroupInvitation(e.GroupUin, e.InviterUin, e.Token);
+        YukiLogger.Info($"已加入群 {e.GroupName} ({e.GroupUin})，邀请人为 {e.InviterNick} ({e.InviterUin})。");
+    }
+    
+    public static async void OnFriendRequest(Bot bot, FriendRequestEvent e)
+    {
+        if (Global.YukiConfig.FriendRequestProtect)
+        {
+            await bot.DeclineFriendRequest(e.ReqUin, e.Token);
+            YukiLogger.Info($"由于开启好友申请保护，已拒绝 {e.ReqNick} ({e.ReqUin}) 的好友申请，备注为 {e.ReqComment.ReplaceLineEndings("\\n")}。");
+            return;
+        }
+
+        await bot.ApproveFriendRequest(e.ReqUin, e.Token);
+        YukiLogger.Info($"已接受 {e.ReqNick} ({e.ReqUin}) 的好友申请，备注为 {e.ReqComment.ReplaceLineEndings("\\n")}。");
+    }
+
     public static async void OnLog(Bot bot, LogEvent e)
     {
         var date = DateTime.Now.ToString("yyyy-MM-dd");
