@@ -11,14 +11,23 @@ Made with love by [b1acksoil](https://github.com/b1acksoil/).
 
 ---
 
+English | [简体中文](./README-CN.md)
+
 ## Features
 - Arcaea
+  - Best30 query
   - Song information query
+  - Chart preview
+  - Potential calculate
   - ...still working!
 - C# code runner
-- Random cat image
+- Random cat/capoo image
+- Wolfram Alpha query
+- Translate
 
 ...etc.
+
+Documentation can be found [here](https://docs.blacksoil.top/YukiChan/) (Simplified Chinese only).
 
 ## Build
 Select one build script (build-*.sh) to execute.
