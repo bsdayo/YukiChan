@@ -14,6 +14,7 @@ public partial class ArcaeaModule
 {
     [Command("Best30",
         Command = "b30",
+        Shortcut = "查b30",
         Description = "查询 Best30 成绩",
         Usage = "a b30 [名称/好友码]",
         Example = "a b30 ToasterKoishi")]
@@ -52,7 +53,7 @@ public partial class ArcaeaModule
                     args[0], 9, AuaReplyWith.SongInfo));
             }
 
-            Logger.Info($"正在为 {best30.Name}({best30.Id}) 生成 Best30 图片...");
+            Logger.Info($"正在为 {best30.User.Name}({best30.User.Id}) 生成 Best30 图片...");
 
             var image = await ArcaeaImageGenerator.Best30(best30, AuaClient, subFlags.Contains("dark"));
 

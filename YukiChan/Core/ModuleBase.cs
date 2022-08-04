@@ -68,10 +68,11 @@ public abstract class ModuleBase
     {
         var commandStr = message.Chain.GetChain<TextChain>().Content.Trim();
 
-        foreach (var command in Commands)
+        for (var i = 0; i < Commands.Count; i++)
         {
-            var keyword = Global.YukiConfig.CommandPrefix +
-                          ModuleInfo.Command +
+            var command = Commands[i];
+            var primaryKeyword = Global.YukiConfig.CommandPrefix + ModuleInfo.Command;
+            var keyword = primaryKeyword +
                           (command.CommandInfo.Command is not null
                               ? $" {command.CommandInfo.Command}"
                               : "");
@@ -80,7 +81,7 @@ public abstract class ModuleBase
             var startsWithFlag = commandStr.StartsWith(keyword);
             // 匹配快捷短语开头
             var shortcutFlag = command.CommandInfo.Shortcut is not null &&
-                               commandStr.StartsWith(command.CommandInfo.Shortcut);
+                               commandStr.StartsWith(command.CommandInfo.Shortcut.ToLower());
             // 匹配字符串包含
             var customStartFlag = command.CommandInfo.StartsWith is not null &&
                                   commandStr.StartsWith(command.CommandInfo.StartsWith);
@@ -91,7 +92,10 @@ public abstract class ModuleBase
             var containsFlag = command.CommandInfo.Contains is not null &&
                                commandStr.Contains(command.CommandInfo.Contains);
 
-            if (!startsWithFlag && !shortcutFlag && !regexMatchFlag && !customStartFlag && !containsFlag)
+            var fallbackFlag = command.CommandInfo.FallbackCommand && commandStr.Trim() == primaryKeyword;
+
+            if (!startsWithFlag && !shortcutFlag && !regexMatchFlag && !customStartFlag && !containsFlag &&
+                !fallbackFlag)
                 continue;
 
             var user = Global.YukiDb.GetUser(message.Sender.Uin);
@@ -123,6 +127,8 @@ public abstract class ModuleBase
                 body = commandStr[keyword.Length..].Trim();
             else if (shortcutFlag)
                 body = commandStr[command.CommandInfo.Shortcut!.Length..].Trim();
+            else if (fallbackFlag)
+                body = "";
             else
                 body = commandStr;
 

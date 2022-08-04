@@ -1,5 +1,6 @@
 ﻿using ArcaeaUnlimitedAPI.Lib;
 using ArcaeaUnlimitedAPI.Lib.Models;
+using YukiChan.Modules.Arcaea.Models;
 using YukiChan.Utils;
 
 namespace YukiChan.Modules.Arcaea;
@@ -153,5 +154,19 @@ public static class ArcaeaUtils
             .Replace('ö', 'o')
             .Replace('δ', 'd')
             .Replace('ω', 'w');
+    }
+
+    public static ArcaeaGrade GetGrade(int score)
+    {
+        return score switch
+        {
+            >= 9900000 => ArcaeaGrade.EXP,
+            >= 9800000 and < 9900000 => ArcaeaGrade.EX,
+            >= 9500000 and < 9800000 => ArcaeaGrade.AA,
+            >= 9200000 and < 9500000 => ArcaeaGrade.A,
+            >= 8900000 and < 9200000 => ArcaeaGrade.B,
+            >= 8600000 and < 8900000 => ArcaeaGrade.C,
+            _ => ArcaeaGrade.D
+        };
     }
 }

@@ -5,9 +5,9 @@ using YukiChan.Utils;
 
 namespace YukiChan.Modules.Arcaea.Images;
 
-internal static partial class ArcaeaImageGenerator
+public static partial class ArcaeaImageGenerator
 {
-    internal static async Task<byte[]> Best30(ArcaeaBest30 best30, AuaClient client, bool dark)
+    public static async Task<byte[]> Best30(ArcaeaBest30 best30, AuaClient client, bool dark)
     {
         return await Task.Run(() =>
         {
@@ -23,8 +23,8 @@ internal static partial class ArcaeaImageGenerator
                     YukiLogger.Warn($"资源文件缺失: Assets/Arcaea/Images/Best30Background-{(dark ? "Dark" : "Light")}.jpg");
 
                 using var scaledBackground = new SKBitmap(
-                    3400, background!.Height * (3400 / background.Width));
-                background.ScalePixels(scaledBackground, SKFilterQuality.Medium);
+                    3400, (background?.Height ?? 6200) * (3400 / (background?.Width ?? 3400)));
+                background?.ScalePixels(scaledBackground, SKFilterQuality.Medium);
 
                 canvas.DrawBitmap(scaledBackground, 0, 0);
             }
@@ -38,7 +38,7 @@ internal static partial class ArcaeaImageGenerator
                     IsAntialias = true,
                     Typeface = FontBold
                 };
-                canvas.DrawText($"{best30.Name} ({best30.Potential})",
+                canvas.DrawText($"{best30.User.Name} ({best30.User.Potential})",
                     295, 255, paint);
             }
 
@@ -155,7 +155,7 @@ internal static partial class ArcaeaImageGenerator
         });
     }
 
-    internal static void DrawMiniScoreCard(this SKCanvas canvas, int x, int y,
+    public static void DrawMiniScoreCard(this SKCanvas canvas, int x, int y,
         ArcaeaRecord record, byte[] songCover, int rank = 0, bool dark = false)
     {
         var (colorLight, colorDark) = DifficultyColors[(int)record.Difficulty];

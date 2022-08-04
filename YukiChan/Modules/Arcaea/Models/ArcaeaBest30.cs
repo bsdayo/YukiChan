@@ -6,11 +6,7 @@ namespace YukiChan.Modules.Arcaea.Models;
 
 public class ArcaeaBest30
 {
-    public string Name { get; private init; }
-
-    public string Id { get; private init; }
-
-    public string Potential { get; private init; }
+    public ArcaeaUser User { get; private init; }
 
     public double Recent10Avg { get; private init; }
 
@@ -26,11 +22,7 @@ public class ArcaeaBest30
     {
         return new ArcaeaBest30
         {
-            Name = content.AccountInfo.Name,
-            Id = content.AccountInfo.Code,
-            Potential = content.AccountInfo.Rating >= 0
-                ? ((double)content.AccountInfo.Rating / 100).ToString("0.00")
-                : "?",
+            User = ArcaeaUser.FromAua(content.AccountInfo),
 
             Recent10Avg = content.Recent10Avg,
             Best30Avg = content.Best30Avg,

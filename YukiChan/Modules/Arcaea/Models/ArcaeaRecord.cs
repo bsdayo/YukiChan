@@ -1,5 +1,7 @@
 ﻿using ArcaeaUnlimitedAPI.Lib.Models;
 
+// ReSharper disable InconsistentNaming
+
 #pragma warning disable CS8618
 
 namespace YukiChan.Modules.Arcaea.Models;
@@ -28,9 +30,15 @@ public class ArcaeaRecord
 
     public int LostCount { get; init; }
 
+    public ArcaeaClearType ClearType { get; init; }
+
+    public ArcaeaGrade Grade { get; init; }
+
     public byte RecollectionRate { get; init; }
 
     public bool JacketOverride { get; init; }
+
+    public long TimePlayed { get; init; }
 
     public static ArcaeaRecord FromAua(AuaRecord record, AuaChartInfo chartInfo)
     {
@@ -43,6 +51,8 @@ public class ArcaeaRecord
             Rating = ((double)chartInfo.Rating / 10).ToString("0.0"),
             RatingText = chartInfo.Rating.GetDifficulty(),
             Score = record.Score,
+            ClearType = (ArcaeaClearType)record.ClearType!,
+            Grade = ArcaeaUtils.GetGrade(record.Score),
             //
             ShinyPureCount = record.ShinyPerfectCount,
             PureCount = record.PerfectCount,
@@ -50,7 +60,29 @@ public class ArcaeaRecord
             LostCount = record.MissCount,
             RecollectionRate = (byte)record.Health!,
             //
-            JacketOverride = chartInfo.JacketOverride
+            JacketOverride = chartInfo.JacketOverride,
+            TimePlayed = record.TimePlayed
         };
     }
+}
+
+public enum ArcaeaClearType
+{
+    TrackLost = 0,
+    NormalClear = 1,
+    FullRecall = 2,
+    PureMemory = 3,
+    EasyClear = 4,
+    HardClear = 5
+}
+
+public enum ArcaeaGrade
+{
+    D,
+    C,
+    B,
+    A,
+    AA,
+    EX,
+    EXP
 }

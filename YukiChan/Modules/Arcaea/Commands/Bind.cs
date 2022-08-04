@@ -2,6 +2,7 @@
 using Konata.Core;
 using Konata.Core.Message;
 using YukiChan.Core;
+using YukiChan.Modules.Arcaea.Models;
 using YukiChan.Utils;
 
 // ReSharper disable CheckNamespace
@@ -23,17 +24,15 @@ public partial class ArcaeaModule
 
         try
         {
-            var userInfo = await AuaClient.User.Info(username);
+            var userInfo = ArcaeaUser.FromAua((await AuaClient.User.Info(username)).AccountInfo);
 
             Global.YukiDb.AddArcaeaUser(
-                message.Sender.Uin, userInfo.AccountInfo.Code, userInfo.AccountInfo.Name);
-
-            var rating = (double)userInfo.AccountInfo.Rating / 100;
+                message.Sender.Uin, userInfo.Id, userInfo.Name);
 
             return message.Reply()
                 .Text("绑定成功！\n")
-                .Text($"{userInfo.AccountInfo.Name} ({(rating >= 0 ? rating : "?")})\n")
-                .Text($"注册时间: {CommonUtils.FormatTimestamp(userInfo.AccountInfo.JoinDate, true)}");
+                .Text($"{userInfo.Name} ({userInfo.Potential})\n")
+                .Text($"注册时间: {userInfo.JoinDate}");
         }
         catch (AuaException e)
         {

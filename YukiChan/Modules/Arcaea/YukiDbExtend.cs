@@ -4,24 +4,24 @@
 
 namespace YukiChan.Database;
 
-[YukiDbTable(typeof(ArcaeaUser))]
+[YukiDbTable(typeof(ArcaeaDatabaseUser))]
 public partial class YukiDbManager
 {
     internal void AddArcaeaUser(uint uin, string id, string name)
     {
-        var user = new ArcaeaUser
+        var user = new ArcaeaDatabaseUser
         {
             Uin = uin,
             Id = id,
             Name = name
         };
 
-        _database.InsertOrReplace(user, typeof(ArcaeaUser));
+        _database.InsertOrReplace(user, typeof(ArcaeaDatabaseUser));
     }
 
-    internal ArcaeaUser? GetArcaeaUser(uint uin)
+    internal ArcaeaDatabaseUser? GetArcaeaUser(uint uin)
     {
-        return _database.FindWithQuery<ArcaeaUser>(
+        return _database.FindWithQuery<ArcaeaDatabaseUser>(
             "SELECT * FROM arcaea_users WHERE uin = ?", uin);
     }
 
@@ -29,7 +29,7 @@ public partial class YukiDbManager
     {
         var user = GetArcaeaUser(uin);
         if (user is null) return false;
-        _database.Delete<ArcaeaUser>(uin);
+        _database.Delete<ArcaeaDatabaseUser>(uin);
         return true;
     }
 }

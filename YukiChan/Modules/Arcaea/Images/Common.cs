@@ -2,13 +2,16 @@
 
 namespace YukiChan.Modules.Arcaea.Images;
 
-internal static partial class ArcaeaImageGenerator
+public static partial class ArcaeaImageGenerator
 {
     private static SKTypeface FontRegular =>
         SKTypeface.FromFile("Assets/Fonts/TitilliumWeb-Regular.ttf");
 
     private static SKTypeface FontBold =>
         SKTypeface.FromFile("Assets/Fonts/TitilliumWeb-SemiBold.ttf");
+
+    private static SKTypeface GeoSans =>
+        SKTypeface.FromFile("Assets/Fonts/GeosansLight.ttf");
 
     // 避免使用枚举类型作为 Dictionary 的键，以免隐式装箱导致不必要的性能损耗
     // 显式转换为 int 即可避免该问题 

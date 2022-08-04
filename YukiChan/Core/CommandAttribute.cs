@@ -23,6 +23,7 @@ public sealed class CommandAttribute : Attribute
     public string? StartsWith { get; set; } = null;
     public string? Regex { get; set; } = null;
     public string? Contains { get; set; } = null;
+    public bool FallbackCommand { get; set; } = false;
 
     public CommandAttribute(string name)
     {
