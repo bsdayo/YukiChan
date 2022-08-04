@@ -37,6 +37,7 @@ public class ArcaeaConfig
     public string AuaApiUrl { get; init; } = "";
     public string UserAgent { get; init; } = "";
     public int Timeout { get; init; } = 60;
+    public bool EnableGuess { get; init; } = true;
 }
 
 public class WolframAlphaConfig

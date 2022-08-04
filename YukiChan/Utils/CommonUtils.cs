@@ -67,6 +67,14 @@ public static class CommonUtils
             await bot.SendGroupMessage(message.Receiver.Uin, mb);
     }
 
+    public static async Task SendReply(this Bot bot, MessageStruct message, MessageBuilder mb)
+    {
+        if (message.Type == MessageStruct.SourceType.Friend)
+            await bot.SendFriendMessage(message.Sender.Uin, mb);
+        else if (message.Type == MessageStruct.SourceType.Group)
+            await bot.SendGroupMessage(message.Receiver.Uin, mb);
+    }
+
     public static double Bytes2MiB(this long bytes, int round)
     {
         return Math.Round(bytes / 1048576.0, round);

@@ -169,4 +169,18 @@ public static class ArcaeaUtils
             _ => ArcaeaGrade.D
         };
     }
+
+    public static ArcaeaGuessMode? GetGuessMode(string text)
+    {
+        return text.ToLower() switch
+        {
+            "e" => ArcaeaGuessMode.Easy,
+            "easy" => ArcaeaGuessMode.Easy,
+            "n" => ArcaeaGuessMode.Normal,
+            "normal" => ArcaeaGuessMode.Normal,
+            "h" => ArcaeaGuessMode.Hard,
+            "hard" => ArcaeaGuessMode.Hard,
+            _ => null
+        };
+    }
 }
