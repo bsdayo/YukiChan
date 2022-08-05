@@ -151,7 +151,7 @@ public partial class ArcaeaModule
 
     private static MessageBuilder GetGuessRank(MessageStruct message, ArcaeaGuessMode mode, DateTime date)
     {
-        var users = Global.YukiDb.GetArcaeaGuessUsersOfDate(date);
+        var users = Global.YukiDb.GetArcaeaGuessUsersOfDate(message.Receiver.Uin, date);
         users.Sort((userA, userB) =>
         {
             return mode switch

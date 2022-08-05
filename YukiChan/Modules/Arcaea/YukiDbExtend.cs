@@ -48,6 +48,13 @@ public partial class YukiDbManager
             "SELECT * FROM arcaea_guess WHERE group_uin = ? AND user_uin = ?", groupUin, userUin);
     }
 
+    public List<ArcaeaGuessUser> GetArcaeaGuessUsersOfDate(uint groupUin, DateTime date)
+    {
+        return _database.Query<ArcaeaGuessUser>(
+            "SELECT * FROM arcaea_guess WHERE group_uin = ? AND year = ? AND month = ? AND day = ?",
+            groupUin, date.Year, date.Month, date.Day);
+    }
+
     public List<ArcaeaGuessUser> GetArcaeaGuessUsersOfDate(DateTime date)
     {
         return _database.Query<ArcaeaGuessUser>(
