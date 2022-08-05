@@ -105,7 +105,7 @@ public static class ArcaeaSongDatabase
                                                   chart.NameJp.RemoveString(" ").ToLower() == source) ??
                 allCharts.FirstOrDefault(chart => chart.NameEn.GetAbbreviation().ToLower() == source) ??
                 allCharts.FirstOrDefault(chart => source.Length > 4 &&
-                                                  chart.NameEn.RemoveString(" ").Contains(source)))
+                                                  chart.NameEn.RemoveString(" ").ToLower().Contains(source)))
             ?.SongId;
     }
 }
