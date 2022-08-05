@@ -164,7 +164,7 @@ public partial class ArcaeaModule
         });
 
         var mb = message.Reply($"今日猜曲绘排名 ({mode} 模式)");
-        for (int i = 0, j = 0; i < users.Count; i++, j++)
+        for (int i = 0, j = 0; i < users.Count; i++)
         {
             if (j >= 5) break;
             var user = users[i];
@@ -191,7 +191,11 @@ public partial class ArcaeaModule
                     break;
             }
 
-            mb.Text($"\n{i + 1}. {user.UserName}   {correctCount}√ {wrongCount}×  {rate:P2}");
+            if (double.IsNaN(rate))
+                continue;
+            
+            mb.Text($"\n{j + 1}. {user.UserName}   {correctCount}√ {wrongCount}×  {rate:P2}");
+            j++;
         }
 
         return mb;
