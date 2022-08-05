@@ -35,13 +35,16 @@ public static class ArcaeaGuessImageGenerator
             });
 
         if (mode == ArcaeaGuessMode.Invert)
-            paint.ColorFilter = SKColorFilter.CreateColorMatrix(new[]
+            for (var i = 0; i < coverBitmap.Width; i++)
+            for (var j = 0; j < coverBitmap.Height; j++)
             {
-                -1f, 0f, 0f, 0f, 255f,
-                0f, -1f, 0f, 0f, 255f,
-                0f, 0f, -1f, 0f, 255f,
-                0f, 0f, 0f, 1f, 0f,
-            });
+                var color = coverBitmap.GetPixel(i, j);
+                coverBitmap.SetPixel(i, j, new SKColor(
+                    (byte)(255 - color.Red),
+                    (byte)(255 - color.Green),
+                    (byte)(255 - color.Blue)
+                ));
+            }
 
         canvas.DrawBitmap(coverBitmap,
             new Random().Next(imageInfo.Width - coverBitmap.Width, 0),
