@@ -29,12 +29,12 @@ public partial class ArcaeaModule
 
     private static readonly Dictionary<uint, ArcaeaGuessSession> GuessSessions = new();
 
-    [Command("Guess",
-        Command = "guess",
+    [Command("GuessCover",
+        Command = "guesscover",
         Shortcut = "猜曲绘",
         Description = "猜曲绘小游戏",
-        Usage = "a guess",
-        Example = "a guess ")]
+        Usage = "a guesscover [模式|rank]",
+        Example = "猜曲绘 easy")]
     public static async Task<MessageBuilder> Guess(Bot bot, MessageStruct message, string body)
     {
         if (!Global.YukiConfig.Arcaea.EnableGuess)
