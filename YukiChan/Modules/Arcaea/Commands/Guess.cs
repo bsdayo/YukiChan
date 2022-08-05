@@ -156,9 +156,9 @@ public partial class ArcaeaModule
         {
             return mode switch
             {
-                ArcaeaGuessMode.Easy => (int)userB.EasyCorrectRate - (int)userA.EasyCorrectRate,
-                ArcaeaGuessMode.Normal => (int)userB.NormalCorrectRate - (int)userA.NormalCorrectRate,
-                ArcaeaGuessMode.Hard => (int)userB.HardCorrectRate - (int)userA.HardCorrectRate,
+                ArcaeaGuessMode.Easy => (int)(userB.EasyCorrectRate * 10000 - userA.EasyCorrectRate * 10000),
+                ArcaeaGuessMode.Normal => (int)(userB.NormalCorrectRate * 10000 - userA.NormalCorrectRate * 10000),
+                ArcaeaGuessMode.Hard => (int)(userB.HardCorrectRate * 10000 - userA.HardCorrectRate * 10000),
                 _ => 0
             };
         });
