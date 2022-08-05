@@ -67,6 +67,9 @@ public partial class ArcaeaModule
             if (GuessSessions.ContainsKey(message.Receiver.Uin))
             {
                 var guessSongId = ArcaeaSongDatabase.FuzzySearchId(string.Join(" ", args));
+                if (guessSongId is null)
+                    return message.Reply("没有找到该曲目哦！");
+                
                 var session = GuessSessions[message.Receiver.Uin];
 
                 if (!session.Inited)
