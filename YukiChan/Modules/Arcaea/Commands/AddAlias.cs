@@ -3,6 +3,7 @@
 using Konata.Core;
 using Konata.Core.Message;
 using YukiChan.Core;
+using YukiChan.Database.Models;
 using YukiChan.Utils;
 
 namespace YukiChan.Modules.Arcaea;
@@ -13,6 +14,7 @@ public partial class ArcaeaModule
         Command = "addalias",
         Description = "增加曲目别名",
         Usage = "a addalias <曲名> <别名>",
+        Authority = YukiUserAuthority.Admin,
         Example = "a addalias lostdesire 失欲")]
     public static MessageBuilder AddAlias(Bot bot, MessageStruct message, string body)
     {
