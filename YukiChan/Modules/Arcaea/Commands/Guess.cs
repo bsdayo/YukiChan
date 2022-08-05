@@ -69,7 +69,7 @@ public partial class ArcaeaModule
                 var guessSongId = ArcaeaSongDatabase.FuzzySearchId(string.Join(" ", args));
                 if (guessSongId is null)
                     return message.Reply("没有找到该曲目哦！");
-                
+
                 var session = GuessSessions[message.Receiver.Uin];
 
                 if (!session.Inited)
@@ -168,7 +168,19 @@ public partial class ArcaeaModule
 
     private static MessageBuilder GetGuessRank(MessageStruct message, ArcaeaGuessMode mode, DateTime date)
     {
-        var users = Global.YukiDb.GetArcaeaGuessUsersOfDate(message.Receiver.Uin, date);
+        var users = Global.YukiDb
+            .GetArcaeaGuessUsersOfDate(message.Receiver.Uin, date)
+            .FindAll(u => !double.IsNaN(mode switch
+            {
+                ArcaeaGuessMode.Easy => u.EasyCorrectRate,
+                ArcaeaGuessMode.Normal => u.NormalCorrectRate,
+                ArcaeaGuessMode.Hard => u.HardCorrectRate,
+                ArcaeaGuessMode.Flash => u.FlashCorrectRate,
+                ArcaeaGuessMode.GrayScale => u.GrayScaleCorrectRate,
+                ArcaeaGuessMode.Invert => u.InvertCorrectRate,
+                _ => double.NaN
+            }));
+
         users.Sort((userA, userB) =>
         {
             return mode switch
@@ -177,7 +189,8 @@ public partial class ArcaeaModule
                 ArcaeaGuessMode.Normal => (int)(userB.NormalCorrectRate * 10000 - userA.NormalCorrectRate * 10000),
                 ArcaeaGuessMode.Hard => (int)(userB.HardCorrectRate * 10000 - userA.HardCorrectRate * 10000),
                 ArcaeaGuessMode.Flash => (int)(userB.FlashCorrectRate * 10000 - userA.FlashCorrectRate * 10000),
-                ArcaeaGuessMode.GrayScale => (int)(userB.GrayScaleCorrectRate * 10000 - userA.GrayScaleCorrectRate * 10000),
+                ArcaeaGuessMode.GrayScale => (int)(userB.GrayScaleCorrectRate * 10000 -
+                                                   userA.GrayScaleCorrectRate * 10000),
                 ArcaeaGuessMode.Invert => (int)(userB.InvertCorrectRate * 10000 - userA.InvertCorrectRate * 10000),
                 _ => 0
             };
@@ -225,9 +238,6 @@ public partial class ArcaeaModule
                     rate = user.InvertCorrectRate;
                     break;
             }
-
-            if (double.IsNaN(rate))
-                continue;
 
             mb.Text($"\n{j + 1}. {user.UserName}   {correctCount}√ {wrongCount}×  {rate:P2}");
             j++;
