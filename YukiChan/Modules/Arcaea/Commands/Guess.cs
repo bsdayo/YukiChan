@@ -56,12 +56,18 @@ public partial class ArcaeaModule
                 return await GetNewGuess(bot, message, ArcaeaGuessMode.Normal);
             }
 
-            if (args[0] == "rank")
+            switch (args[0])
             {
-                ArcaeaGuessMode? mode = null;
-                if (args.Length >= 2)
-                    mode = ArcaeaUtils.GetGuessMode(args[1]);
-                return GetGuessRank(message, mode ?? ArcaeaGuessMode.Normal, DateTime.Now);
+                case "rank":
+                case "排名":
+                    ArcaeaGuessMode? mode = null;
+                    if (args.Length >= 2)
+                        mode = ArcaeaUtils.GetGuessMode(args[1]);
+                    return GetGuessRank(message, mode ?? ArcaeaGuessMode.Normal, DateTime.Now);
+
+                case "info":
+                case "信息":
+                    return GetGuessInfo(message, args.Length >= 2 && args[1] == "all");
             }
 
             if (GuessSessions.ContainsKey(message.Receiver.Uin))
@@ -244,5 +250,35 @@ public partial class ArcaeaModule
         }
 
         return mb;
+    }
+
+    private static MessageBuilder GetGuessInfo(MessageStruct message, bool all = false)
+    {
+        var user = new List<ArcaeaGuessUser>();
+        if (all)
+            user.AddRange(Global.YukiDb.GetArcaeaGuessUserOfAllTime(message.Sender.Uin));
+        else
+        {
+            var u = Global.YukiDb.GetArcaeaGuessUserOfDate(message.Sender.Uin, DateTime.Today);
+            if (u is not null) user.Add(u);
+        }
+
+
+        if (!user.Any())
+            return message.Reply("您还没有过用户数据哦，请猜一次曲绘再试吧~");
+
+        return message.Reply($"您的{(all ? "今日" : "全局")}猜曲绘信息\n")
+            .Text(
+                $"简单 / {user.Sum(u => u.EasyCorrectCount)}√  {user.Sum(u => u.EasyWrongCount)}×  {(user.Sum(u => u.EasyCorrectRate) / user.Count):P2}\n")
+            .Text(
+                $"正常 / {user.Sum(u => u.NormalCorrectCount)}√  {user.Sum(u => u.NormalWrongCount)}×  {(user.Sum(u => u.NormalCorrectRate) / user.Count):P2}\n")
+            .Text(
+                $"困难 / {user.Sum(u => u.HardCorrectCount)}√  {user.Sum(u => u.HardWrongCount)}×  {(user.Sum(u => u.HardCorrectRate) / user.Count):P2}\n")
+            .Text(
+                $"闪照 / {user.Sum(u => u.FlashCorrectCount)}√  {user.Sum(u => u.FlashWrongCount)}×  {(user.Sum(u => u.FlashCorrectRate) / user.Count):P2}\n")
+            .Text(
+                $"灰度 / {user.Sum(u => u.GrayScaleCorrectCount)}√  {user.Sum(u => u.GrayScaleWrongCount)}×  {(user.Sum(u => u.GrayScaleCorrectRate) / user.Count):P2}\n")
+            .Text(
+                $"反色 / {user.Sum(u => u.InvertCorrectCount)}√  {user.Sum(u => u.InvertWrongCount)}×  {(user.Sum(u => u.InvertCorrectRate) / user.Count):P2}");
     }
 }

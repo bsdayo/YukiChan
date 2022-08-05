@@ -190,4 +190,18 @@ public static class ArcaeaUtils
             _ => null
         };
     }
+
+    public static string GetName(this ArcaeaGuessMode mode)
+    {
+        return mode switch
+        {
+            ArcaeaGuessMode.Easy => "简单",
+            ArcaeaGuessMode.Normal => "正常",
+            ArcaeaGuessMode.Hard => "困难",
+            ArcaeaGuessMode.Flash => "闪照",
+            ArcaeaGuessMode.GrayScale => "灰度",
+            ArcaeaGuessMode.Invert => "反色",
+            _ => "未知模式"
+        };
+    }
 }
