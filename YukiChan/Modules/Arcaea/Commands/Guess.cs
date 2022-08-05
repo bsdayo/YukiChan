@@ -146,17 +146,19 @@ public partial class ArcaeaModule
 
         var image = ArcaeaGuessImageGenerator.Normal(cover, mode);
 
-        var mb = mode == ArcaeaGuessMode.Flash
-            ? new MessageBuilder()
+        if (mode == ArcaeaGuessMode.Flash)
+        {
+            await bot.Send(message, new MessageBuilder()
                 .Text($"本轮题目 ({mode} 模式)！\n")
-                .Text("抓紧时间哦~30秒后揭晓答案！")
-                .Add(FlashImageChain.CreateFromImageChain(ImageChain.Create(image)))
-            : new MessageBuilder()
-                .Text($"本轮题目 ({mode} 模式)：")
-                .Image(image)
-                .Text("30秒后揭晓答案~");
+                .Text("抓紧时间哦~30秒后揭晓答案！"));
+            return new MessageBuilder()
+                .Add(FlashImageChain.CreateFromImageChain(ImageChain.Create(image)));
+        }
 
-        return mb;
+        return new MessageBuilder()
+            .Text($"本轮题目 ({mode} 模式)：")
+            .Image(image)
+            .Text("30秒后揭晓答案~");
     }
 
     private static MessageBuilder GetGuessRank(MessageStruct message, ArcaeaGuessMode mode, DateTime date)

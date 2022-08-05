@@ -57,6 +57,14 @@ public static class CommonUtils
         else if (message.Type == MessageStruct.SourceType.Group)
             await bot.SendGroupMessage(message.Receiver.Uin, text);
     }
+    
+    public static async Task Send(this Bot bot, MessageStruct message, MessageBuilder mb)
+    {
+        if (message.Type == MessageStruct.SourceType.Friend)
+            await bot.SendFriendMessage(message.Sender.Uin, mb);
+        else if (message.Type == MessageStruct.SourceType.Group)
+            await bot.SendGroupMessage(message.Receiver.Uin, mb);
+    }
 
     public static async Task SendReply(this Bot bot, MessageStruct message, string text)
     {
