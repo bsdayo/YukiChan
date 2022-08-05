@@ -180,6 +180,8 @@ public static class ArcaeaUtils
             "normal" => ArcaeaGuessMode.Normal,
             "h" => ArcaeaGuessMode.Hard,
             "hard" => ArcaeaGuessMode.Hard,
+            "f" => ArcaeaGuessMode.Flash,
+            "flash" => ArcaeaGuessMode.Flash,
             _ => null
         };
     }

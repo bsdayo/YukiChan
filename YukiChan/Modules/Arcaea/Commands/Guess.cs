@@ -1,6 +1,7 @@
 ﻿using ArcaeaUnlimitedAPI.Lib.Models;
 using Konata.Core;
 using Konata.Core.Message;
+using Konata.Core.Message.Model;
 using YukiChan.Core;
 using YukiChan.Modules.Arcaea.Images;
 using YukiChan.Modules.Arcaea.Models;
@@ -13,7 +14,8 @@ public enum ArcaeaGuessMode
 {
     Easy,
     Normal,
-    Hard
+    Hard,
+    Flash
 }
 
 public partial class ArcaeaModule
@@ -143,10 +145,18 @@ public partial class ArcaeaModule
 #pragma warning restore CS4014
 
         var image = ArcaeaGuessImageGenerator.Normal(cover, mode);
-        return new MessageBuilder()
-            .Text($"本轮题目 ({mode} 模式)：")
-            .Image(image)
-            .Text("30秒后揭晓答案~");
+
+        var mb = mode == ArcaeaGuessMode.Flash
+            ? new MessageBuilder()
+                .Text($"本轮题目 ({mode} 模式)！\n")
+                .Text("抓紧时间哦~30秒后揭晓答案！")
+                .Add(FlashImageChain.CreateFromImageChain(ImageChain.Create(image)))
+            : new MessageBuilder()
+                .Text($"本轮题目 ({mode} 模式)：")
+                .Image(image)
+                .Text("30秒后揭晓答案~");
+
+        return mb;
     }
 
     private static MessageBuilder GetGuessRank(MessageStruct message, ArcaeaGuessMode mode, DateTime date)
@@ -159,6 +169,7 @@ public partial class ArcaeaModule
                 ArcaeaGuessMode.Easy => (int)(userB.EasyCorrectRate * 10000 - userA.EasyCorrectRate * 10000),
                 ArcaeaGuessMode.Normal => (int)(userB.NormalCorrectRate * 10000 - userA.NormalCorrectRate * 10000),
                 ArcaeaGuessMode.Hard => (int)(userB.HardCorrectRate * 10000 - userA.HardCorrectRate * 10000),
+                ArcaeaGuessMode.Flash => (int)(userB.FlashCorrectRate * 10000 - userA.FlashCorrectRate * 10000),
                 _ => 0
             };
         });
@@ -193,7 +204,7 @@ public partial class ArcaeaModule
 
             if (double.IsNaN(rate))
                 continue;
-            
+
             mb.Text($"\n{j + 1}. {user.UserName}   {correctCount}√ {wrongCount}×  {rate:P2}");
             j++;
         }

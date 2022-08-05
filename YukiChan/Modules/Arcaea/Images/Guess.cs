@@ -13,6 +13,7 @@ public static class ArcaeaGuessImageGenerator
             ArcaeaGuessMode.Easy => 100,
             ArcaeaGuessMode.Normal => 64,
             ArcaeaGuessMode.Hard => 40,
+            ArcaeaGuessMode.Flash => 100,
             _ => 64
         };
 
