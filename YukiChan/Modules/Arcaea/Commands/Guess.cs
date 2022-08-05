@@ -160,14 +160,14 @@ public partial class ArcaeaModule
         if (mode == ArcaeaGuessMode.Flash)
         {
             await bot.Send(message, new MessageBuilder()
-                .Text($"本轮题目 ({mode} 模式)！\n")
+                .Text($"本轮题目 ({mode.GetName()}模式)！\n")
                 .Text("抓紧时间哦~30秒后揭晓答案！"));
             return new MessageBuilder()
                 .Add(FlashImageChain.CreateFromImageChain(ImageChain.Create(image)));
         }
 
         return new MessageBuilder()
-            .Text($"本轮题目 ({mode} 模式)：")
+            .Text($"本轮题目 ({mode.GetName()}模式)：")
             .Image(image)
             .Text("30秒后揭晓答案~");
     }
@@ -202,7 +202,7 @@ public partial class ArcaeaModule
             };
         });
 
-        var mb = message.Reply($"今日猜曲绘排名 ({mode} 模式)");
+        var mb = message.Reply($"今日猜曲绘排名 ({mode.GetName()}模式)");
         for (int i = 0, j = 0; i < users.Count; i++)
         {
             if (j >= 5) break;
