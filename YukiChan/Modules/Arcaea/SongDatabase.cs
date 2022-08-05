@@ -19,6 +19,16 @@ public static class ArcaeaSongDatabase
         return SongDb.Value.Query<ArcaeaSongDbAlias>("SELECT * FROM alias");
     }
 
+    public static void AddAlias(string songId, string alias)
+    {
+        var dbAlias = new ArcaeaSongDbAlias
+        {
+            Alias = alias,
+            SongId = songId
+        };
+        SongDb.Value.InsertOrReplace(dbAlias);
+    }
+
     public static List<ArcaeaSongDbChart> GetAllCharts()
     {
         return SongDb.Value.Query<ArcaeaSongDbChart>("SELECT * FROM charts");
