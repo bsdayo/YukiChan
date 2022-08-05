@@ -98,7 +98,7 @@ public partial class ArcaeaModule
                     message.Receiver.Uin, message.Sender.Uin, message.Sender.Name, session.Mode, false);
                 return message.Reply("猜错啦！");
             }
-            else
+
             {
                 var mode = ArcaeaUtils.GetGuessMode(args[0]);
 
@@ -256,7 +256,9 @@ public partial class ArcaeaModule
     {
         var user = new List<ArcaeaGuessUser>();
         if (all)
+        {
             user.AddRange(Global.YukiDb.GetArcaeaGuessUserOfAllTime(message.Sender.Uin));
+        }
         else
         {
             var u = Global.YukiDb.GetArcaeaGuessUserOfDate(message.Sender.Uin, DateTime.Today);
@@ -267,18 +269,25 @@ public partial class ArcaeaModule
         if (!user.Any())
             return message.Reply("您还没有过用户数据哦，请猜一次曲绘再试吧~");
 
-        return message.Reply($"您的{(all ? "今日" : "全局")}猜曲绘信息\n")
+        var easyRate = user.Sum(u => u.EasyCorrectRate) / user.Count;
+        var normalRate = user.Sum(u => u.NormalCorrectRate) / user.Count;
+        var hardRate = user.Sum(u => u.HardCorrectRate) / user.Count;
+        var flashRate = user.Sum(u => u.FlashCorrectRate) / user.Count;
+        var grayScaleRate = user.Sum(u => u.GrayScaleCorrectRate) / user.Count;
+        var invertRate = user.Sum(u => u.InvertCorrectRate) / user.Count;
+
+        return message.Reply($"您的{(all ? "全局" : "今日")}猜曲绘信息\n")
             .Text(
-                $"简单 / {user.Sum(u => u.EasyCorrectCount)}√  {user.Sum(u => u.EasyWrongCount)}×  {(user.Sum(u => u.EasyCorrectRate) / user.Count):P2}\n")
+                $"简单 / {user.Sum(u => u.EasyCorrectCount)}√  {user.Sum(u => u.EasyWrongCount)}×  {(double.IsNaN(easyRate) ? 0d : easyRate):P2}\n")
             .Text(
-                $"正常 / {user.Sum(u => u.NormalCorrectCount)}√  {user.Sum(u => u.NormalWrongCount)}×  {(user.Sum(u => u.NormalCorrectRate) / user.Count):P2}\n")
+                $"正常 / {user.Sum(u => u.NormalCorrectCount)}√  {user.Sum(u => u.NormalWrongCount)}×  {(double.IsNaN(normalRate) ? 0d : normalRate):P2}\n")
             .Text(
-                $"困难 / {user.Sum(u => u.HardCorrectCount)}√  {user.Sum(u => u.HardWrongCount)}×  {(user.Sum(u => u.HardCorrectRate) / user.Count):P2}\n")
+                $"困难 / {user.Sum(u => u.HardCorrectCount)}√  {user.Sum(u => u.HardWrongCount)}×  {(double.IsNaN(hardRate) ? 0d : hardRate):P2}\n")
             .Text(
-                $"闪照 / {user.Sum(u => u.FlashCorrectCount)}√  {user.Sum(u => u.FlashWrongCount)}×  {(user.Sum(u => u.FlashCorrectRate) / user.Count):P2}\n")
+                $"闪照 / {user.Sum(u => u.FlashCorrectCount)}√  {user.Sum(u => u.FlashWrongCount)}×  {(double.IsNaN(flashRate) ? 0d : flashRate):P2}\n")
             .Text(
-                $"灰度 / {user.Sum(u => u.GrayScaleCorrectCount)}√  {user.Sum(u => u.GrayScaleWrongCount)}×  {(user.Sum(u => u.GrayScaleCorrectRate) / user.Count):P2}\n")
+                $"灰度 / {user.Sum(u => u.GrayScaleCorrectCount)}√  {user.Sum(u => u.GrayScaleWrongCount)}×  {(double.IsNaN(grayScaleRate) ? 0d : grayScaleRate):P2}\n")
             .Text(
-                $"反色 / {user.Sum(u => u.InvertCorrectCount)}√  {user.Sum(u => u.InvertWrongCount)}×  {(user.Sum(u => u.InvertCorrectRate) / user.Count):P2}");
+                $"反色 / {user.Sum(u => u.InvertCorrectCount)}√  {user.Sum(u => u.InvertWrongCount)}×  {(double.IsNaN(invertRate) ? 0d : invertRate):P2}");
     }
 }
