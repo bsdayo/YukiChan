@@ -40,7 +40,7 @@ public static class ArcaeaGuessImageGenerator
                 -1f, 0f, 0f, 0f, 255f,
                 0f, -1f, 0f, 0f, 255f,
                 0f, 0f, -1f, 0f, 255f,
-                0f, 0f, 0f, -1f, 0f,
+                0f, 0f, 0f, 1f, 0f,
             });
 
         canvas.DrawBitmap(coverBitmap,
