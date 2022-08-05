@@ -182,6 +182,11 @@ public static class ArcaeaUtils
             "hard" => ArcaeaGuessMode.Hard,
             "f" => ArcaeaGuessMode.Flash,
             "flash" => ArcaeaGuessMode.Flash,
+            "g" => ArcaeaGuessMode.GrayScale,
+            "gray" => ArcaeaGuessMode.GrayScale,
+            "grayscale" => ArcaeaGuessMode.GrayScale,
+            "i" => ArcaeaGuessMode.Invert,
+            "invert" => ArcaeaGuessMode.Invert,
             _ => null
         };
     }

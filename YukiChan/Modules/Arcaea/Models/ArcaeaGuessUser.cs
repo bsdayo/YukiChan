@@ -35,9 +35,17 @@ public class ArcaeaGuessUser
     
     [Column("flash_correct_count")] public int FlashCorrectCount { get; set; } = 0;
     [Column("flash_wrong_count")] public int FlashWrongCount { get; set; } = 0;
+    
+    [Column("grayscale_correct_count")] public int GrayScaleCorrectCount { get; set; } = 0;
+    [Column("grayscale_wrong_count")] public int GrayScaleWrongCount { get; set; } = 0;
+    
+    [Column("invert_correct_count")] public int InvertCorrectCount { get; set; } = 0;
+    [Column("invert_wrong_count")] public int InvertWrongCount { get; set; } = 0;
 
     public double EasyCorrectRate => (double)EasyCorrectCount / (EasyCorrectCount + EasyWrongCount);
     public double NormalCorrectRate => (double)NormalCorrectCount / (NormalCorrectCount + NormalWrongCount);
     public double HardCorrectRate => (double)HardCorrectCount / (HardCorrectCount + HardWrongCount);
     public double FlashCorrectRate => (double)FlashCorrectCount / (FlashCorrectCount + FlashWrongCount);
+    public double GrayScaleCorrectRate => (double)GrayScaleCorrectCount / (GrayScaleCorrectCount + GrayScaleWrongCount);
+    public double InvertCorrectRate => (double)InvertCorrectCount / (InvertCorrectCount + InvertWrongCount);
 }

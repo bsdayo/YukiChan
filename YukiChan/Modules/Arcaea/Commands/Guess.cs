@@ -12,10 +12,12 @@ namespace YukiChan.Modules.Arcaea;
 
 public enum ArcaeaGuessMode
 {
-    Easy,
-    Normal,
-    Hard,
-    Flash
+    Easy, // 简单
+    Normal, // 正常
+    Hard, // 困难
+    Flash, // 闪照
+    GrayScale, // 灰度
+    Invert // 反色
 }
 
 public partial class ArcaeaModule
@@ -144,7 +146,7 @@ public partial class ArcaeaModule
         });
 #pragma warning restore CS4014
 
-        var image = ArcaeaGuessImageGenerator.Normal(cover, mode);
+        var image = ArcaeaGuessImageGenerator.Generate(cover, mode);
 
         if (mode == ArcaeaGuessMode.Flash)
         {
@@ -172,6 +174,8 @@ public partial class ArcaeaModule
                 ArcaeaGuessMode.Normal => (int)(userB.NormalCorrectRate * 10000 - userA.NormalCorrectRate * 10000),
                 ArcaeaGuessMode.Hard => (int)(userB.HardCorrectRate * 10000 - userA.HardCorrectRate * 10000),
                 ArcaeaGuessMode.Flash => (int)(userB.FlashCorrectRate * 10000 - userA.FlashCorrectRate * 10000),
+                ArcaeaGuessMode.GrayScale => (int)(userB.GrayScaleCorrectRate * 10000 - userA.GrayScaleCorrectRate * 10000),
+                ArcaeaGuessMode.Invert => (int)(userB.InvertCorrectRate * 10000 - userA.InvertCorrectRate * 10000),
                 _ => 0
             };
         });
@@ -201,6 +205,21 @@ public partial class ArcaeaModule
                     correctCount = user.HardCorrectCount;
                     wrongCount = user.HardWrongCount;
                     rate = user.HardCorrectRate;
+                    break;
+                case ArcaeaGuessMode.Flash:
+                    correctCount = user.FlashCorrectCount;
+                    wrongCount = user.FlashWrongCount;
+                    rate = user.FlashCorrectRate;
+                    break;
+                case ArcaeaGuessMode.GrayScale:
+                    correctCount = user.GrayScaleCorrectCount;
+                    wrongCount = user.GrayScaleWrongCount;
+                    rate = user.GrayScaleCorrectRate;
+                    break;
+                case ArcaeaGuessMode.Invert:
+                    correctCount = user.InvertCorrectCount;
+                    wrongCount = user.InvertWrongCount;
+                    rate = user.InvertCorrectRate;
                     break;
             }
 

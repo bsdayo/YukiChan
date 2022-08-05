@@ -88,6 +88,9 @@ public partial class YukiDbManager
                     ArcaeaGuessMode.Easy => user.EasyCorrectCount++,
                     ArcaeaGuessMode.Normal => user.NormalCorrectCount++,
                     ArcaeaGuessMode.Hard => user.HardCorrectCount++,
+                    ArcaeaGuessMode.Flash => user.FlashCorrectCount++,
+                    ArcaeaGuessMode.GrayScale => user.GrayScaleCorrectCount++,
+                    ArcaeaGuessMode.Invert => user.InvertCorrectCount++,
                     _ => -1
                 };
             else
@@ -96,6 +99,9 @@ public partial class YukiDbManager
                     ArcaeaGuessMode.Easy => user.EasyWrongCount++,
                     ArcaeaGuessMode.Normal => user.NormalWrongCount++,
                     ArcaeaGuessMode.Hard => user.HardWrongCount++,
+                    ArcaeaGuessMode.Flash => user.FlashWrongCount++,
+                    ArcaeaGuessMode.GrayScale => user.GrayScaleWrongCount++,
+                    ArcaeaGuessMode.Invert => user.InvertWrongCount++,
                     _ => -1
                 };
             return user;
