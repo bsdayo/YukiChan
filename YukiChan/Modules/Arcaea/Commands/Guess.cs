@@ -18,7 +18,16 @@ public enum ArcaeaGuessMode
 
 public partial class ArcaeaModule
 {
-    private static readonly Dictionary<uint, (ArcaeaGuessMode, ArcaeaSongDbChart, byte[])> GuessSessions = new();
+    private class ArcaeaGuessSession
+    {
+        public long Timestamp { get; set; }
+        public ArcaeaGuessMode Mode { get; set; }
+        public ArcaeaSongDbChart Chart { get; set; } = null!;
+        public byte[] Cover { get; set; } = null!;
+        public bool Inited { get; set; }
+    }
+
+    private static readonly Dictionary<uint, ArcaeaGuessSession> GuessSessions = new();
 
     [Command("Guess",
         Command = "guess",
@@ -54,23 +63,26 @@ public partial class ArcaeaModule
             if (GuessSessions.ContainsKey(message.Receiver.Uin))
             {
                 var guessSongId = ArcaeaSongDatabase.FuzzySearchId(string.Join(" ", args));
-                var (mode, chart, cover) = GuessSessions[message.Receiver.Uin];
+                var session = GuessSessions[message.Receiver.Uin];
+
+                if (!session.Inited)
+                    return message.Reply("题目正在初始化中，请稍等...");
 
                 // 判断是否猜对
-                if (guessSongId == chart.SongId)
+                if (guessSongId == session.Chart.SongId)
                 {
                     Global.YukiDb.AddArcaeaGuessCount(
-                        message.Receiver.Uin, message.Sender.Uin, message.Sender.Name, mode, true);
+                        message.Receiver.Uin, message.Sender.Uin, message.Sender.Name, session.Mode, true);
                     GuessSessions.Remove(message.Receiver.Uin);
 
                     return message.Reply("猜对啦！")
-                        .Image(cover)
-                        .Text($"{chart.NameEn} - {chart.Artist}\n")
-                        .Text($"({ArcaeaSongDatabase.GetPackageBySet(chart.Set)!.Name})");
+                        .Image(session.Cover)
+                        .Text($"{session.Chart.NameEn} - {session.Chart.Artist}\n")
+                        .Text($"({ArcaeaSongDatabase.GetPackageBySet(session.Chart.Set)!.Name})");
                 }
 
                 Global.YukiDb.AddArcaeaGuessCount(
-                    message.Receiver.Uin, message.Sender.Uin, message.Sender.Name, mode, false);
+                    message.Receiver.Uin, message.Sender.Uin, message.Sender.Name, session.Mode, false);
                 return message.Reply("猜错啦！");
             }
             else
@@ -92,8 +104,11 @@ public partial class ArcaeaModule
 
     private static async Task<MessageBuilder> GetNewGuess(Bot bot, MessageStruct message, ArcaeaGuessMode mode)
     {
+        var timestamp = new DateTimeOffset(DateTime.Now).ToUnixTimeMilliseconds();
+
         // 占位
-        GuessSessions.Add(message.Receiver.Uin, (default, default, default)!);
+        GuessSessions.TryAdd(message.Receiver.Uin,
+            new ArcaeaGuessSession { Timestamp = timestamp, Mode = mode });
 
         var allCharts = ArcaeaSongDatabase.GetAllCharts()
             .Where(chart => chart.RatingClass == (int)ArcaeaDifficulty.Future)
@@ -102,7 +117,9 @@ public partial class ArcaeaModule
         var cover = await AuaClient.GetSongCover(randomChart.SongId, randomChart.JacketOverride,
             (ArcaeaDifficulty)randomChart.RatingClass);
 
-        GuessSessions[message.Receiver.Uin] = (mode, randomChart, cover);
+        GuessSessions[message.Receiver.Uin].Chart = randomChart;
+        GuessSessions[message.Receiver.Uin].Cover = cover;
+        GuessSessions[message.Receiver.Uin].Inited = true;
         Logger.Debug($"新的猜曲绘会话: {mode} 模式   {randomChart.SongId} -> {randomChart.NameEn}");
 
         // 超时揭晓答案
@@ -112,14 +129,15 @@ public partial class ArcaeaModule
             Task.Delay(30000).Wait();
             if (GuessSessions.ContainsKey(message.Receiver.Uin))
             {
-                var (_, chart, songCover) = GuessSessions[message.Receiver.Uin];
-                GuessSessions.Remove(message.Receiver.Uin);
+                var session = GuessSessions[message.Receiver.Uin];
+                if (session.Timestamp != timestamp) return;
                 bot.SendReply(message,
                     new MessageBuilder()
                         .Text("时间到！揭晓答案——")
-                        .Image(songCover)
-                        .Text($"{chart.NameEn} - {chart.Artist}\n")
-                        .Text($"({ArcaeaSongDatabase.GetPackageBySet(chart.Set)!.Name})"));
+                        .Image(session.Cover)
+                        .Text($"{session.Chart.NameEn} - {session.Chart.Artist}\n")
+                        .Text($"({ArcaeaSongDatabase.GetPackageBySet(session.Chart.Set)!.Name})"));
+                GuessSessions.Remove(message.Receiver.Uin);
             }
         });
 #pragma warning restore CS4014
