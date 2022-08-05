@@ -10,7 +10,7 @@ public class ArcaeaGuessUser
     [PrimaryKey]
     [AutoIncrement]
     [Column("id")]
-    public int Id { get; set; }
+    public int Id { get; set; } = 1;
 
     [Column("year")] public int Year { get; set; }
 

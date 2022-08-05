@@ -111,7 +111,7 @@ public partial class YukiDbManager
                 UserName = userName
             };
             newUser = addCount(newUser, isCorrect, guessMode);
-            _database.InsertOrReplace(newUser, typeof(ArcaeaGuessUser));
+            _database.Insert(newUser, typeof(ArcaeaGuessUser));
         }
     }
 }
