@@ -85,7 +85,9 @@ public partial class ArcaeaModule
                 if (guessSongId == session.Chart.SongId)
                 {
                     Global.YukiDb.AddArcaeaGuessCount(
-                        message.Receiver.Uin, message.Sender.Uin, message.Sender.Name, session.Mode, true);
+                        message.Receiver.Uin, message.Receiver.Name,
+                        message.Sender.Uin, message.Sender.Name,
+                        session.Mode, true);
                     GuessSessions.Remove(message.Receiver.Uin);
 
                     return message.Reply("猜对啦！")
@@ -95,7 +97,9 @@ public partial class ArcaeaModule
                 }
 
                 Global.YukiDb.AddArcaeaGuessCount(
-                    message.Receiver.Uin, message.Sender.Uin, message.Sender.Name, session.Mode, false);
+                    message.Receiver.Uin, message.Receiver.Name,
+                    message.Sender.Uin, message.Sender.Name,
+                    session.Mode, false);
                 return message.Reply("猜错啦！");
             }
 

@@ -22,23 +22,25 @@ public class StatusModule : ModuleBase
         var konataBs = new BuildStamp { Type = typeof(Bot) };
         var yukiBs = new BuildStamp { Type = typeof(Program) };
 
-        return new MessageBuilder()
+        var cmdRank = Global.YukiDb.GetTodayCommandHistoryRank();
+
+        var mb = new MessageBuilder()
             .Add(ReplyChain.Create(message))
             .Text($"[暮雪酱|YukiChan] {yukiBs.Version}\n")
-            .Text($"{yukiBs.Branch}@{yukiBs.CommitHash[..12]}\n\n")
-            //
+            .Text($"{yukiBs.Branch}@{yukiBs.CommitHash[..12]}\n")
             .Text($"[Konata.Core] {konataBs.Version}\n")
             .Text($"{konataBs.Branch}@{konataBs.CommitHash[..12]}\n\n")
             //
             .Text($"已加载 {ModuleManager.ModuleCount} 个模块，{ModuleManager.CommandCount} 个指令\n")
-            .Text($"已处理 {Global.Information.MessageProcessed + 1} 条消息\n")
-            .Text($"已接收 {Global.Information.MessageReceived} 条消息\n")
-            .Text($"已发送 {Global.Information.MessageSent + 1} 条消息\n\n")
+            .Text(
+                $"接收/处理/发送 - {Global.Information.MessageReceived}/{Global.Information.MessageProcessed + 1}/{Global.Information.MessageSent + 1}\n")
+            .Text($"内存占用 - {Process.GetCurrentProcess().WorkingSet64.Bytes2MiB(2)} MiB\n\n")
             //
-            .Text($"GC 内存 {GC.GetTotalAllocatedBytes().Bytes2MiB(2)} MiB " +
-                  $"({Math.Round((double)GC.GetTotalAllocatedBytes() / GC.GetTotalMemory(false) * 100, 2)}%)\n")
-            .Text($"总内存 {Process.GetCurrentProcess().WorkingSet64.Bytes2MiB(2)} MiB\n\n")
-            //
-            .Text("Made with love by b1acksoil");
+            .Text("[指令调用排名]\n");
+
+        for (int i = 0, j = 0; i < cmdRank.Length && j < 5; i++, j++)
+            mb.Text($"{i + 1}. {cmdRank[i].Key} - {cmdRank[i].Value}次\n");
+
+        return mb.Text("\nMade with love by b1acksoil");
     }
 }

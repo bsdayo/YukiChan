@@ -98,6 +98,7 @@ public abstract class ModuleBase
                 !fallbackFlag)
                 continue;
 
+            var callTime = DateTime.Now;
             var user = Global.YukiDb.GetUser(message.Sender.Uin);
 
             if (user is null)
@@ -140,7 +141,18 @@ public abstract class ModuleBase
                     var result = command.InnerMethod.Invoke(this,
                         new object?[] { bot, message, body }[..command.InnerMethod.GetParameters().Length]);
 
-                    return result as MessageBuilder ?? (result as Task<MessageBuilder>)?.Result ?? null;
+                    var replyMb = result as MessageBuilder ?? (result as Task<MessageBuilder>)?.Result ?? null;
+
+                    var replyTime = DateTime.Now;
+
+                    Global.YukiDb.AddCommandHistory(callTime, replyTime, message.Type,
+                        message.Receiver.Uin, message.Receiver.Name,
+                        message.Sender.Uin, message.Sender.Name, user!.Authority,
+                        ModuleInfo.Name, ModuleInfo.Command,
+                        command.CommandInfo.Name, command.CommandInfo.Command ?? "",
+                        commandStr, replyMb?.Build()?.ToString() ?? "(no reply)");
+
+                    return replyMb;
                 }
                 catch (Exception exception)
                 {

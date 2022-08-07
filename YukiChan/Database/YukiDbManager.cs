@@ -1,16 +1,20 @@
 ﻿using System.Reflection;
+using Konata.Core.Message;
 using SQLite;
+using YukiChan.Core;
 using YukiChan.Database.Models;
 using YukiChan.Utils;
 
 namespace YukiChan.Database;
 
 [YukiDatabase(UserdataDbName, typeof(YukiUser), typeof(YukiGroup))]
+[YukiDatabase(CommandHistoryDbName, typeof(CommandHistory))]
 public partial class YukiDbManager
 {
     private readonly Dictionary<string, SQLiteConnection> _databases = new();
 
     private const string UserdataDbName = "Userdata";
+    private const string CommandHistoryDbName = "CommandHistory";
 
     public YukiDbManager()
     {
@@ -76,6 +80,66 @@ public partial class YukiDbManager
         user.Authority = YukiUserAuthority.Banned;
         _databases[UserdataDbName].Update(user);
         return true;
+    }
+
+    public void AddCommandHistory(DateTime callTime, DateTime replyTime, MessageStruct.SourceType sourceType,
+        uint groupUin, string groupName,
+        uint userUin, string userName, YukiUserAuthority authority,
+        string moduleName, string moduleCmd,
+        string commandName, string commandCmd, string commandRaw, string reply)
+    {
+        _databases[CommandHistoryDbName].Insert(new CommandHistory
+        {
+            CallTimestamp = new DateTimeOffset(callTime).ToUnixTimeMilliseconds(),
+            ReplyTimestamp = new DateTimeOffset(replyTime).ToUnixTimeMilliseconds(),
+            Context = sourceType.ToString(),
+
+            GroupUin = groupUin,
+            GroupName = groupName,
+            UserUin = userUin,
+            UserName = userName,
+            UserAuthority = authority,
+
+            ModuleName = moduleName,
+            ModuleCmd = moduleCmd,
+            CommandName = commandName,
+            CommandCmd = commandCmd,
+            CommandRaw = commandRaw,
+            Reply = reply
+        }, typeof(CommandHistory));
+    }
+
+    public int GetTotalCommandHistoryCount()
+    {
+        return _databases[CommandHistoryDbName].FindWithQuery<int>(
+            "SELECT COUNT(*) FROM command_history");
+    }
+
+    public KeyValuePair<string, int>[] GetTodayCommandHistoryRank()
+    {
+        var today = DateTime.Today;
+        var startT = new DateTimeOffset(
+                new DateTime(today.Year, today.Month, today.Day, 0, 0, 0))
+            .ToUnixTimeMilliseconds();
+        var endT = new DateTimeOffset(
+                new DateTime(today.Year, today.Month, today.Day, 23, 59, 59))
+            .ToUnixTimeMilliseconds();
+
+        var todayHistories = _databases[CommandHistoryDbName].Query<CommandHistory>(
+            "SELECT * FROM command_history WHERE call_timestamp BETWEEN ? AND ?", startT, endT);
+
+        var rank = new Dictionary<string, int>();
+
+        foreach (var history in todayHistories)
+        {
+            var cmd = $"{Global.YukiConfig.CommandPrefix}{history.ModuleCmd} {history.CommandCmd}";
+            if (rank.ContainsKey(cmd))
+                rank[cmd]++;
+            else
+                rank[cmd] = 1;
+        }
+
+        return rank.OrderByDescending(r => r.Value).ToArray();
     }
 }
 

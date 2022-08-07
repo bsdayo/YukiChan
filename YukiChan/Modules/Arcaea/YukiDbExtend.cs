@@ -88,7 +88,8 @@ public partial class YukiDbManager
             startDate.Day, endDate.Day);
     }
 
-    public void AddArcaeaGuessCount(uint groupUin, uint userUin, string userName, ArcaeaGuessMode guessMode,
+    public void AddArcaeaGuessCount(uint groupUin, string groupName, uint userUin, string userName,
+        ArcaeaGuessMode guessMode,
         bool isCorrect)
     {
         var now = DateTime.Now;
@@ -134,6 +135,7 @@ public partial class YukiDbManager
                 Month = now.Month,
                 Day = now.Day,
                 GroupUin = groupUin,
+                GroupName = groupName,
                 UserUin = userUin,
                 UserName = userName
             };
