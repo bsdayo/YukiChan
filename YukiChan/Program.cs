@@ -22,6 +22,8 @@ public static class Program
                 "Logs/YukiChan", "Logs/Konata",
                 // Configs - Yuki and Konata's configs
                 "Configs",
+                // Databases - Yuki data
+                "Databases",
                 // Assets - Module assets
                 "Assets/Cats", "Assets/Capoo",
                 "Assets/Arcaea/AudioPreview", "Assets/Arcaea/Aff",

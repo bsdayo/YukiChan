@@ -144,7 +144,7 @@ public partial class ArcaeaModule
             {
                 var session = GuessSessions[message.Receiver.Uin];
                 if (session.Timestamp != timestamp) return;
-                bot.SendReply(message,
+                bot.Send(message,
                     new MessageBuilder()
                         .Text("时间到！揭晓答案——")
                         .Image(session.Cover)

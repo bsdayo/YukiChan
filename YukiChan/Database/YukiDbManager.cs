@@ -5,40 +5,43 @@ using YukiChan.Utils;
 
 namespace YukiChan.Database;
 
-[YukiDbTable(typeof(YukiUser))]
-[YukiDbTable(typeof(YukiGroup))]
+[YukiDatabase(UserdataDbName, typeof(YukiUser), typeof(YukiGroup))]
 public partial class YukiDbManager
 {
-    protected readonly SQLiteConnection _database;
+    private readonly Dictionary<string, SQLiteConnection> _databases = new();
+
+    private const string UserdataDbName = "Userdata";
 
     public YukiDbManager()
     {
-        _database = new SQLiteConnection("Database.db");
-
-        var attrs = GetType().GetCustomAttributes(typeof(YukiDbTableAttribute), false);
+        var attrs = GetType().GetCustomAttributes(typeof(YukiDatabaseAttribute), false);
 
         foreach (var attr in attrs)
         {
-            if (attr is not YukiDbTableAttribute table) continue;
+            if (attr is not YukiDatabaseAttribute database) continue;
 
-            _database.CreateTable(table.TableType);
+            _databases.Add(database.Name, new SQLiteConnection($"Databases/{database.Name}.db"));
+            YukiLogger.Debug($"创建数据库 Databases/{database.Name}.db");
 
-            var tableAttr = table.TableType.GetCustomAttribute<TableAttribute>();
-            var tableName = tableAttr is not null ? tableAttr.Name : table.TableType.Name;
-
-            YukiLogger.Debug($"通过类 {table.TableType.Name} 创建数据库表 {tableName}");
+            foreach (var tableType in database.TableTypes)
+            {
+                _databases[database.Name].CreateTable(tableType);
+                var tableAttr = tableType.GetCustomAttribute<TableAttribute>();
+                var tableName = tableAttr is not null ? tableAttr.Name : tableType.Name;
+                YukiLogger.Debug($"  通过类 {tableType.Name} 创建表 {tableName}");
+            }
         }
     }
 
     public YukiUser? GetUser(uint userUin)
     {
-        return _database.FindWithQuery<YukiUser>(
+        return _databases[UserdataDbName].FindWithQuery<YukiUser>(
             "SELECT * FROM users WHERE uin = ?", userUin);
     }
 
     public YukiGroup? GetGroup(uint groupUin)
     {
-        return _database.FindWithQuery<YukiGroup>(
+        return _databases[UserdataDbName].FindWithQuery<YukiGroup>(
             "SELECT * FROM groups WHERE uin = ?", groupUin);
     }
 
@@ -49,7 +52,7 @@ public partial class YukiDbManager
             Uin = uin,
             Authority = authority
         };
-        _database.Insert(user, typeof(YukiUser));
+        _databases[UserdataDbName].Insert(user, typeof(YukiUser));
     }
 
     public void AddGroup(uint groupUin)
@@ -58,12 +61,12 @@ public partial class YukiDbManager
         {
             Uin = groupUin
         };
-        _database.Insert(group);
+        _databases[UserdataDbName].Insert(group);
     }
 
     public void UpdateUser(YukiUser user)
     {
-        _database.Update(user);
+        _databases[UserdataDbName].Update(user);
     }
 
     public bool BanUser(uint userUin)
@@ -71,18 +74,20 @@ public partial class YukiDbManager
         var user = GetUser(userUin);
         if (user is null) return false;
         user.Authority = YukiUserAuthority.Banned;
-        _database.Update(user);
+        _databases[UserdataDbName].Update(user);
         return true;
     }
 }
 
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-public class YukiDbTableAttribute : Attribute
+public class YukiDatabaseAttribute : Attribute
 {
-    public Type TableType { get; set; }
+    public string Name { get; set; }
+    public Type[] TableTypes { get; set; }
 
-    public YukiDbTableAttribute(Type tableType)
+    public YukiDatabaseAttribute(string dbName, params Type[] tableTypes)
     {
-        TableType = tableType;
+        Name = dbName.Replace(".db", "");
+        TableTypes = tableTypes;
     }
 }

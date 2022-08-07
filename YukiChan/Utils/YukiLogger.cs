@@ -1,5 +1,8 @@
 ﻿using System.Text;
+using Konata.Core;
 using Konata.Core.Events.Model;
+using Konata.Core.Interfaces.Api;
+using Konata.Core.Message;
 using YukiChan.Core;
 
 namespace YukiChan.Utils;
@@ -67,7 +70,7 @@ public static class YukiLogger
         Log($"[D] {message}", writeToFile);
     }
 
-    public static async void ReceiveMessage(GroupMessageEvent e)
+    public static async void ReceiveGroupMessage(GroupMessageEvent e)
     {
         while (_onLog) await Task.Delay(10);
 
@@ -80,7 +83,7 @@ public static class YukiLogger
         _onLog = false;
     }
 
-    public static async void ReceiveMessage(FriendMessageEvent e)
+    public static async void ReceiveFriendMessage(FriendMessageEvent e)
     {
         while (_onLog) await Task.Delay(10);
 
@@ -93,29 +96,40 @@ public static class YukiLogger
         _onLog = false;
     }
 
-    public static async void SendMessage(GroupMessageEvent e, string? message)
+    public static async Task SendGroupMessageWithLog(this Bot bot, string groupName, uint groupUin, MessageBuilder? mb)
     {
+        if (mb is null) return;
+
+        await bot.SendGroupMessage(groupUin, mb);
+
         while (_onLog) await Task.Delay(10);
 
         _onLog = true;
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.Write(DateTime.Now.ToString("HH:mm:ss ") +
-                      $"[M] <S:G> {e.GroupName} ({e.GroupUin}) => ");
+                      $"[M] <S:G> {groupName} ({groupUin}) => ");
         Console.ForegroundColor = ConsoleColor.Gray;
-        Console.WriteLine(message?.ReplaceLineEndings("\\n"));
+        Console.WriteLine(mb.Build().ToString().ReplaceLineEndings("\\n"));
         _onLog = false;
+
+        Global.Information.MessageSent++;
     }
 
-    public static async void SendMessage(FriendMessageEvent e, string? message)
+    public static async Task SendFriendMessageWithLog(this Bot bot, string friendName, uint friendUin,
+        MessageBuilder? mb)
     {
+        if (mb is null) return;
+
+        await bot.SendFriendMessage(friendUin, mb);
+
         while (_onLog) await Task.Delay(10);
 
         _onLog = true;
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.Write(DateTime.Now.ToString("HH:mm:ss ") +
-                      $"[M] <S:F> {e.Message.Receiver.Name} ({e.FriendUin}) => ");
+                      $"[M] <S:F> {friendName} ({friendUin}) => ");
         Console.ForegroundColor = ConsoleColor.Gray;
-        Console.WriteLine(message?.ReplaceLineEndings("\\n"));
+        Console.WriteLine(mb.Build().ToString().ReplaceLineEndings("\\n"));
         _onLog = false;
     }
 

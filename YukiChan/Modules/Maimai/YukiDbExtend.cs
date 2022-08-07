@@ -4,9 +4,11 @@
 
 namespace YukiChan.Database;
 
-[YukiDbTable(typeof(MaimaiUser))]
+[YukiDatabase(MaimaiDbName, typeof(MaimaiUser))]
 public partial class YukiDbManager
 {
+    private const string MaimaiDbName = "Maimai";
+
     internal void AddMaimaiUser(uint uin, string name)
     {
         var user = new MaimaiUser
@@ -15,12 +17,12 @@ public partial class YukiDbManager
             Name = name
         };
 
-        _database.InsertOrReplace(user, typeof(MaimaiUser));
+        _databases[MaimaiDbName].InsertOrReplace(user, typeof(MaimaiUser));
     }
 
     internal MaimaiUser? GetMaimaiUser(uint uin)
     {
-        return _database.FindWithQuery<MaimaiUser>(
+        return _databases[MaimaiDbName].FindWithQuery<MaimaiUser>(
             "SELECT * FROM maimai_users WHERE uin = ?", uin);
     }
 
@@ -28,7 +30,7 @@ public partial class YukiDbManager
     {
         var user = GetMaimaiUser(uin);
         if (user is null) return false;
-        _database.Delete<MaimaiUser>(uin);
+        _databases[MaimaiDbName].Delete<MaimaiUser>(uin);
         return true;
     }
 }

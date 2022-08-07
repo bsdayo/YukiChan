@@ -1,6 +1,5 @@
 ﻿using System.Text.RegularExpressions;
 using Konata.Core;
-using Konata.Core.Interfaces.Api;
 using Konata.Core.Message;
 using Konata.Core.Message.Model;
 
@@ -52,35 +51,24 @@ public static class CommonUtils
 
     public static async Task Send(this Bot bot, MessageStruct message, string text)
     {
-        if (message.Type == MessageStruct.SourceType.Friend)
-            await bot.SendFriendMessage(message.Sender.Uin, text);
-        else if (message.Type == MessageStruct.SourceType.Group)
-            await bot.SendGroupMessage(message.Receiver.Uin, text);
+        await bot.Send(message, new MessageBuilder(text));
     }
-    
+
     public static async Task Send(this Bot bot, MessageStruct message, MessageBuilder mb)
     {
         if (message.Type == MessageStruct.SourceType.Friend)
-            await bot.SendFriendMessage(message.Sender.Uin, mb);
+            await bot.SendFriendMessageWithLog(message.Sender.Name, message.Sender.Uin, mb);
         else if (message.Type == MessageStruct.SourceType.Group)
-            await bot.SendGroupMessage(message.Receiver.Uin, mb);
+            await bot.SendGroupMessageWithLog(message.Receiver.Name, message.Receiver.Uin, mb);
     }
 
     public static async Task SendReply(this Bot bot, MessageStruct message, string text)
     {
         var mb = message.Reply(text);
         if (message.Type == MessageStruct.SourceType.Friend)
-            await bot.SendFriendMessage(message.Sender.Uin, mb);
+            await bot.SendFriendMessageWithLog(message.Sender.Name, message.Sender.Uin, mb);
         else if (message.Type == MessageStruct.SourceType.Group)
-            await bot.SendGroupMessage(message.Receiver.Uin, mb);
-    }
-
-    public static async Task SendReply(this Bot bot, MessageStruct message, MessageBuilder mb)
-    {
-        if (message.Type == MessageStruct.SourceType.Friend)
-            await bot.SendFriendMessage(message.Sender.Uin, mb);
-        else if (message.Type == MessageStruct.SourceType.Group)
-            await bot.SendGroupMessage(message.Receiver.Uin, mb);
+            await bot.SendGroupMessageWithLog(message.Receiver.Name, message.Receiver.Uin, mb);
     }
 
     public static double Bytes2MiB(this long bytes, int round)

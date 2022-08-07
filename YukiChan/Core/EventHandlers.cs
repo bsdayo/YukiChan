@@ -32,7 +32,7 @@ public static class EventHandlers
 
         Global.Information.MessageReceived++;
 
-        YukiLogger.ReceiveMessage(e);
+        YukiLogger.ReceiveGroupMessage(e);
 
         var textChain = e.Chain.GetChain<TextChain>();
         if (textChain is null) return;
@@ -40,10 +40,7 @@ public static class EventHandlers
         try
         {
             var msgBuilder = ModuleManager.ParseCommand(bot, e.Message);
-            if (msgBuilder is null) return;
-            Global.Information.MessageSent++;
-            YukiLogger.SendMessage(e, msgBuilder.Build().ToString());
-            await bot.SendGroupMessage(e.GroupUin, msgBuilder);
+            await bot.SendGroupMessageWithLog(e.GroupName, e.GroupUin, msgBuilder);
         }
         catch (Exception exception)
         {
@@ -57,7 +54,7 @@ public static class EventHandlers
 
         Global.Information.MessageReceived++;
 
-        YukiLogger.ReceiveMessage(e);
+        YukiLogger.ReceiveFriendMessage(e);
 
         var textChain = e.Chain.GetChain<TextChain>();
         if (textChain is null) return;
@@ -65,10 +62,7 @@ public static class EventHandlers
         try
         {
             var msgBuilder = ModuleManager.ParseCommand(bot, e.Message);
-            if (msgBuilder is null) return;
-            Global.Information.MessageSent++;
-            YukiLogger.SendMessage(e, msgBuilder.Build().ToString());
-            await bot.SendFriendMessage(e.FriendUin, msgBuilder);
+            await bot.SendFriendMessageWithLog(e.Message.Sender.Name, e.FriendUin, msgBuilder);
         }
         catch (Exception exception)
         {
@@ -90,13 +84,14 @@ public static class EventHandlers
         await bot.ApproveGroupInvitation(e.GroupUin, e.InviterUin, e.Token);
         YukiLogger.Info($"已加入群 {e.GroupName} ({e.GroupUin})，邀请人为 {e.InviterNick} ({e.InviterUin})。");
     }
-    
+
     public static async void OnFriendRequest(Bot bot, FriendRequestEvent e)
     {
         if (Global.YukiConfig.FriendRequestProtect)
         {
             await bot.DeclineFriendRequest(e.ReqUin, e.Token);
-            YukiLogger.Info($"由于开启好友申请保护，已拒绝 {e.ReqNick} ({e.ReqUin}) 的好友申请，备注为 {e.ReqComment.ReplaceLineEndings("\\n")}。");
+            YukiLogger.Info(
+                $"由于开启好友申请保护，已拒绝 {e.ReqNick} ({e.ReqUin}) 的好友申请，备注为 {e.ReqComment.ReplaceLineEndings("\\n")}。");
             return;
         }
 
