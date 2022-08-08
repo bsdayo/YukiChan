@@ -65,9 +65,16 @@ public partial class YukiDbManager
         {
             if (!string.IsNullOrWhiteSpace(bottle.ImageFilename))
             {
-                var newFilename = $"{bottle.Id}.{bottle.ImageFilename.Split(".")[1]}";
-                File.Move($"Data/BottleImages/{bottle.ImageFilename}", $"Data/BottleImages/{newFilename}");
-                bottle.ImageFilename = newFilename;
+                try
+                {
+                    var newFilename = $"{bottle.Id}.{bottle.ImageFilename.Split(".")[1]}";
+                    File.Move($"Data/BottleImages/{bottle.ImageFilename}", $"Data/BottleImages/{newFilename}");
+                    bottle.ImageFilename = newFilename;
+                }
+                catch
+                {
+                    // ignored
+                }
             }
         }
 
