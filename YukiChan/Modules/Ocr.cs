@@ -58,9 +58,9 @@ public class OcrModule : ModuleBase
         mrc.AddMessage(bot.Uin, "基本信息", new MessageBuilder()
             .Text("[基本信息]\n")
             .Text($"字符总数: {charCount}\n")
-            .Text($"平均准确率: {totalConf / result.Count:N2}")
+            .Text($"平均准确率: {totalConf / result.Count:N2}%\n")
             .Text($"图片尺寸: {imageChain.Width}x{imageChain.Height}\n")
-            .Text($"图片大小: {(double)imageChain.FileLength / 1024 / 1024:N2}\n")
+            .Text($"图片大小: {(double)imageChain.FileLength / 1024 / 1024:N2}M")
             .Build());
         mrc.AddMessage(bot.Uin, "转换结果", mb.Build());
 
