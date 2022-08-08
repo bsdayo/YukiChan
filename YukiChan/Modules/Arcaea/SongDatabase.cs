@@ -53,35 +53,10 @@ public static class ArcaeaSongDatabase
     /// <returns>搜索到的曲目，若未搜索到返回 null</returns>
     public static ArcaeaSong? FuzzySearchSong(string source)
     {
-        if (string.IsNullOrWhiteSpace(source))
-            return null;
+        var songId = FuzzySearchId(source);
+        if (songId is null) return null;
 
-        source = source.RemoveString(" ").ToLower();
-        List<ArcaeaSongDbChart> charts = new();
-
-        var aliases = GetAllAliases()
-            .Where(alias => alias.SongId == source ||
-                            alias.Alias.ToLower() == source)
-            .ToArray();
-
-        if (aliases.Length > 0)
-            charts = GetChartsById(aliases[0].SongId);
-
-        if (charts.Count == 0)
-        {
-            var allCharts = GetAllCharts();
-            charts = allCharts.FindAll(chart => chart.SongId == source);
-            if (charts.Count == 0)
-                charts = allCharts.FindAll(chart => chart.NameEn.RemoveString(" ").ToLower() == source ||
-                                                    chart.NameJp.RemoveString(" ").ToLower() == source);
-            if (charts.Count == 0)
-                charts = allCharts.FindAll(chart => chart.NameEn.GetAbbreviation().ToLower() == source);
-            if (charts.Count == 0)
-                charts = allCharts.FindAll(chart => source.Length > 4 &&
-                                                    chart.NameEn.RemoveString(" ").ToLower().Contains(source));
-            if (charts.Count == 0) return null;
-        }
-
+        var charts = GetAllCharts().FindAll(c => c.SongId == songId);
         charts.Sort((chartA, chartB) => chartA.RatingClass - chartB.RatingClass);
 
         return ArcaeaSong.FromDatabase(charts);

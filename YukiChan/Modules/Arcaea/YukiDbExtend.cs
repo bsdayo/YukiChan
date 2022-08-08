@@ -19,12 +19,12 @@ public partial class YukiDbManager
             Name = name
         };
 
-        _databases[ArcaeaDbName].InsertOrReplace(user, typeof(ArcaeaDatabaseUser));
+        Databases[ArcaeaDbName].InsertOrReplace(user, typeof(ArcaeaDatabaseUser));
     }
 
     public ArcaeaDatabaseUser? GetArcaeaUser(uint uin)
     {
-        return _databases[ArcaeaDbName].FindWithQuery<ArcaeaDatabaseUser>(
+        return Databases[ArcaeaDbName].FindWithQuery<ArcaeaDatabaseUser>(
             "SELECT * FROM arcaea_users WHERE uin = ?", uin);
     }
 
@@ -32,53 +32,53 @@ public partial class YukiDbManager
     {
         var user = GetArcaeaUser(uin);
         if (user is null) return false;
-        _databases[ArcaeaDbName].Delete<ArcaeaDatabaseUser>(uin);
+        Databases[ArcaeaDbName].Delete<ArcaeaDatabaseUser>(uin);
         return true;
     }
 
     public ArcaeaGuessUser? GetArcaeaGuessUserOfDate(uint groupUin, uint userUin, DateTime date)
     {
-        return _databases[ArcaeaDbName].FindWithQuery<ArcaeaGuessUser>(
+        return Databases[ArcaeaDbName].FindWithQuery<ArcaeaGuessUser>(
             "SELECT * FROM arcaea_guess WHERE group_uin = ? AND user_uin = ? AND year = ? AND month = ? AND day = ?",
             groupUin, userUin, date.Year, date.Month, date.Day);
     }
 
     public ArcaeaGuessUser? GetArcaeaGuessUserOfDate(uint userUin, DateTime date)
     {
-        return _databases[ArcaeaDbName].FindWithQuery<ArcaeaGuessUser>(
+        return Databases[ArcaeaDbName].FindWithQuery<ArcaeaGuessUser>(
             "SELECT * FROM arcaea_guess WHERE user_uin = ? AND year = ? AND month = ? AND day = ?",
             userUin, date.Year, date.Month, date.Day);
     }
 
     public List<ArcaeaGuessUser> GetArcaeaGuessUserOfAllTime(uint groupUin, uint userUin)
     {
-        return _databases[ArcaeaDbName].Query<ArcaeaGuessUser>(
+        return Databases[ArcaeaDbName].Query<ArcaeaGuessUser>(
             "SELECT * FROM arcaea_guess WHERE group_uin = ? AND user_uin = ?", groupUin, userUin);
     }
 
     public List<ArcaeaGuessUser> GetArcaeaGuessUserOfAllTime(uint userUin)
     {
-        return _databases[ArcaeaDbName].Query<ArcaeaGuessUser>(
+        return Databases[ArcaeaDbName].Query<ArcaeaGuessUser>(
             "SELECT * FROM arcaea_guess WHERE user_uin = ?", userUin);
     }
 
     public List<ArcaeaGuessUser> GetArcaeaGuessUsersOfDate(uint groupUin, DateTime date)
     {
-        return _databases[ArcaeaDbName].Query<ArcaeaGuessUser>(
+        return Databases[ArcaeaDbName].Query<ArcaeaGuessUser>(
             "SELECT * FROM arcaea_guess WHERE group_uin = ? AND year = ? AND month = ? AND day = ?",
             groupUin, date.Year, date.Month, date.Day);
     }
 
     public List<ArcaeaGuessUser> GetArcaeaGuessUsersOfDate(DateTime date)
     {
-        return _databases[ArcaeaDbName].Query<ArcaeaGuessUser>(
+        return Databases[ArcaeaDbName].Query<ArcaeaGuessUser>(
             "SELECT * FROM arcaea_guess WHERE year = ? AND month = ? AND day = ?",
             date.Year, date.Month, date.Day);
     }
 
     public List<ArcaeaGuessUser> GetArcaeaGuessUsersOfDate(DateTime startDate, DateTime endDate)
     {
-        return _databases[ArcaeaDbName].Query<ArcaeaGuessUser>(
+        return Databases[ArcaeaDbName].Query<ArcaeaGuessUser>(
             @"SELECT * FROM arcaea_guess WHERE
                 (year BETWEEN ? AND ?) AND
                 (month BETWEEN ? AND ?) AND
@@ -125,7 +125,7 @@ public partial class YukiDbManager
         if (guessUser is not null)
         {
             guessUser = addCount(guessUser, isCorrect, guessMode);
-            _databases[ArcaeaDbName].Update(guessUser);
+            Databases[ArcaeaDbName].Update(guessUser);
         }
         else
         {
@@ -140,7 +140,7 @@ public partial class YukiDbManager
                 UserName = userName
             };
             newUser = addCount(newUser, isCorrect, guessMode);
-            _databases[ArcaeaDbName].Insert(newUser, typeof(ArcaeaGuessUser));
+            Databases[ArcaeaDbName].Insert(newUser, typeof(ArcaeaGuessUser));
         }
     }
 }

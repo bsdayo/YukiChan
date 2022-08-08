@@ -17,12 +17,12 @@ public partial class YukiDbManager
             Name = name
         };
 
-        _databases[MaimaiDbName].InsertOrReplace(user, typeof(MaimaiUser));
+        Databases[MaimaiDbName].InsertOrReplace(user, typeof(MaimaiUser));
     }
 
     internal MaimaiUser? GetMaimaiUser(uint uin)
     {
-        return _databases[MaimaiDbName].FindWithQuery<MaimaiUser>(
+        return Databases[MaimaiDbName].FindWithQuery<MaimaiUser>(
             "SELECT * FROM maimai_users WHERE uin = ?", uin);
     }
 
@@ -30,7 +30,7 @@ public partial class YukiDbManager
     {
         var user = GetMaimaiUser(uin);
         if (user is null) return false;
-        _databases[MaimaiDbName].Delete<MaimaiUser>(uin);
+        Databases[MaimaiDbName].Delete<MaimaiUser>(uin);
         return true;
     }
 }

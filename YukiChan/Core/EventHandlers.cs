@@ -3,6 +3,7 @@ using Konata.Core;
 using Konata.Core.Events;
 using Konata.Core.Events.Model;
 using Konata.Core.Interfaces.Api;
+using Konata.Core.Message;
 using Konata.Core.Message.Model;
 using YukiChan.Utils;
 
@@ -45,6 +46,8 @@ public static class EventHandlers
         catch (Exception exception)
         {
             YukiLogger.Error(exception);
+            await bot.SendGroupMessageWithLog(e.GroupName, e.GroupUin,
+                new MessageBuilder($"发生了奇怪的错误呢... ({exception.Message})"));
         }
     }
 
@@ -67,6 +70,8 @@ public static class EventHandlers
         catch (Exception exception)
         {
             YukiLogger.Error(exception);
+            await bot.SendFriendMessageWithLog(e.Message.Sender.Name, e.FriendUin,
+                new MessageBuilder($"发生了奇怪的错误呢... ({exception.Message})"));
         }
     }
 

@@ -11,7 +11,7 @@ namespace YukiChan.Database;
 [YukiDatabase(CommandHistoryDbName, typeof(CommandHistory))]
 public partial class YukiDbManager
 {
-    private readonly Dictionary<string, SQLiteConnection> _databases = new();
+    public readonly Dictionary<string, SQLiteConnection> Databases = new();
 
     private const string UserdataDbName = "Userdata";
     private const string CommandHistoryDbName = "CommandHistory";
@@ -24,12 +24,12 @@ public partial class YukiDbManager
         {
             if (attr is not YukiDatabaseAttribute database) continue;
 
-            _databases.Add(database.Name, new SQLiteConnection($"Databases/{database.Name}.db"));
+            Databases.Add(database.Name, new SQLiteConnection($"Databases/{database.Name}.db"));
             YukiLogger.Debug($"创建数据库 Databases/{database.Name}.db");
 
             foreach (var tableType in database.TableTypes)
             {
-                _databases[database.Name].CreateTable(tableType);
+                Databases[database.Name].CreateTable(tableType);
                 var tableAttr = tableType.GetCustomAttribute<TableAttribute>();
                 var tableName = tableAttr is not null ? tableAttr.Name : tableType.Name;
                 YukiLogger.Debug($"  通过类 {tableType.Name} 创建表 {tableName}");
@@ -39,13 +39,13 @@ public partial class YukiDbManager
 
     public YukiUser? GetUser(uint userUin)
     {
-        return _databases[UserdataDbName].FindWithQuery<YukiUser>(
+        return Databases[UserdataDbName].FindWithQuery<YukiUser>(
             "SELECT * FROM users WHERE uin = ?", userUin);
     }
 
     public YukiGroup? GetGroup(uint groupUin)
     {
-        return _databases[UserdataDbName].FindWithQuery<YukiGroup>(
+        return Databases[UserdataDbName].FindWithQuery<YukiGroup>(
             "SELECT * FROM groups WHERE uin = ?", groupUin);
     }
 
@@ -56,7 +56,7 @@ public partial class YukiDbManager
             Uin = uin,
             Authority = authority
         };
-        _databases[UserdataDbName].Insert(user, typeof(YukiUser));
+        Databases[UserdataDbName].Insert(user, typeof(YukiUser));
     }
 
     public void AddGroup(uint groupUin)
@@ -65,12 +65,12 @@ public partial class YukiDbManager
         {
             Uin = groupUin
         };
-        _databases[UserdataDbName].Insert(group);
+        Databases[UserdataDbName].Insert(group);
     }
 
     public void UpdateUser(YukiUser user)
     {
-        _databases[UserdataDbName].Update(user);
+        Databases[UserdataDbName].Update(user);
     }
 
     public bool BanUser(uint userUin)
@@ -78,7 +78,7 @@ public partial class YukiDbManager
         var user = GetUser(userUin);
         if (user is null) return false;
         user.Authority = YukiUserAuthority.Banned;
-        _databases[UserdataDbName].Update(user);
+        Databases[UserdataDbName].Update(user);
         return true;
     }
 
@@ -88,7 +88,7 @@ public partial class YukiDbManager
         string moduleName, string moduleCmd,
         string commandName, string commandCmd, string commandRaw, string reply)
     {
-        _databases[CommandHistoryDbName].Insert(new CommandHistory
+        Databases[CommandHistoryDbName].Insert(new CommandHistory
         {
             CallTimestamp = new DateTimeOffset(callTime).ToUnixTimeMilliseconds(),
             ReplyTimestamp = new DateTimeOffset(replyTime).ToUnixTimeMilliseconds(),
@@ -111,7 +111,7 @@ public partial class YukiDbManager
 
     public int GetTotalCommandHistoryCount()
     {
-        return _databases[CommandHistoryDbName].FindWithQuery<int>(
+        return Databases[CommandHistoryDbName].FindWithQuery<int>(
             "SELECT COUNT(*) FROM command_history");
     }
 
@@ -125,7 +125,7 @@ public partial class YukiDbManager
                 new DateTime(today.Year, today.Month, today.Day, 23, 59, 59))
             .ToUnixTimeMilliseconds();
 
-        var todayHistories = _databases[CommandHistoryDbName].Query<CommandHistory>(
+        var todayHistories = Databases[CommandHistoryDbName].Query<CommandHistory>(
             "SELECT * FROM command_history WHERE call_timestamp BETWEEN ? AND ?", startT, endT);
 
         var rank = new Dictionary<string, int>();
