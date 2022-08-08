@@ -45,4 +45,25 @@ public partial class YukiDbManager
         Databases[BottleDbName].Execute(
             "DELETE FROM bottles WHERE id = ?", bottleId);
     }
+
+    public void FixBottle()
+    {
+        var all = Databases[BottleDbName].Query<Bottle>("SELECT * FROM bottles");
+
+        foreach (var bottle in all)
+        {
+            bottle.ImageFilename = bottle.ImageFilename
+                .Replace(".0", ".jpg")
+                .Replace(".pjpeg", ".jpg");
+        }
+
+        Databases[BottleDbName].UpdateAll(all);
+
+        foreach (var file in Directory.GetFiles("Data/BottleImages"))
+        {
+            File.Move(file, file
+                .Replace(".0", ".jpg")
+                .Replace(".pjpeg", ".jpg"), true);
+        }
+    }
 }
