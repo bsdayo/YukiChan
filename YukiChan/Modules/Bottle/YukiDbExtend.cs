@@ -23,9 +23,9 @@ public partial class YukiDbManager
             "SELECT * FROM bottles WHERE id = ?", id);
     }
 
-    public int AddBottle(MessageStruct message, string text, string imageFilename)
+    public Bottle AddBottle(MessageStruct message, string text, string imageFilename)
     {
-        Databases[BottleDbName].Insert(new Bottle
+        var bottle = new Bottle
         {
             Timestamp = DateTime.Now.GetTimestamp(),
             Context = message.Type,
@@ -35,7 +35,18 @@ public partial class YukiDbManager
             UserName = message.Sender.Name,
             Text = text,
             ImageFilename = imageFilename
-        });
+        };
+        Databases[BottleDbName].Insert(bottle);
+        return bottle;
+    }
+
+    public void UpdateBottle(Bottle bottle)
+    {
+        Databases[BottleDbName].Update(bottle);
+    }
+
+    public int GetNewBottleId()
+    {
         return Databases[BottleDbName].FindWithQuery<Bottle>(
             "SELECT id FROM bottles ORDER BY id DESC LIMIT 1").Id;
     }
@@ -52,18 +63,11 @@ public partial class YukiDbManager
 
         foreach (var bottle in all)
         {
-            bottle.ImageFilename = bottle.ImageFilename
-                .Replace(".0", ".jpg")
-                .Replace(".pjpeg", ".jpg");
+            var newFilename = $"{bottle.Id}.{bottle.ImageFilename.Split(".")[1]}";
+            File.Move($"Data/BottleImages/{bottle.ImageFilename}", $"Data/BottleImages/{newFilename}");
+            bottle.ImageFilename = newFilename;
         }
 
         Databases[BottleDbName].UpdateAll(all);
-
-        foreach (var file in Directory.GetFiles("Data/BottleImages"))
-        {
-            File.Move(file, file
-                .Replace(".0", ".jpg")
-                .Replace(".pjpeg", ".jpg"), true);
-        }
     }
 }

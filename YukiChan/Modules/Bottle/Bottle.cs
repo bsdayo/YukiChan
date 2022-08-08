@@ -60,13 +60,14 @@ public class BottleModule : ModuleBase
     private static async Task<MessageBuilder> SaveBottle(MessageStruct message, TextChain? textChain,
         ImageChain? imageChain)
     {
-        string text = "", imageFilename = "";
+        var text = "";
+        var id = 0;
 
         if (textChain is not null)
             text = textChain.Content.Trim();
         if (text.HasSensitiveWords())
             return message.Reply("不可以输入敏感词汇哦！");
-        
+
         if (imageChain is not null)
         {
             if (imageChain.FileLength > ImageSizeLimitMb * 1024 * 1024)
@@ -87,13 +88,16 @@ public class BottleModule : ModuleBase
                 _ => imageChain.ImageType.ToString().ToLower()
             };
 
-            imageFilename =
-                $"{DateTime.Now.GetTimestamp()}-{message.Receiver.Uin}-{message.Sender.Uin}.{extName}";
-            var imageData = await NetUtils.DownloadBytes(imageChain.ImageUrl);
-            await File.WriteAllBytesAsync($"Data/BottleImages/{imageFilename}", imageData);
-        }
+            var bottle = Global.YukiDb.AddBottle(message, text, "");
 
-        var id = Global.YukiDb.AddBottle(message, text, imageFilename);
+            bottle.ImageFilename = $"{bottle.Id}.{extName}";
+            var imageData = await NetUtils.DownloadBytes(imageChain.ImageUrl);
+            await File.WriteAllBytesAsync($"Data/BottleImages/{bottle.ImageFilename}", imageData);
+
+            Global.YukiDb.UpdateBottle(bottle);
+        }
+        else id = Global.YukiDb.AddBottle(message, text, "").Id;
+
         return message.Reply($"漂流瓶 {id} 号开始漂流啦！")
             .Text($"可以随时使用 #bottle cancel {id} 召回哦~");
     }
@@ -106,7 +110,7 @@ public class BottleModule : ModuleBase
     {
         try
         {
-            // Global.YukiDb.FixBottle();
+            Global.YukiDb.FixBottle();
             var bottle = Global.YukiDb.GetRandomBottle();
             if (bottle is null)
                 return message.Reply("当前没有可用的漂流瓶哦~");
