@@ -103,7 +103,7 @@ public class BottleModule : ModuleBase
     {
         try
         {
-            Global.YukiDb.FixBottle();
+            // Global.YukiDb.FixBottle();
             var bottle = Global.YukiDb.GetRandomBottle();
             if (bottle is null)
                 return message.Reply("当前没有可用的漂流瓶哦~");
