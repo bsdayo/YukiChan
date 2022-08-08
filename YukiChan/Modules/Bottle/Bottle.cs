@@ -31,13 +31,21 @@ public class BottleModule : ModuleBase
                 return await SaveBottle(message, textChain, imageChain);
             bot.GetSession(message, 30, async cbMessage =>
             {
-                var cbTextChain = cbMessage.Chain.GetChain<TextChain>();
-                var cbImageChain = cbMessage.Chain.GetChain<ImageChain>();
+                try
+                {
+                    var cbTextChain = cbMessage.Chain.GetChain<TextChain>();
+                    var cbImageChain = cbMessage.Chain.GetChain<ImageChain>();
 
-                if (cbTextChain is not null || cbImageChain is not null)
-                    return await SaveBottle(cbMessage, cbTextChain, cbImageChain);
+                    if (cbTextChain is not null || cbImageChain is not null)
+                        return await SaveBottle(cbMessage, cbTextChain, cbImageChain);
 
-                return cbMessage.Reply("似乎输入了无效的漂流瓶内容呢...");
+                    return cbMessage.Reply("似乎输入了无效的漂流瓶内容呢...");
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e);
+                    return message.Reply($"发生了奇怪的错误！({e.Message})");
+                }
             });
 
             return message.Reply("请在 30 秒内发送漂流瓶内容哦~");
@@ -83,32 +91,40 @@ public class BottleModule : ModuleBase
         Usage = "bottle pick")]
     public static MessageBuilder PickBottle(Bot bot, MessageStruct message)
     {
-        var bottle = Global.YukiDb.GetRandomBottle();
-        if (bottle is null)
-            return message.Reply("当前没有可用的漂流瓶哦~");
+        try
+        {
+            var bottle = Global.YukiDb.GetRandomBottle();
+            if (bottle is null)
+                return message.Reply("当前没有可用的漂流瓶哦~");
 
-        var days = new TimeSpan(0, 0, 0,
-            (int)(DateTime.Now.GetTimestamp() - bottle.Timestamp)).Days;
+            var days = new TimeSpan(0, 0, 0,
+                (int)(DateTime.Now.GetTimestamp() - bottle.Timestamp)).Days;
 
-        var mb = message.Reply()
-            .Text($"[漂流瓶 No.{bottle.Id}]\n")
-            .Text($"在 {bottle.Timestamp.FormatTimestamp()}，\n");
+            var mb = message.Reply()
+                .Text($"[漂流瓶 No.{bottle.Id}]\n")
+                .Text($"在 {bottle.Timestamp.FormatTimestamp()}，\n");
 
-        if (bottle.Context == MessageStruct.SourceType.Group)
+            if (bottle.Context == MessageStruct.SourceType.Group)
+                mb
+                    .Text($"由 {bottle.UserName} 投掷于\n")
+                    .Text($"    {bottle.GroupName}，\n");
+            else
+                mb.Text($"由 {bottle.UserUin} 投掷于私聊，\n");
+
             mb
-                .Text($"由 {bottle.UserName} 投掷于\n")
-                .Text($"    {bottle.GroupName}，\n");
-        else
-            mb.Text($"由 {bottle.UserUin} 投掷于私聊，\n");
+                .Text(days == 0 ? "今天开始漂流的哦！\n" : $"已经漂流 {days} 天啦！\n")
+                .Text("====================\n")
+                .Text(bottle.Text);
 
-        mb
-            .Text(days == 0 ? "今天开始漂流的哦！\n" : $"已经漂流 {days} 天啦！\n")
-            .Text("====================\n")
-            .Text(bottle.Text);
-
-        return string.IsNullOrWhiteSpace(bottle.ImageFilename)
-            ? mb
-            : mb.Image(File.ReadAllBytes($"Data/BottleImages/{bottle.ImageFilename}"));
+            return string.IsNullOrWhiteSpace(bottle.ImageFilename)
+                ? mb
+                : mb.Image(File.ReadAllBytes($"Data/BottleImages/{bottle.ImageFilename}"));
+        }
+        catch (Exception e)
+        {
+            Logger.Error(e);
+            return message.Reply($"发生了奇怪的错误！({e.Message})");
+        }
     }
 
     [Command("CancelBottle",
