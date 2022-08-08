@@ -89,7 +89,7 @@ public class BottleModule : ModuleBase
             };
 
             var bottle = Global.YukiDb.AddBottle(message, text, "");
-
+            id = bottle.Id;
             bottle.ImageFilename = $"{bottle.Id}.{extName}";
             var imageData = await NetUtils.DownloadBytes(imageChain.ImageUrl);
             await File.WriteAllBytesAsync($"Data/BottleImages/{bottle.ImageFilename}", imageData);
