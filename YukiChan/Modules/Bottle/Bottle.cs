@@ -2,6 +2,7 @@
 using Konata.Core.Message;
 using Konata.Core.Message.Model;
 using YukiChan.Core;
+using YukiChan.Database.Models;
 using YukiChan.Utils;
 
 namespace YukiChan.Modules.Bottle;
@@ -115,34 +116,39 @@ public class BottleModule : ModuleBase
             if (bottle is null)
                 return message.Reply("当前没有可用的漂流瓶哦~");
 
-            var days = new TimeSpan(0, 0, 0,
-                (int)(DateTime.Now.GetTimestamp() - bottle.Timestamp)).Days;
-
-            var mb = message.Reply()
-                .Text($"[漂流瓶 No.{bottle.Id}]\n")
-                .Text($"在 {bottle.Timestamp.FormatTimestamp()}，\n");
-
-            if (bottle.Context == MessageStruct.SourceType.Group)
-                mb
-                    .Text($"由 {bottle.UserName} 投掷于\n")
-                    .Text($"    {bottle.GroupName}，\n");
-            else
-                mb.Text($"由 {bottle.UserUin} 投掷于私聊，\n");
-
-            mb
-                .Text(days == 0 ? "今天开始漂流的哦！\n" : $"已经漂流 {days} 天啦！\n")
-                .Text("====================\n")
-                .Text(bottle.Text);
-
-            return string.IsNullOrWhiteSpace(bottle.ImageFilename)
-                ? mb
-                : mb.Image(File.ReadAllBytes($"Data/BottleImages/{bottle.ImageFilename}"));
+            return GetBottleInfo(message, bottle);
         }
         catch (Exception e)
         {
             Logger.Error(e);
             return message.Reply($"发生了奇怪的错误！({e.Message})");
         }
+    }
+
+    private static MessageBuilder GetBottleInfo(MessageStruct message, Bottle bottle)
+    {
+        var days = new TimeSpan(0, 0, 0,
+            (int)(DateTime.Now.GetTimestamp() - bottle.Timestamp)).Days;
+
+        var mb = message.Reply()
+            .Text($"[漂流瓶 No.{bottle.Id}]\n")
+            .Text($"在 {bottle.Timestamp.FormatTimestamp()}，\n");
+
+        if (bottle.Context == MessageStruct.SourceType.Group)
+            mb
+                .Text($"由 {bottle.UserName} 投掷于\n")
+                .Text($"    {bottle.GroupName}，\n");
+        else
+            mb.Text($"由 {bottle.UserUin} 投掷于私聊，\n");
+
+        mb
+            .Text(days == 0 ? "今天开始漂流的哦！\n" : $"已经漂流 {days} 天啦！\n")
+            .Text("-------------------------\n")
+            .Text(bottle.Text);
+
+        return string.IsNullOrWhiteSpace(bottle.ImageFilename)
+            ? mb
+            : mb.Image(File.ReadAllBytes($"Data/BottleImages/{bottle.ImageFilename}"));
     }
 
     [Command("CancelBottle",
@@ -166,5 +172,43 @@ public class BottleModule : ModuleBase
         Global.YukiDb.RemoveBottle(bottleId);
 
         return message.Reply("漂流瓶已经成功召回了哦~");
+    }
+
+    [Command("RemoveBottle",
+        Command = "remove",
+        Authority = YukiUserAuthority.Owner,
+        Hidden = true)]
+    public static MessageBuilder RemoveBottle(Bot bot, MessageStruct message, string body)
+    {
+        var success = int.TryParse(body, out var bottleId);
+        if (!success)
+            return message.Reply("输入了无效的 ID 哦！");
+
+        var bottle = Global.YukiDb.GetBottle(bottleId);
+        if (bottle is null)
+            return message.Reply("没有找到这个漂流瓶呢...");
+
+        if (!string.IsNullOrWhiteSpace(bottle.ImageFilename))
+            File.Delete($"Data/BottleImages/{bottle.ImageFilename}");
+        Global.YukiDb.RemoveBottle(bottleId);
+
+        return message.Reply("漂流瓶已经成功移除了哦~");
+    }
+
+    [Command("ViewBottle",
+        Command = "view",
+        Authority = YukiUserAuthority.Owner,
+        Hidden = true)]
+    public static MessageBuilder ViewBottle(Bot bot, MessageStruct message, string body)
+    {
+        var success = int.TryParse(body, out var bottleId);
+        if (!success)
+            return message.Reply("输入了无效的 ID 哦！");
+
+        var bottle = Global.YukiDb.GetBottle(bottleId);
+        if (bottle is null)
+            return message.Reply("没有找到这个漂流瓶呢...");
+
+        return GetBottleInfo(message, bottle);
     }
 }
