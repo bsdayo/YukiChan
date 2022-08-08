@@ -6,3 +6,5 @@ riderModule.iml
 .idea/
 *.user
 Build/
+
+**/YukiChan/Modules/Debug.cs

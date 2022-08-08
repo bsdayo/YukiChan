@@ -24,7 +24,7 @@ public class ArcaeaUser
             Potential = info.Rating >= 0
                 ? ((double)info.Rating / 100).ToString("0.00")
                 : "?",
-            JoinDate = CommonUtils.FormatTimestamp(info.JoinDate, true)
+            JoinDate = info.JoinDate.FormatTimestamp(true)
         };
     }
 }

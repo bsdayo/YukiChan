@@ -5,6 +5,16 @@ using YukiChan.Utils;
 
 namespace YukiChan.Core;
 
+public class MessageSession
+{
+    public long Timestamp { get; init; }
+    public uint GroupUin { get; init; }
+    public uint UserUin { get; init; }
+#pragma warning disable CS8618
+    public object Callback { get; init; }
+#pragma warning restore CS8618
+}
+
 public static class ModuleManager
 {
     public static Bot Bot { get; set; } = null!;
@@ -13,6 +23,8 @@ public static class ModuleManager
 
     public static int ModuleCount => Modules.Count;
     public static int CommandCount;
+
+    public static readonly Dictionary<string, MessageSession> MessageSessions = new();
 
     public static void InitializeModules()
     {
@@ -52,6 +64,20 @@ public static class ModuleManager
 
     public static MessageBuilder? ParseCommand(Bot bot, MessageStruct message)
     {
+        var sess = MessageSessions.Values.FirstOrDefault(
+            s => s.GroupUin == message.Receiver.Uin && s.UserUin == message.Sender.Uin);
+        if (sess is not null)
+        {
+            var identifier = $"{sess.GroupUin}-{sess.UserUin}";
+            MessageSessions.Remove(identifier, out var session);
+            YukiLogger.Debug($"Session {identifier} has been killed.");
+            if (session!.Callback is Func<MessageStruct, MessageBuilder?> cbSync)
+                return cbSync(message);
+            if (session!.Callback is Func<MessageStruct, Task<MessageBuilder?>> cbAsync)
+                return cbAsync(message).Result;
+            return null;
+        }
+
         foreach (var module in Modules)
         {
             var msgBuilder = module.DealCommand(bot, message);
@@ -62,6 +88,66 @@ public static class ModuleManager
         }
 
         return null;
+    }
+
+    public static void GetSession(this Bot bot, MessageStruct message, int waitSeconds,
+        Func<MessageStruct, MessageBuilder?> callback)
+    {
+        var groupUin = message.Receiver.Uin;
+        var userUin = message.Sender.Uin;
+        var identifier = $"{groupUin}-{userUin}";
+        var timestamp = DateTime.Now.GetTimestamp();
+        if (MessageSessions.ContainsKey(identifier)) return;
+
+        MessageSessions.Add(identifier, new MessageSession
+        {
+            Timestamp = timestamp,
+            GroupUin = groupUin,
+            UserUin = userUin,
+            Callback = callback
+        });
+        YukiLogger.Debug($"New message session {identifier} at {timestamp}.");
+
+        Task.Run(async () =>
+        {
+            await Task.Delay(new TimeSpan(0, 0, 0, waitSeconds));
+            if (MessageSessions.ContainsKey(identifier) && MessageSessions[identifier].Timestamp == timestamp)
+            {
+                MessageSessions.Remove(identifier);
+                YukiLogger.Debug($"Message session {identifier} expired.");
+                await bot.SendReply(message, "会话已超时。");
+            }
+        });
+    }
+
+    public static void GetSession(this Bot bot, MessageStruct message, int waitSeconds,
+        Func<MessageStruct, Task<MessageBuilder?>> callback)
+    {
+        var groupUin = message.Receiver.Uin;
+        var userUin = message.Sender.Uin;
+        var identifier = $"{groupUin}-{userUin}";
+        var timestamp = DateTime.Now.GetTimestamp();
+        if (MessageSessions.ContainsKey(identifier)) return;
+
+        MessageSessions.Add(identifier, new MessageSession
+        {
+            Timestamp = timestamp,
+            GroupUin = groupUin,
+            UserUin = userUin,
+            Callback = callback
+        });
+        YukiLogger.Debug($"New message session {identifier} at {timestamp}.");
+
+        Task.Run(async () =>
+        {
+            await Task.Delay(new TimeSpan(0, 0, 0, waitSeconds));
+            if (MessageSessions.ContainsKey(identifier) && MessageSessions[identifier].Timestamp == timestamp)
+            {
+                MessageSessions.Remove(identifier);
+                YukiLogger.Debug($"Message session {identifier} expired.");
+                await bot.SendReply(message, "会话已超时。");
+            }
+        });
     }
 
     public static MessageBuilder GetHelp()

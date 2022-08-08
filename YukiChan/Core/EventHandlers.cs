@@ -4,7 +4,6 @@ using Konata.Core.Events;
 using Konata.Core.Events.Model;
 using Konata.Core.Interfaces.Api;
 using Konata.Core.Message;
-using Konata.Core.Message.Model;
 using YukiChan.Utils;
 
 namespace YukiChan.Core;
@@ -35,9 +34,6 @@ public static class EventHandlers
 
         YukiLogger.ReceiveGroupMessage(e);
 
-        var textChain = e.Chain.GetChain<TextChain>();
-        if (textChain is null) return;
-
         try
         {
             var msgBuilder = ModuleManager.ParseCommand(bot, e.Message);
@@ -58,9 +54,6 @@ public static class EventHandlers
         Global.Information.MessageReceived++;
 
         YukiLogger.ReceiveFriendMessage(e);
-
-        var textChain = e.Chain.GetChain<TextChain>();
-        if (textChain is null) return;
 
         try
         {

@@ -81,6 +81,6 @@ public class BilibiliModule : ModuleBase
             .Text($"弹幕 / {info.Stat.Danmaku}   ")
             .Text($"分享 / {info.Stat.Share}\n")
             .Text($"简介 / {info.Description}\n")
-            .Text($"发布时间：{CommonUtils.FormatTimestamp(info.PublishTime)}");
+            .Text($"发布时间：{info.PublishTime.FormatTimestamp()}");
     }
 }

@@ -22,7 +22,9 @@ public static class Program
                 "Logs/YukiChan", "Logs/Konata",
                 // Configs - Yuki and Konata's configs
                 "Configs",
-                // Databases - Yuki data
+                // Data - Yuki data
+                "Data/BottleImages",
+                // Databases - Yuki databases
                 "Databases",
                 // Assets - Module assets
                 "Assets/Cats", "Assets/Capoo",

@@ -66,7 +66,8 @@ public abstract class ModuleBase
 
     public MessageBuilder? DealCommand(Bot bot, MessageStruct message)
     {
-        var commandStr = message.Chain.GetChain<TextChain>().Content.Trim();
+        var commandStr = message.Chain.GetChain<TextChain>()?.Content?.Trim();
+        if (commandStr is null) return null;
 
         for (var i = 0; i < Commands.Count; i++)
         {
