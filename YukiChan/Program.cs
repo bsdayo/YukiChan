@@ -4,6 +4,7 @@ using Konata.Core.Common;
 using Konata.Core.Interfaces;
 using Konata.Core.Interfaces.Api;
 using YukiChan.Core;
+using YukiChan.Database.Models;
 using YukiChan.Utils;
 
 namespace YukiChan;
@@ -39,6 +40,27 @@ public static class Program
             ModuleManager.Bot = _bot;
             ModuleManager.InitializeModules();
             SensitiveWordsFilter.Initialize();
+
+            if (!string.IsNullOrWhiteSpace(Global.YukiConfig.MasterUin))
+            {
+                if (uint.TryParse(Global.YukiConfig.MasterUin, out var masterUin))
+                {
+                    var user = Global.YukiDb.GetUser(masterUin);
+                    if (user is not null)
+                    {
+                        user.Authority = YukiUserAuthority.Owner;
+                        Global.YukiDb.UpdateUser(user);
+                    }
+                    else
+                    {
+                        Global.YukiDb.AddUser(masterUin, YukiUserAuthority.Owner);
+                    }
+                }
+                else
+                {
+                    YukiLogger.Error("配置文件错误 (YukiChan.json): MasterUin 格式不正确。");
+                }
+            }
 
             // Konata log
             _bot.OnLog += EventHandlers.OnLog;

@@ -152,15 +152,16 @@ public static class ModuleManager
 
     public static MessageBuilder GetHelp()
     {
-        var helpStr = $"[帮助]\n当前已加载 {ModuleCount} 个模块，{CommandCount} 个指令\n";
+        var mb = new MessageBuilder($"[帮助]\n当前已加载 {ModuleCount} 个模块，{CommandCount} 个指令\n");
 
         foreach (var module in Modules)
         {
             if (module.ModuleInfo.Hidden) continue;
-            helpStr +=
-                $"\n{Global.YukiConfig.CommandPrefix}{module.ModuleInfo.Command} {module.ModuleInfo.Description}";
+            mb.Text(
+                $"\n{Global.YukiConfig.CommandPrefix}{module.ModuleInfo.Command} {module.ModuleInfo.Description}");
         }
 
-        return MessageBuilder.Eval(helpStr);
+        return mb
+            .Text($"\n\n请输入 {Global.YukiConfig.CommandPrefix}help <模块名> 查看详细信息。");
     }
 }

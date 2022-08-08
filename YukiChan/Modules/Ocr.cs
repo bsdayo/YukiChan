@@ -46,7 +46,7 @@ public class OcrModule : ModuleBase
         var mb = new MessageBuilder("[转换结果]");
         foreach (var ocr in result)
         {
-            mb.Text($"\n{ocr.Text}");
+            mb.Text($"\n{ocr.Text.ReplaceSensitiveWords()}");
             charCount += ocr.Text.Length;
             totalConf += ocr.Confidence;
         }

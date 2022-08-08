@@ -4,6 +4,7 @@ namespace YukiChan.Core;
 
 public class YukiConfig
 {
+    public string MasterUin { get; init; } = "";
     public string CommandPrefix { get; init; } = "/";
     public bool EnableDebugLog { get; init; } = true;
     public bool GroupInvitationProtect { get; init; } = true;

@@ -64,6 +64,9 @@ public class BottleModule : ModuleBase
 
         if (textChain is not null)
             text = textChain.Content.Trim();
+        if (text.HasSensitiveWords())
+            return message.Reply("不可以输入敏感词汇哦！");
+        
         if (imageChain is not null)
         {
             if (imageChain.FileLength > ImageSizeLimitMb * 1024 * 1024)
