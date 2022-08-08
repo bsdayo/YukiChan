@@ -74,8 +74,18 @@ public class BottleModule : ModuleBase
             if (imageChain.ImageType == ImageType.Invalid)
                 return message.Reply("图片失效啦！");
 
+            var extName = imageChain.ImageType switch
+            {
+                0 => "jpg",
+                ImageType.Apng => "png",
+                ImageType.Face => "jpg",
+                ImageType.Pjpeg => "jpg",
+                ImageType.Sharpp => "webp",
+                _ => imageChain.ImageType.ToString().ToLower()
+            };
+
             imageFilename =
-                $"{DateTime.Now.GetTimestamp()}-{message.Receiver.Uin}-{message.Sender.Uin}.{imageChain.ImageType.ToString().ToLower()}";
+                $"{DateTime.Now.GetTimestamp()}-{message.Receiver.Uin}-{message.Sender.Uin}.{extName}";
             var imageData = await NetUtils.DownloadBytes(imageChain.ImageUrl);
             await File.WriteAllBytesAsync($"Data/BottleImages/{imageFilename}", imageData);
         }
