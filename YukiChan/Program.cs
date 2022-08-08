@@ -29,6 +29,7 @@ public static class Program
                 // Assets - Module assets
                 "Assets/Cats", "Assets/Capoo",
                 "Assets/Arcaea/AudioPreview", "Assets/Arcaea/Aff",
+                SensitiveWordsFilter.WordsDirectory,
                 // Cache - Download cache
                 "Cache/Arcaea/Song", "Cache/Arcaea/Preview"
             });
@@ -37,6 +38,7 @@ public static class Program
 
             ModuleManager.Bot = _bot;
             ModuleManager.InitializeModules();
+            SensitiveWordsFilter.Initialize();
 
             // Konata log
             _bot.OnLog += EventHandlers.OnLog;

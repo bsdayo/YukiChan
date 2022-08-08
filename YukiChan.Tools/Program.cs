@@ -4,8 +4,10 @@ using YukiChan.Tools.Commands.Arcaea;
 
 namespace YukiChan.Tools;
 
-[Subcommand(typeof(ArcaeaCommand))]
-[Subcommand(typeof(BackupDatabases))]
+[Subcommand(
+    typeof(ArcaeaCommand),
+    typeof(BackupDatabases),
+    typeof(SensitiveCommand))]
 [HelpOption]
 public class Program
 {
