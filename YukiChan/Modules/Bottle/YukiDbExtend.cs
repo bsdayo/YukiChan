@@ -63,9 +63,12 @@ public partial class YukiDbManager
 
         foreach (var bottle in all)
         {
-            var newFilename = $"{bottle.Id}.{bottle.ImageFilename.Split(".")[1]}";
-            File.Move($"Data/BottleImages/{bottle.ImageFilename}", $"Data/BottleImages/{newFilename}");
-            bottle.ImageFilename = newFilename;
+            if (!string.IsNullOrWhiteSpace(bottle.ImageFilename))
+            {
+                var newFilename = $"{bottle.Id}.{bottle.ImageFilename.Split(".")[1]}";
+                File.Move($"Data/BottleImages/{bottle.ImageFilename}", $"Data/BottleImages/{newFilename}");
+                bottle.ImageFilename = newFilename;
+            }
         }
 
         Databases[BottleDbName].UpdateAll(all);
