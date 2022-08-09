@@ -83,7 +83,7 @@ public partial class ArcaeaModule
 
             var image = await ArcaeaImageGenerator.Single(user, record, AuaClient);
 
-            return new MessageBuilder().Image(image);
+            return message.Reply($"{user.Name} ({user.Potential})").Image(image);
         }
         catch (AuaException e)
         {

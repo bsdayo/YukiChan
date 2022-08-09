@@ -57,7 +57,7 @@ public partial class ArcaeaModule
 
             var image = await ArcaeaImageGenerator.Best30(best30, AuaClient, subFlags.Contains("dark"));
 
-            return new MessageBuilder().Image(image);
+            return message.Reply().Image(image);
         }
         catch (AuaException e)
         {
