@@ -32,7 +32,7 @@ public static class Program
                 "Assets/Arcaea/AudioPreview", "Assets/Arcaea/Aff",
                 SensitiveWordsFilter.WordsDirectory,
                 // Cache - Download cache
-                "Cache/Arcaea/Song", "Cache/Arcaea/Preview"
+                "Cache/Arcaea/Song", "Cache/Arcaea/Preview", "Cache/Malody"
             });
 
             _bot = BotFather.Create(GetKonataConfig(), GetDevice(), GetKeyStore());

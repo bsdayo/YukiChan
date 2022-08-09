@@ -81,17 +81,25 @@ public class BottleModule : ModuleBase
                 return message.Reply("图片失效啦！");
 
             // 检测成绩图
-            var ocrResult = await bot.ImageOcr(imageChain);
-            var words = new List<string>();
-            var bannedWords = "far,lost,score,max recall,past,present,future".Split(",");
-            foreach (var ocr in ocrResult)
-            foreach (var word in bannedWords)
-                if (ocr.Text.ToLower().Contains(word))
-                    words.Add(word);
-            if ((words.Contains("max recall") && words.Contains("score") && words.Contains("far") &&
-                 words.Contains("lost")) ||
-                (words.Contains("past") && words.Contains("present") && words.Contains("future")))
-                return message.Reply("不可以发送成绩图哦~");
+            if (imageChain.Width + imageChain.Height >= 2000)
+                try
+                {
+                    var ocrResult = await bot.ImageOcr(imageChain);
+                    var words = new List<string>();
+                    var bannedWords = "far,lost,score,max recall,past,present,future".Split(",");
+                    foreach (var ocr in ocrResult)
+                    foreach (var word in bannedWords)
+                        if (ocr.Text.ToLower().Contains(word))
+                            words.Add(word);
+                    if ((words.Contains("max recall") && words.Contains("score") && words.Contains("far") &&
+                         words.Contains("lost")) ||
+                        (words.Contains("past") && words.Contains("present") && words.Contains("future")))
+                        return message.Reply("不可以发送成绩图哦~");
+                }
+                catch
+                {
+                    // ignored
+                }
 
 
             var extName = imageChain.ImageType switch
@@ -112,7 +120,10 @@ public class BottleModule : ModuleBase
 
             Global.YukiDb.UpdateBottle(bottle);
         }
-        else id = Global.YukiDb.AddBottle(message, text, "").Id;
+        else
+        {
+            id = Global.YukiDb.AddBottle(message, text, "").Id;
+        }
 
         return message.Reply($"漂流瓶 {id} 号开始漂流啦！")
             .Text($"可以随时使用 #bottle cancel {id} 召回哦~");

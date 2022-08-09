@@ -4,12 +4,11 @@ public static class NetUtils
 {
     public static async Task<byte[]> DownloadBytes(Uri url,
         Dictionary<string, string>? header = null,
-        int timeout = 8000, long limitLen = ((long)2 << 30) - 1)
+        int timeout = 8000)
     {
         var request = new HttpClient
         {
-            Timeout = new TimeSpan(0, 0, 0, timeout),
-            MaxResponseContentBufferSize = limitLen
+            Timeout = new TimeSpan(0, 0, 0, timeout)
         };
 
         request.DefaultRequestHeaders.Add("User-Agent", new[]
@@ -30,9 +29,8 @@ public static class NetUtils
     }
 
     public static async Task<byte[]> DownloadBytes(string url,
-        Dictionary<string, string>? header = null,
-        int timeout = 8000, long limitLen = ((long)2 << 30) - 1)
+        Dictionary<string, string>? header = null, int timeout = 8000)
     {
-        return await DownloadBytes(new Uri(url), header, timeout, limitLen);
+        return await DownloadBytes(new Uri(url), header, timeout);
     }
 }

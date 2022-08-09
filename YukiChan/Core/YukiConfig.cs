@@ -17,6 +17,8 @@ public class YukiConfig
 
     public BaiduTranslateConfig BaiduTranslate { get; init; } = new();
 
+    public MalodyConfig Malody { get; init; } = new();
+
     public static YukiConfig GetYukiConfig()
     {
         var config = new YukiConfig();
@@ -50,4 +52,11 @@ public class BaiduTranslateConfig
 {
     public string AppId { get; init; } = "";
     public string Token { get; init; } = "";
+}
+
+public class MalodyConfig
+{
+    public string Account { get; init; } = "";
+    public string Password { get; init; } = "";
+    public string BaseUrl { get; init; } = "https://m.mugzone.net";
 }

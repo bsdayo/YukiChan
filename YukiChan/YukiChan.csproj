@@ -29,6 +29,12 @@
         <PackageReference Include="sqlite-net-pcl" Version="1.8.116"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <Reference Include="MalodyInfoQuery">
+            <HintPath>../Libraries/MalodyInfoQuery.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+
     <Target Name="GetBuildStamp" BeforeTargets="GenerateBuildStamp" Condition="'$(BuildHash)' == ''">
         <PropertyGroup>
             <BuildStampFile>$(IntermediateOutputPath)BuildStamp</BuildStampFile>
