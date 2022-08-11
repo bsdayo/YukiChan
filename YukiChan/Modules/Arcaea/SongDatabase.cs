@@ -88,7 +88,8 @@ public static class ArcaeaSongDatabase
                 allCharts.FirstOrDefault(chart => chart.SongId == source) ??
                 allCharts.FirstOrDefault(chart => chart.NameEn.RemoveString(" ").ToLower() == source ||
                                                   chart.NameJp.RemoveString(" ").ToLower() == source) ??
-                allCharts.FirstOrDefault(chart => chart.NameEn.GetAbbreviation().ToLower() == source) ??
+                allCharts.FirstOrDefault(chart => source.Length > 1 &&
+                                                  chart.NameEn.GetAbbreviation().ToLower() == source) ??
                 allCharts.FirstOrDefault(chart => source.Length > 4 &&
                                                   chart.NameEn.RemoveString(" ").ToLower().Contains(source)))
             ?.SongId;
