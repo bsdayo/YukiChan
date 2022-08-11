@@ -16,6 +16,7 @@ public class BottleModule : ModuleBase
 {
     private static readonly ModuleLogger Logger = new("Bottle");
     private const double ImageSizeLimitMb = 4;
+    private static readonly Lazy<List<string>> AllMd5 = new(() => Global.YukiDb.GetAllBottleImageMd5());
 
     [Command("ThrowBottle",
         Command = "throw",
@@ -77,6 +78,11 @@ public class BottleModule : ModuleBase
                     .Text(
                         $"限制: {ImageSizeLimitMb:N4}M   文件: {(double)imageChain.FileLength / 1024 / 1024:N4} M");
 
+            var md5 = imageChain.FileHash.ToLower();
+            if (AllMd5.Value.Contains(md5))
+                return message.Reply("已经有相同内容的漂流瓶啦！");
+            AllMd5.Value.Add(md5);
+
             if (imageChain.ImageType == ImageType.Invalid)
                 return message.Reply("图片失效啦！");
 
@@ -112,7 +118,7 @@ public class BottleModule : ModuleBase
                 _ => imageChain.ImageType.ToString().ToLower()
             };
 
-            var bottle = Global.YukiDb.AddBottle(message, text, "");
+            var bottle = Global.YukiDb.AddBottle(message, text, "", md5);
             id = bottle.Id;
             bottle.ImageFilename = $"{bottle.Id}.{extName}";
             var imageData = await NetUtils.DownloadBytes(imageChain.ImageUrl);
@@ -122,7 +128,7 @@ public class BottleModule : ModuleBase
         }
         else
         {
-            id = Global.YukiDb.AddBottle(message, text, "").Id;
+            id = Global.YukiDb.AddBottle(message, text, "", "").Id;
         }
 
         return message.Reply($"漂流瓶 {id} 号开始漂流啦！")

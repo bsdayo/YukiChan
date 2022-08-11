@@ -23,7 +23,7 @@ public partial class YukiDbManager
             "SELECT * FROM bottles WHERE id = ?", id);
     }
 
-    public Bottle AddBottle(MessageStruct message, string text, string imageFilename)
+    public Bottle AddBottle(MessageStruct message, string text, string imageFilename, string imageMd5)
     {
         var bottle = new Bottle
         {
@@ -34,7 +34,8 @@ public partial class YukiDbManager
             UserUin = message.Sender.Uin,
             UserName = message.Sender.Name,
             Text = text,
-            ImageFilename = imageFilename
+            ImageFilename = imageFilename,
+            ImageMd5 = imageMd5
         };
         Databases[BottleDbName].Insert(bottle);
         return bottle;
@@ -55,6 +56,13 @@ public partial class YukiDbManager
     {
         Databases[BottleDbName].Execute(
             "DELETE FROM bottles WHERE id = ?", bottleId);
+    }
+
+    public List<string> GetAllBottleImageMd5()
+    {
+        return Databases[BottleDbName].Query<Bottle>(
+                "SELECT * FROM bottles")
+            .ConvertAll(bottle => bottle.ImageMd5);
     }
 
     public void FixBottle()

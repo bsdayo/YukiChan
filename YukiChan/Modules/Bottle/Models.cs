@@ -32,4 +32,6 @@ public class Bottle
     [Column("text")] public string Text { get; set; }
 
     [Column("image_filename")] public string ImageFilename { get; set; }
+
+    [Column("image_md5")] public string ImageMd5 { get; set; }
 }
