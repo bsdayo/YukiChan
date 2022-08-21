@@ -4,6 +4,7 @@ using Konata.Core.Events;
 using Konata.Core.Events.Model;
 using Konata.Core.Interfaces.Api;
 using Konata.Core.Message;
+using Konata.Core.Message.Model;
 using YukiChan.Utils;
 
 namespace YukiChan.Core;
@@ -54,7 +55,12 @@ public static class EventHandlers
 
         try
         {
-            if (group is not null && group.Assignee != bot.Uin) return;
+            if (group is not null && group.Assignee != bot.Uin)
+            {
+                var atChain = e.Message.Chain.GetChain<AtChain>();
+                if (atChain is null || atChain.AtUin != bot.Uin) return;
+            }
+
             var msgBuilder = ModuleManager.ParseCommand(bot, e.Message);
             await bot.SendGroupMessageWithLog(e.GroupName, e.GroupUin, msgBuilder);
         }
