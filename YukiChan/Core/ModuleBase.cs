@@ -100,7 +100,7 @@ public abstract class ModuleBase
                 continue;
 
             var group = Global.YukiDb.GetGroup(message.Receiver.Uin);
-            if (group is not null && group.Assignee != bot.Uin) return null;
+            if (group is null || group.Assignee != bot.Uin) return null;
 
             var callTime = DateTime.Now;
             var user = Global.YukiDb.GetUser(message.Sender.Uin);
