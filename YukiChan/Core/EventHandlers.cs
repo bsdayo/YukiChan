@@ -25,17 +25,26 @@ public static class EventHandlers
 
     public static async void OnGroupMessage(Bot bot, GroupMessageEvent e)
     {
-        var group = Global.YukiDb.GetGroup(e.GroupUin);
-        if (group is not null && group.Assignee == 0)
 #pragma warning disable CS4014
+        var group = Global.YukiDb.GetGroup(e.GroupUin);
+        if (group is not null)
+        {
+            if (group.Assignee == 0)
+                Task.Run(() =>
+                {
+                    Task.Delay(new Random().Next(50));
+                    Global.YukiDb.AddGroup(e.GroupUin, bot.Uin);
+                });
+        }
+        else
+        {
             Task.Run(() =>
-#pragma warning restore CS4014
             {
                 Task.Delay(new Random().Next(50));
                 Global.YukiDb.AddGroup(e.GroupUin, bot.Uin);
             });
-        else
-            Global.YukiDb.AddGroup(e.GroupUin, bot.Uin);
+        }
+#pragma warning restore CS4014
 
         if (e.Message.Sender.Uin == bot.Uin) return;
 
@@ -45,6 +54,7 @@ public static class EventHandlers
 
         try
         {
+            if (group is not null && group.Assignee != bot.Uin) return;
             var msgBuilder = ModuleManager.ParseCommand(bot, e.Message);
             await bot.SendGroupMessageWithLog(e.GroupName, e.GroupUin, msgBuilder);
         }
