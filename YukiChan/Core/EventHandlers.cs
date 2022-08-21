@@ -25,8 +25,11 @@ public static class EventHandlers
 
     public static async void OnGroupMessage(Bot bot, GroupMessageEvent e)
     {
-        if (Global.YukiDb.GetGroup(e.GroupUin) is null)
-            Global.YukiDb.AddGroup(e.GroupUin);
+        var group = Global.YukiDb.GetGroup(e.GroupUin);
+        if (group is not null && group.Assignee == 0)
+            Global.YukiDb.UpdateGroupAssignee(e.GroupUin, bot.Uin);
+        else 
+            Global.YukiDb.AddGroup(e.GroupUin, bot.Uin);
 
         if (e.Message.Sender.Uin == bot.Uin) return;
 

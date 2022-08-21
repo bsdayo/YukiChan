@@ -2,6 +2,7 @@
 // ReSharper disable MemberCanBePrivate.Global
 
 using YukiChan.Database.Models;
+using YukiChan.Utils;
 
 namespace YukiChan.Core;
 
@@ -31,8 +32,52 @@ public sealed class CommandAttribute : Attribute
     }
 }
 
-public enum SendType
+public class Option
 {
-    Send,
-    Reply
+    public string ShortName { get; set; } = "";
+
+    public string FullName { get; set; } = "";
+
+    public OptionType Type { get; set; }
+
+    public string Description { get; set; }
+
+    public Option(string pattern, OptionType type, string description = "")
+    {
+        var ptns = pattern.Split(',');
+        if (ptns.Length > 1)
+        {
+            ShortName = ptns[0].Trim().RemoveString("-");
+            FullName = ptns[1].Trim().RemoveString("--");
+        }
+        else
+        {
+            var ptn = ptns[0].Trim();
+            if (ptn.StartsWith("--"))
+            {
+                ShortName = "";
+                FullName = ptn.RemoveString("--");
+            }
+            else if (ptn.StartsWith("-"))
+            {
+                ShortName = ptn.RemoveString("-");
+                FullName = ShortName;
+            }
+        }
+
+        Type = type;
+        Description = description;
+    }
+
+    public Option(string pattern, string description = "")
+        : this(pattern, OptionType.Boolean, description)
+    {
+    }
+}
+
+public enum OptionType
+{
+    String,
+    Number,
+    Boolean
 }

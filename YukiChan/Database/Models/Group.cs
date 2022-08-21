@@ -11,4 +11,6 @@ public class YukiGroup
     public uint Id { get; set; }
 
     [Column("uin")] public uint Uin { get; set; }
+    
+    [Column("assignee")] public uint Assignee { get; set; }
 }
