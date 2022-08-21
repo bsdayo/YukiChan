@@ -34,7 +34,7 @@ public class ArcaeaRecord
 
     public ArcaeaGrade Grade { get; init; }
 
-    public byte RecollectionRate { get; init; }
+    public int RecollectionRate { get; init; }
 
     public bool JacketOverride { get; init; }
 
@@ -58,9 +58,35 @@ public class ArcaeaRecord
             PureCount = record.PerfectCount,
             FarCount = record.NearCount,
             LostCount = record.MissCount,
-            RecollectionRate = (byte)record.Health!,
+            RecollectionRate = record.Health!.Value,
             //
             JacketOverride = chartInfo.JacketOverride,
+            TimePlayed = record.TimePlayed
+        };
+    }
+    
+    public static ArcaeaRecord FromAla(AlaRecord record)
+    {
+        var chart = ArcaeaSongDatabase.GetChartsById(record.SongId)[record.Difficulty];
+        return new ArcaeaRecord
+        {
+            Name = chart.NameEn,
+            SongId = record.SongId,
+            Potential = ArcaeaUtils.CalculatePotential((double)chart.Rating / 10, record.Score),
+            Difficulty = (ArcaeaDifficulty)record.Difficulty,
+            Rating = ((double)chart.Rating / 10).ToString("0.0"),
+            RatingText = chart.Rating.GetDifficulty(),
+            Score = record.Score,
+            ClearType = record.RecollectionRate >= 70 ? ArcaeaClearType.NormalClear : ArcaeaClearType.TrackLost,
+            Grade = ArcaeaUtils.GetGrade(record.Score),
+            //
+            ShinyPureCount = record.ShinyPureCount,
+            PureCount = record.PureCount,
+            FarCount = record.FarCount,
+            LostCount = record.LostCount,
+            RecollectionRate = record.RecollectionRate,
+            //
+            JacketOverride = chart.JacketOverride,
             TimePlayed = record.TimePlayed
         };
     }

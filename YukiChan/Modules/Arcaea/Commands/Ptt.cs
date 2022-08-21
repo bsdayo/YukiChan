@@ -45,7 +45,7 @@ public partial class ArcaeaModule
                 break;
         }
 
-        if (!double.TryParse(scoreStr, out var score))
+        if (!int.TryParse(scoreStr, out var score))
             return message.Reply("得分格式有误，请检查输入。");
 
         var song = ArcaeaSongDatabase.FuzzySearchSong(songname);
@@ -54,17 +54,10 @@ public partial class ArcaeaModule
 
         var rating = (double)song.Difficulties[(int)difficulty].Rating / 10;
 
-        var ptt = score switch
-        {
-            >= 10000000 => rating + 2,
-            >= 9800000 => rating + 1 + (score - 9800000) / 200000,
-            _ => rating + (score - 9500000) / 300000
-        };
-
-        ptt = Math.Max(0, ptt);
+        var ptt = ArcaeaUtils.CalculatePotential(rating, score);
 
         return message.Reply()
             .Text($"在曲目 {song.Difficulties[(int)difficulty].NameEn} [{difficulty}] 中，")
-            .Text($"得分 {(int)score} 的单曲潜力值为 {ptt:F4}。");
+            .Text($"得分 {score} 的单曲潜力值为 {ptt:N4}。");
     }
 }

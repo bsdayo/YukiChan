@@ -27,4 +27,22 @@ public class ArcaeaUser
             JoinDate = info.JoinDate.FormatTimestamp(true)
         };
     }
+
+    public static ArcaeaUser FromAla(AlaUser info, string usercode)
+    {
+        return new ArcaeaUser
+        {
+            Name = info.DisplayName,
+            Id = usercode,
+            Potential = info.Potential >= 0
+                ? ((double)info.Potential / 100).ToString("0.00")
+                : "?",
+            JoinDate = "?"
+        };
+    }
+
+    public static ArcaeaUser FromAla(AlaUser info, int usercode)
+    {
+        return FromAla(info, usercode.ToString().PadLeft(9, '0'));
+    }
 }

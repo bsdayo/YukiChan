@@ -38,8 +38,12 @@ public class YukiConfig
 public class ArcaeaConfig
 {
     public string AuaApiUrl { get; init; } = "";
-    public string UserAgent { get; init; } = "";
-    public int Timeout { get; init; } = 60;
+    public string AuaToken { get; init; } = "";
+    public int AuaTimeout { get; init; } = 60;
+    
+    public string AlaToken { get; init; } = "";
+    public int AlaTimeout { get; init; } = 60;
+    
     public bool EnableGuess { get; init; } = true;
 }
 

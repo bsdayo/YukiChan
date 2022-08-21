@@ -13,9 +13,15 @@ public partial class ArcaeaModule : ModuleBase
     private static readonly AuaClient AuaClient = new AuaClient
     {
         ApiUrl = Global.YukiConfig.Arcaea.AuaApiUrl,
-        UserAgent = Global.YukiConfig.Arcaea.UserAgent,
-        Timeout = Global.YukiConfig.Arcaea.Timeout
+        UserAgent = Global.YukiConfig.Arcaea.AuaToken,
+        Timeout = Global.YukiConfig.Arcaea.AuaTimeout
     }.Initialize();
+
+    private static readonly AlaClient AlaClient = new AlaClient
+    {
+        Token = Global.YukiConfig.Arcaea.AlaToken,
+        Timeout = Global.YukiConfig.Arcaea.AlaTimeout
+    };
 
     private static readonly ModuleLogger Logger = new("Arcaea");
 }

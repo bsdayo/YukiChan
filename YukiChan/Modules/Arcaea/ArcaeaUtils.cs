@@ -170,6 +170,18 @@ public static class ArcaeaUtils
         };
     }
 
+    public static double CalculatePotential(double rating, int score)
+    {
+        var ptt = score switch
+        {
+            >= 10000000 => rating + 2,
+            >= 9800000 => rating + 1 + ((double)score - 9800000) / 200000,
+            _ => rating + ((double)score - 9500000) / 300000
+        };
+
+        return Math.Max(0, ptt);
+    }
+
     public static ArcaeaGuessMode? GetGuessMode(string text)
     {
         return text.ToLower() switch
