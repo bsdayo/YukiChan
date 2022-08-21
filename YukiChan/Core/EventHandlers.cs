@@ -27,8 +27,14 @@ public static class EventHandlers
     {
         var group = Global.YukiDb.GetGroup(e.GroupUin);
         if (group is not null && group.Assignee == 0)
-            Global.YukiDb.UpdateGroupAssignee(e.GroupUin, bot.Uin);
-        else 
+#pragma warning disable CS4014
+            Task.Run(() =>
+#pragma warning restore CS4014
+            {
+                Task.Delay(new Random().Next(50));
+                Global.YukiDb.AddGroup(e.GroupUin, bot.Uin);
+            });
+        else
             Global.YukiDb.AddGroup(e.GroupUin, bot.Uin);
 
         if (e.Message.Sender.Uin == bot.Uin) return;

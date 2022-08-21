@@ -68,6 +68,9 @@ public abstract class ModuleBase
     {
         var commandStr = message.Chain.GetChain<TextChain>()?.Content?.Trim();
         if (commandStr is null) return null;
+        
+        var group = Global.YukiDb.GetGroup(message.Receiver.Uin);
+        if (group is null || group.Assignee != bot.Uin) return null;
 
         for (var i = 0; i < Commands.Count; i++)
         {
@@ -98,9 +101,6 @@ public abstract class ModuleBase
             if (!startsWithFlag && !shortcutFlag && !regexMatchFlag && !customStartFlag && !containsFlag &&
                 !fallbackFlag)
                 continue;
-
-            var group = Global.YukiDb.GetGroup(message.Receiver.Uin);
-            if (group is null || group.Assignee != bot.Uin) return null;
 
             var callTime = DateTime.Now;
             var user = Global.YukiDb.GetUser(message.Sender.Uin);
