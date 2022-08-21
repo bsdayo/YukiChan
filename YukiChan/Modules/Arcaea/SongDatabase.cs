@@ -21,7 +21,6 @@ public static class ArcaeaSongDatabase
 
     public static void AddAlias(string songId, string alias)
     {
-
         SongDb.Value.Execute("PRAGMA foreign_keys = OFF");
         var dbAlias = new ArcaeaSongDbAlias
         {

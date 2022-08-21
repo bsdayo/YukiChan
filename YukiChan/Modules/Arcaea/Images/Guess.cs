@@ -31,7 +31,7 @@ public static class ArcaeaGuessImageGenerator
                 0.2126f, 0.7152f, 0.0722f, 0f, 0f,
                 0.2126f, 0.7152f, 0.0722f, 0f, 0f,
                 0.2126f, 0.7152f, 0.0722f, 0f, 0f,
-                0.0000f, 0.0000f, 0.0000f, 1f, 0f,
+                0.0000f, 0.0000f, 0.0000f, 1f, 0f
             });
 
         if (mode == ArcaeaGuessMode.Invert)

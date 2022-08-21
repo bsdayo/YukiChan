@@ -22,15 +22,14 @@ public class OcrModule : ModuleBase
 
         if (imageChain is not null)
             return await GetOcr(bot, message, imageChain);
-        else
-            bot.GetSession(message, 30, async cbMessage =>
-            {
-                var cbImageChain = cbMessage.Chain.GetChain<ImageChain>();
-                if (cbImageChain is not null)
-                    return await GetOcr(bot, message, cbImageChain);
+        bot.GetSession(message, 30, async cbMessage =>
+        {
+            var cbImageChain = cbMessage.Chain.GetChain<ImageChain>();
+            if (cbImageChain is not null)
+                return await GetOcr(bot, message, cbImageChain);
 
-                return cbMessage.Reply("似乎发送了无效的图片呢...");
-            });
+            return cbMessage.Reply("似乎发送了无效的图片呢...");
+        });
 
         return message.Reply("请在 30 秒内发送需要转换的图片哦~");
     }

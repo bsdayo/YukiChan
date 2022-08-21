@@ -59,20 +59,13 @@ public partial class YukiDbManager
         Databases[UserdataDbName].Insert(user, typeof(YukiUser));
     }
 
-    public void AddGroup(uint groupUin, uint assignee)
+    public void AddGroup(uint groupUin)
     {
         var group = new YukiGroup
         {
-            Uin = groupUin,
-            Assignee = assignee
+            Uin = groupUin
         };
-        Databases[UserdataDbName].Insert(group);
-    }
-
-    public void UpdateGroupAssignee(uint groupUin, uint assignee)
-    {
-        Databases[UserdataDbName].Execute(
-            "UPDATE groups SET assignee = ? WHERE uin = ?", assignee, groupUin);
+        Databases[UserdataDbName].InsertOrReplace(group);
     }
 
     public void UpdateUser(YukiUser user)

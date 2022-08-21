@@ -64,7 +64,7 @@ public class ArcaeaRecord
             TimePlayed = record.TimePlayed
         };
     }
-    
+
     public static ArcaeaRecord FromAla(AlaRecord record)
     {
         var chart = ArcaeaSongDatabase.GetChartsById(record.SongId)[record.Difficulty];

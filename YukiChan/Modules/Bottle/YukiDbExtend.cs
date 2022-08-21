@@ -70,9 +70,7 @@ public partial class YukiDbManager
         var all = Databases[BottleDbName].Query<Bottle>("SELECT * FROM bottles");
 
         foreach (var bottle in all)
-        {
             if (!string.IsNullOrWhiteSpace(bottle.ImageFilename))
-            {
                 try
                 {
                     var newFilename = $"{bottle.Id}.{bottle.ImageFilename.Split(".")[1]}";
@@ -83,8 +81,6 @@ public partial class YukiDbManager
                 {
                     // ignored
                 }
-            }
-        }
 
         Databases[BottleDbName].UpdateAll(all);
     }

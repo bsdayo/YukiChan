@@ -4,8 +4,6 @@ using Konata.Core.Events;
 using Konata.Core.Events.Model;
 using Konata.Core.Interfaces.Api;
 using Konata.Core.Message;
-using Konata.Core.Message.Model;
-using YukiChan.Database.Models;
 using YukiChan.Utils;
 
 namespace YukiChan.Core;
@@ -27,17 +25,8 @@ public static class EventHandlers
 
     public static async void OnGroupMessage(Bot bot, GroupMessageEvent e)
     {
-        var group = Global.YukiDb.GetGroup(e.GroupUin);
-
-#pragma warning disable CS4014
-        if (group is null)
-            Task.Run(() =>
-            {
-                Task.Delay(new Random().Next(100));
-                if (Global.YukiDb.GetGroup(e.GroupUin) is null)
-                    Global.YukiDb.AddGroup(e.GroupUin, bot.Uin);
-            });
-#pragma warning restore CS4014
+        if (Global.YukiDb.GetGroup(e.GroupUin) is null)
+            Global.YukiDb.AddGroup(e.GroupUin);
 
         if (e.Message.Sender.Uin == bot.Uin) return;
 
@@ -47,12 +36,6 @@ public static class EventHandlers
 
         try
         {
-            if (group is not null && group.Assignee != bot.Uin)
-            {
-                var atChain = e.Message.Chain.GetChain<AtChain>();
-                if (atChain is null || atChain.AtUin != bot.Uin) return;
-            }
-
             var msgBuilder = ModuleManager.ParseCommand(bot, e.Message);
             await bot.SendGroupMessageWithLog(e.GroupName, e.GroupUin, msgBuilder);
         }

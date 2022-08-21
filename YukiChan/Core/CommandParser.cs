@@ -1,5 +1,4 @@
-﻿using System.Dynamic;
-using YukiChan.Utils;
+﻿using YukiChan.Utils;
 
 namespace YukiChan.Core;
 
@@ -55,9 +54,10 @@ public class CommandParser
                 foreach (var opt in options)
                     if (opt.Type == OptionType.Boolean && section.RemoveString("-").Contains(opt.ShortName))
                         argv.Options[opt.FullName] = boolAbbrChecked = true;
-                
-                if (!boolAbbrChecked) option = options.FirstOrDefault(opt =>
-                    !string.IsNullOrWhiteSpace(opt.ShortName) && section.RemoveString("-") == opt.ShortName);
+
+                if (!boolAbbrChecked)
+                    option = options.FirstOrDefault(opt =>
+                        !string.IsNullOrWhiteSpace(opt.ShortName) && section.RemoveString("-") == opt.ShortName);
             }
 
             if (option is not null)

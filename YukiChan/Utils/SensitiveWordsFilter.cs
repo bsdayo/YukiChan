@@ -25,7 +25,9 @@ public static class SensitiveWordsFilter
             {
                 var c = word[i];
                 if (indexMap.ContainsKey(c))
+                {
                     indexMap = (Hashtable)indexMap[c]!;
+                }
                 else
                 {
                     var newMap = new Hashtable();
@@ -59,7 +61,10 @@ public static class SensitiveWordsFilter
                 else currentMap = tempTable;
                 length++;
             }
-            else break;
+            else
+            {
+                break;
+            }
         }
 
         if (!flag) length = 0;
@@ -80,7 +85,10 @@ public static class SensitiveWordsFilter
                     sb[i + j] = '*';
                 i += length;
             }
-            else i++;
+            else
+            {
+                i++;
+            }
         }
 
         return sb.ToString();

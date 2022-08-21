@@ -17,7 +17,7 @@ public partial class ArcaeaModule : ModuleBase
         Timeout = Global.YukiConfig.Arcaea.AuaTimeout
     }.Initialize();
 
-    private static readonly AlaClient AlaClient = new AlaClient
+    private static readonly AlaClient AlaClient = new()
     {
         Token = Global.YukiConfig.Arcaea.AlaToken,
         Timeout = Global.YukiConfig.Arcaea.AlaTimeout
