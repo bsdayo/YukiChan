@@ -70,6 +70,7 @@ public abstract class ModuleBase
         if (commandStr is null) return null;
         
         var group = Global.YukiDb.GetGroup(message.Receiver.Uin);
+        YukiLogger.Debug($"Bot uin: {bot.Uin}, Group assignee: {group?.Assignee}");
         if (group is null || group.Assignee != bot.Uin) return null;
 
         for (var i = 0; i < Commands.Count; i++)
