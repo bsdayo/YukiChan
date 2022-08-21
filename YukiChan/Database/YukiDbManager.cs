@@ -66,7 +66,7 @@ public partial class YukiDbManager
             Uin = groupUin,
             Assignee = assignee
         };
-        Databases[UserdataDbName].InsertOrReplace(group);
+        Databases[UserdataDbName].Insert(group);
     }
 
     public void UpdateGroupAssignee(uint groupUin, uint assignee)

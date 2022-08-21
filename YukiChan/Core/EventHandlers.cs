@@ -5,6 +5,7 @@ using Konata.Core.Events.Model;
 using Konata.Core.Interfaces.Api;
 using Konata.Core.Message;
 using Konata.Core.Message.Model;
+using YukiChan.Database.Models;
 using YukiChan.Utils;
 
 namespace YukiChan.Core;
@@ -26,25 +27,16 @@ public static class EventHandlers
 
     public static async void OnGroupMessage(Bot bot, GroupMessageEvent e)
     {
-#pragma warning disable CS4014
         var group = Global.YukiDb.GetGroup(e.GroupUin);
-        if (group is not null)
-        {
-            if (group.Assignee == 0)
-                Task.Run(() =>
-                {
-                    Task.Delay(new Random().Next(50));
-                    Global.YukiDb.AddGroup(e.GroupUin, bot.Uin);
-                });
-        }
-        else
-        {
+
+#pragma warning disable CS4014
+        if (group is null)
             Task.Run(() =>
             {
-                Task.Delay(new Random().Next(50));
-                Global.YukiDb.AddGroup(e.GroupUin, bot.Uin);
+                Task.Delay(new Random().Next(100));
+                if (Global.YukiDb.GetGroup(e.GroupUin) is null)
+                    Global.YukiDb.AddGroup(e.GroupUin, bot.Uin);
             });
-        }
 #pragma warning restore CS4014
 
         if (e.Message.Sender.Uin == bot.Uin) return;
