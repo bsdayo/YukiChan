@@ -13,7 +13,7 @@ namespace YukiChan.Modules.Phrase;
 public class Phrase : ModuleBase
 {
     private static readonly ModuleLogger Logger = new("Phrase");
-    
+
     [Command("Generate Phrase",
         Description = "生成短语",
         Command = "generate",
@@ -40,13 +40,46 @@ public class Phrase : ModuleBase
             sb.Append(Global.YukiDb.GetPhraseWord("verb"));
 
             return message.Reply(sb.ToString());
-
         }
         catch (Exception e)
         {
             Logger.Error(e);
             return message.Reply($"发生错误！({e.GetType().Name}: {e.Message})");
         }
+    }
+
+    [Command("Parse",
+        Description = "解析替换",
+        Command = "parse")]
+    public static MessageBuilder Parse(Bot bot, MessageStruct message, string body)
+    {
+        if (string.IsNullOrWhiteSpace(body))
+            return message.Reply("请输入模板文本哦~");
+
+        if (body.HasSensitiveWords())
+            return message.Reply("输入了敏感词汇哦！");
+
+        var list = body.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+        var result = new List<string>();
+
+        foreach (var item in list)
+        {
+            var type = item switch
+            {
+                "n" => "noun",
+                "v" => "verb",
+                _ => item
+            };
+            if (!new[] { "noun", "verb", "adj", "adv", "time", "place" }.Contains(type))
+            {
+                result.Add(item);
+                continue;
+            }
+
+            result.Add(Global.YukiDb.GetPhraseWord(type));
+        }
+
+        return message.Reply(string.Join(" ", result));
     }
 
     [Command("Add Phrase Word",
