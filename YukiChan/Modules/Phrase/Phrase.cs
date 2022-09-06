@@ -16,6 +16,7 @@ public class Phrase : ModuleBase
     
     [Command("Generate Phrase",
         Description = "生成短语",
+        Command = "generate",
         FallbackCommand = true)]
     public static MessageBuilder Generate(Bot bot, MessageStruct message, string body)
     {
