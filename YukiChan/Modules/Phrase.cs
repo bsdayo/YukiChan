@@ -65,20 +65,26 @@ public class Phrase : ModuleBase
 
         if (Time.Count > 0)
             sb.Append(Time[rd.Next(Time.Count)]);
+
         if (Adj.Count > 0)
             sb.Append(Adj[rd.Next(Adj.Count)]);
         if (Noun.Count > 0)
             sb.Append(Noun[rd.Next(Noun.Count)]);
+
         if (Place.Count > 0)
             sb.Append(Place[rd.Next(Place.Count)]);
+
+        sb.Append(rd.Next() % 2 == 0 ? '把' : '被');
+
+        if (Adj.Count > 0)
+            sb.Append(Adj[rd.Next(Adj.Count)]);
+        if (Noun.Count > 0)
+            sb.Append(Noun[rd.Next(Noun.Count)]);
+
         if (Adv.Count > 0)
             sb.Append(Adv[rd.Next(Adv.Count)]);
         if (Verb.Count > 0)
             sb.Append(Verb[rd.Next(Verb.Count)]);
-        if (Adj.Count > 0)
-            sb.Append(Adj[rd.Next(Adj.Count)]);
-        if (Noun.Count > 0)
-            sb.Append(Noun[rd.Next(Noun.Count)]);
 
         return message.Reply(sb.ToString());
     }
