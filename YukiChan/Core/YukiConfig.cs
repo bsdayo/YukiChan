@@ -19,6 +19,8 @@ public class YukiConfig
 
     public MalodyConfig Malody { get; init; } = new();
 
+    public GosenConfig Gosen { get; init; } = new();
+
     public static YukiConfig GetYukiConfig()
     {
         var config = new YukiConfig();
@@ -63,4 +65,9 @@ public class MalodyConfig
     public string Account { get; init; } = "";
     public string Password { get; init; } = "";
     public string BaseUrl { get; init; } = "https://m.mugzone.net";
+}
+
+public class GosenConfig
+{
+    public string ApiUrl { get; init; } = "";
 }
