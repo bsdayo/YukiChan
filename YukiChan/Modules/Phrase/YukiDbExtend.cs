@@ -18,7 +18,7 @@ public class PhraseWord
     public string Type { get; set; }
 }
 
-[YukiDatabase(PhraseDbName, typeof(ArcaeaDatabaseUser), typeof(ArcaeaGuessUser))]
+[YukiDatabase(PhraseDbName, typeof(PhraseWord))]
 public partial class YukiDbManager
 {
     private const string PhraseDbName = "Phrase";
