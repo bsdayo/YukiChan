@@ -10,12 +10,10 @@ namespace YukiChan.Database;
 [Table("phrase_words")]
 public class PhraseWord
 {
-    [PrimaryKey] [Column("word")]
-    public string Word { get; set; }
-    
+    [PrimaryKey] [Column("word")] public string Word { get; set; }
+
     // noun, verb...
-    [Column("type")]
-    public string Type { get; set; }
+    [Column("type")] public string Type { get; set; }
 }
 
 [YukiDatabase(PhraseDbName, typeof(PhraseWord))]
@@ -34,10 +32,8 @@ public partial class YukiDbManager
 
     public void RemovePhraseWord(string word)
     {
-        Databases[PhraseDbName].Delete<PhraseWord>(new PhraseWord
-        {
-            Word = word
-        });
+        Databases[PhraseDbName].Execute(
+            "DELETE FROM phrase_words WHERE word = ?", word);
     }
 
     public string GetPhraseWord(string type)
