@@ -7,6 +7,7 @@ using YukiChan.Modules.Phrase;
 
 namespace YukiChan.Database;
 
+#pragma warning disable CS8618
 [Table("phrase_words")]
 public class PhraseWord
 {
@@ -15,6 +16,7 @@ public class PhraseWord
     // noun, verb...
     [Column("type")] public string Type { get; set; }
 }
+#pragma warning restore CS8618
 
 [YukiDatabase(PhraseDbName, typeof(PhraseWord))]
 public partial class YukiDbManager
