@@ -38,9 +38,9 @@ public partial class YukiDbManager
 
     public string GetPhraseWord(string type)
     {
-        var phraseWord = Databases[PhraseDbName].FindWithQuery<PhraseWord>(
+        var phraseWord = Databases[PhraseDbName].Query<PhraseWord>(
             "SELECT * FROM phrase_words WHERE type = ?", type);
 
-        return phraseWord?.Word ?? "";
+        return phraseWord.Count > 0 ? phraseWord[new Random().Next(phraseWord.Count)].Word : "";
     }
 }
