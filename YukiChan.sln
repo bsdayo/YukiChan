@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YukiChan", "YukiChan\YukiChan.csproj", "{278D0BFB-5B10-4091-B9FC-A6E7E49760AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flandre.Core", "Flandre\src\Flandre.Core\Flandre.Core.csproj", "{84EFF6C7-751D-4BD7-B5BD-36AE43B4B616}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flandre.Adapters.Konata", "Flandre\src\Flandre.Adapters.Konata\Flandre.Adapters.Konata.csproj", "{258969A5-88D6-49FA-8E64-24A48558D231}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{278D0BFB-5B10-4091-B9FC-A6E7E49760AD}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{278D0BFB-5B10-4091-B9FC-A6E7E49760AD}.Debug|Any CPU.Build.0 = Release|Any CPU
+		{278D0BFB-5B10-4091-B9FC-A6E7E49760AD}.Debug|Any CPU.Deploy.0 = Release|Any CPU
+		{278D0BFB-5B10-4091-B9FC-A6E7E49760AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{278D0BFB-5B10-4091-B9FC-A6E7E49760AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{278D0BFB-5B10-4091-B9FC-A6E7E49760AD}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{84EFF6C7-751D-4BD7-B5BD-36AE43B4B616}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84EFF6C7-751D-4BD7-B5BD-36AE43B4B616}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84EFF6C7-751D-4BD7-B5BD-36AE43B4B616}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84EFF6C7-751D-4BD7-B5BD-36AE43B4B616}.Release|Any CPU.Build.0 = Release|Any CPU
+		{258969A5-88D6-49FA-8E64-24A48558D231}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{258969A5-88D6-49FA-8E64-24A48558D231}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{258969A5-88D6-49FA-8E64-24A48558D231}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{258969A5-88D6-49FA-8E64-24A48558D231}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

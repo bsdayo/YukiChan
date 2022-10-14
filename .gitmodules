@@ -1,0 +1,3 @@
+[submodule "Flandre"]
+	path = Flandre
+	url = https://github.com/FlandreDevs/Flandre.git

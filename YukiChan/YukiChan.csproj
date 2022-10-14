@@ -1,0 +1,71 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <Product>YukiChan</Product>
+        <Version>2.0.0-alpha</Version>
+        <Authors>b1acksoil</Authors>
+        <Description>Cross-platform chat bot using Flandre.</Description>
+
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+
+        <OutputType>Exe</OutputType>
+        <PublishSingleFile>true</PublishSingleFile>
+        <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+
+        <RepositoryUrl>https://github.com/b1acksoil/YukiChan</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/b1acksoil/YukiChan</PackageProjectUrl>
+        <RepositoryType>git</RepositoryType>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Flandre\src\Flandre.Core\Flandre.Core.csproj" />
+        <ProjectReference Include="..\Flandre\src\Flandre.Adapters.Konata\Flandre.Adapters.Konata.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Tomlyn" Version="0.15.1" />
+    </ItemGroup>
+
+    <Target Name="GetBuildStamp" BeforeTargets="GenerateBuildStamp" Condition="'$(BuildHash)' == ''">
+        <PropertyGroup>
+            <BuildStampFile>$(IntermediateOutputPath)BuildStamp</BuildStampFile>
+        </PropertyGroup>
+
+        <!-- Git Branch -->
+        <Exec Command="git -C $(ProjectDir) rev-parse --abbrev-ref HEAD &gt; $(BuildStampFile)" />
+
+        <!-- Git Commit Hash -->
+        <Exec Command="git -C $(ProjectDir) rev-parse HEAD &gt;&gt; $(BuildStampFile)" />
+
+        <ReadLinesFromFile File="$(BuildStampFile)">
+            <Output TaskParameter="Lines" ItemName="Stamp" />
+        </ReadLinesFromFile>
+
+        <PropertyGroup>
+            <BuildStamp>@(Stamp)</BuildStamp>
+        </PropertyGroup>
+    </Target>
+
+    <!-- Generate Build Stamp -->
+    <Target Name="GenerateBuildStamp" BeforeTargets="CoreCompile">
+        <PropertyGroup>
+            <CustomAssemblyInfoFile>$(IntermediateOutputPath)CustomAssemblyInfo.cs</CustomAssemblyInfoFile>
+        </PropertyGroup>
+
+        <ItemGroup>
+            <Compile Include="$(CustomAssemblyInfoFile)" />
+        </ItemGroup>
+
+        <ItemGroup>
+            <AssemblyAttributes Include="AssemblyMetadata">
+                <_Parameter1>BuildStamp</_Parameter1>
+                <_Parameter2>$(BuildStamp)</_Parameter2>
+            </AssemblyAttributes>
+        </ItemGroup>
+
+        <WriteCodeFragment Language="C#" OutputFile="$(CustomAssemblyInfoFile)" AssemblyAttributes="@(AssemblyAttributes)" />
+    </Target>
+
+</Project>
