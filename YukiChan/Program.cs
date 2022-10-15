@@ -1,4 +1,5 @@
 ﻿using Flandre.Adapters.Konata;
+using Flandre.Adapters.OneBot;
 using Flandre.Core;
 using Konata.Core.Common;
 using Tomlyn;
@@ -18,9 +19,14 @@ public static class Program
 
         var app = new FlandreApp(yukiConfig.App);
 
+        // Update Konata config
+        app.OnAppReady += (_, _) =>
+            File.WriteAllText($"{YukiDir.Configs}/konata.toml", Toml.FromModel(konataConfig));
+
         app
             // Adapters
             .UseKonataAdapter(konataConfig)
+            .UseOneBotAdapter(GetOneBotAdapterConfig())
 
             // Plugins
             .Use(new StatusPlugin())
@@ -40,6 +46,22 @@ public static class Program
         else
         {
             config = Toml.ToModel<YukiConfig>(File.ReadAllText($"{YukiDir.Configs}/yuki.toml"));
+        }
+
+        return config;
+    }
+
+    public static OneBotAdapterConfig GetOneBotAdapterConfig()
+    {
+        OneBotAdapterConfig config;
+        if (!File.Exists($"{YukiDir.Configs}/onebot.toml"))
+        {
+            config = new OneBotAdapterConfig();
+            File.WriteAllText($"{YukiDir.Configs}/onebot.toml", Toml.FromModel(config, new TomlModelOptions()));
+        }
+        else
+        {
+            config = Toml.ToModel<OneBotAdapterConfig>(File.ReadAllText($"{YukiDir.Configs}/onebot.toml"));
         }
 
         return config;

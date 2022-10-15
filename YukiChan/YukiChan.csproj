@@ -20,6 +20,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\Flandre\src\Flandre.Adapters.OneBot\Flandre.Adapters.OneBot.csproj" />
         <ProjectReference Include="..\Flandre\src\Flandre.Core\Flandre.Core.csproj" />
         <ProjectReference Include="..\Flandre\src\Flandre.Adapters.Konata\Flandre.Adapters.Konata.csproj" />
     </ItemGroup>

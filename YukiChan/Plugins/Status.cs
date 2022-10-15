@@ -17,7 +17,7 @@ public class StatusPlugin : Plugin
     }
 
     [Command("status")]
-    public MessageContent OnStatus(MessageContext ctx)
+    public static MessageContent OnStatus(MessageContext ctx)
     {
         var bs = new BuildStamp(typeof(Program));
 
