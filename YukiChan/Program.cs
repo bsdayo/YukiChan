@@ -1,27 +1,35 @@
 ﻿using Flandre.Adapters.Konata;
 using Flandre.Adapters.OneBot;
 using Flandre.Core;
+using Flandre.Core.Utils;
+using Flandre.Plugins.HttpCat;
 using Konata.Core.Common;
 using Tomlyn;
 using YukiChan.Plugins;
+using YukiChan.Plugins.Arcaea;
 using YukiChan.Utils;
 
 namespace YukiChan;
 
 public static class Program
 {
-    public static void Main()
+    public static void Main(string[] args)
     {
         YukiDir.EnsureExistence();
+        Logger.DefaultLoggingHandlers.Add(LoggerExtensions.SaveToFile);
 
         var yukiConfig = GetYukiConfig();
         var konataConfig = GetKonataAdapterConfig();
+        Global.YukiConfig = yukiConfig;
 
         var app = new FlandreApp(yukiConfig.App);
 
         // Update Konata config
         app.OnAppReady += (_, _) =>
             File.WriteAllText($"{YukiDir.Configs}/konata.toml", Toml.FromModel(konataConfig));
+
+        if (args.Contains("--complete-configs"))
+            File.WriteAllText($"{YukiDir.Configs}/yuki.toml", Toml.FromModel(yukiConfig));
 
         app
             // Adapters
@@ -30,6 +38,8 @@ public static class Program
 
             // Plugins
             .Use(new StatusPlugin())
+            .Use(new ArcaeaPlugin(yukiConfig.Plugins.Arcaea))
+            .UseHttpCatPlugin(yukiConfig.Plugins.HttpCat)
 
             // Start
             .Start();
@@ -41,7 +51,7 @@ public static class Program
         if (!File.Exists($"{YukiDir.Configs}/yuki.toml"))
         {
             config = new YukiConfig();
-            File.WriteAllText($"{YukiDir.Configs}/yuki.toml", Toml.FromModel(config, new TomlModelOptions()));
+            File.WriteAllText($"{YukiDir.Configs}/yuki.toml", Toml.FromModel(config));
         }
         else
         {
@@ -57,7 +67,7 @@ public static class Program
         if (!File.Exists($"{YukiDir.Configs}/onebot.toml"))
         {
             config = new OneBotAdapterConfig();
-            File.WriteAllText($"{YukiDir.Configs}/onebot.toml", Toml.FromModel(config, new TomlModelOptions()));
+            File.WriteAllText($"{YukiDir.Configs}/onebot.toml", Toml.FromModel(config));
         }
         else
         {
