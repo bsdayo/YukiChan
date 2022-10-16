@@ -85,16 +85,16 @@ public static class ArcaeaSongDatabase
         if (aliases.Count > 0)
             return aliases[0].SongId;
 
-        var chartQuery = SongDb.Value.Query<ArcaeaSongDbChart>();
+        var charts = SongDb.Value.Query<ArcaeaSongDbChart>().ToList();
 
         return (
-                chartQuery.FirstOrDefault(chart => chart.SongId == source) ??
-                chartQuery.FirstOrDefault(chart => chart.NameEn.RemoveString(" ").ToLower() == source ||
-                                                   chart.NameJp.RemoveString(" ").ToLower() == source) ??
-                chartQuery.FirstOrDefault(chart => source.Length > 1 &&
-                                                   chart.NameEn.GetAbbreviation().ToLower() == source) ??
-                chartQuery.FirstOrDefault(chart => source.Length > 4 &&
-                                                   chart.NameEn.RemoveString(" ").ToLower().Contains(source)))
+                charts.FirstOrDefault(chart => chart.SongId == source) ??
+                charts.FirstOrDefault(chart => chart.NameEn.RemoveString(" ").ToLower() == source ||
+                                               chart.NameJp.RemoveString(" ").ToLower() == source) ??
+                charts.FirstOrDefault(chart => source.Length > 1 &&
+                                               chart.NameEn.GetAbbreviation().ToLower() == source) ??
+                charts.FirstOrDefault(chart => source.Length > 4 &&
+                                               chart.NameEn.RemoveString(" ").ToLower().Contains(source)))
             ?.SongId;
     }
 }
