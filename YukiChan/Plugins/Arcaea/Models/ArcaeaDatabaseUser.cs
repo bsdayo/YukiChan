@@ -7,9 +7,15 @@ namespace YukiChan.Plugins.Arcaea.Models;
 [Table("arcaea_users")]
 public class ArcaeaDatabaseUser
 {
-    [Column("uin", IsPrimaryKey = true)] public uint Uin { get; set; }
+    [Column("id", IsPrimaryKey = true)]
+    [NotNull]
+    public int Id { get; set; }
 
-    [Column("id")] public string Id { get; set; }
+    [Column("platform")] [NotNull] public string Platform { get; set; }
 
-    [Column("name")] public string Name { get; set; }
+    [Column("user_id")] [NotNull] public string UserId { get; set; }
+
+    [Column("arcaea_id")] [NotNull] public string ArcaeaId { get; set; }
+
+    [Column("arcaea_name")] public string ArcaeaName { get; set; } = "";
 }

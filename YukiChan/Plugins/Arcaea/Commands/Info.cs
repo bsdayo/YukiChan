@@ -15,7 +15,8 @@ public partial class ArcaeaPlugin
     public async Task<MessageContent> OnInfo(MessageContext ctx, ParsedArgs args)
     {
         var nya = args.GetOption<bool>("nya");
-        var song = ArcaeaSongDatabase.FuzzySearchSong(args.GetArgument<string>("songname"));
+
+        var song = await ArcaeaSongDatabase.FuzzySearchSong(args.GetArgument<string>("songname"));
 
         if (song is null)
             return "没有找到该曲目哦~";

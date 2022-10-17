@@ -10,41 +10,48 @@ public static class ArcaeaSongDatabase
 {
     private static readonly string DbPath = $"{YukiDir.ArcaeaAssets}/arcsong.db";
 
-    private static readonly Lazy<IDbContext> SongDb = new(() =>
-        new SQLiteContext(() => new SqliteConnection($"DataSource={DbPath}")));
+    private static IDbContext GetSongDbContext()
+    {
+        return new SQLiteContext(() => new SqliteConnection($"DataSource={DbPath}"));
+    }
 
     public static ArcaeaSongDbAlias? GetAliasById(string songId)
     {
-        return SongDb.Value.Query<ArcaeaSongDbAlias>()
+        using var ctx = GetSongDbContext();
+        return ctx.Query<ArcaeaSongDbAlias>()
             .FirstOrDefault(alias => alias.SongId == songId);
     }
 
     public static void AddAlias(string songId, string alias)
     {
-        SongDb.Value.Session.ExecuteNonQuery("PRAGMA foreign_keys = OFF");
+        using var ctx = GetSongDbContext();
+        ctx.Session.ExecuteNonQuery("PRAGMA foreign_keys = OFF");
         var dbAlias = new ArcaeaSongDbAlias
         {
             Alias = alias,
             SongId = songId
         };
-        SongDb.Value.Insert(dbAlias);
+        ctx.Insert(dbAlias);
     }
 
     public static List<ArcaeaSongDbChart> GetAllCharts()
     {
-        return SongDb.Value.Query<ArcaeaSongDbChart>().ToList();
+        using var ctx = GetSongDbContext();
+        return ctx.Query<ArcaeaSongDbChart>().ToList();
     }
 
     public static List<ArcaeaSongDbChart> GetChartsById(string songId)
     {
-        return SongDb.Value.Query<ArcaeaSongDbChart>()
+        using var ctx = GetSongDbContext();
+        return ctx.Query<ArcaeaSongDbChart>()
             .Where(chart => chart.SongId == songId)
             .ToList();
     }
 
     public static ArcaeaSongDbPackage? GetPackageBySet(string set)
     {
-        return SongDb.Value.Query<ArcaeaSongDbPackage>()
+        using var ctx = GetSongDbContext();
+        return ctx.Query<ArcaeaSongDbPackage>()
             .FirstOrDefault(package => package.Set == set);
     }
 
@@ -53,14 +60,16 @@ public static class ArcaeaSongDatabase
     /// </summary>
     /// <param name="source">搜索文本</param>
     /// <returns>搜索到的曲目，若未搜索到返回 null</returns>
-    public static ArcaeaSong? FuzzySearchSong(string source)
+    public static async Task<ArcaeaSong?> FuzzySearchSong(string source)
     {
-        var songId = FuzzySearchId(source);
+        using var ctx = GetSongDbContext();
+
+        var songId = await FuzzySearchId(source, ctx);
         if (songId is null) return null;
 
-        var charts = SongDb.Value.Query<ArcaeaSongDbChart>()
+        var charts = await ctx.Query<ArcaeaSongDbChart>()
             .Where(chart => chart.SongId == songId)
-            .ToList();
+            .ToListAsync();
         charts.Sort((chartA, chartB) => chartA.RatingClass - chartB.RatingClass);
 
         return ArcaeaSong.FromDatabase(charts);
@@ -70,22 +79,27 @@ public static class ArcaeaSongDatabase
     /// 模糊搜索曲目 ID，依赖 arcsong.db
     /// </summary>
     /// <param name="source">搜索文本</param>
+    /// <param name="songDbContext"></param>
     /// <returns>搜索到的曲目 ID，若未搜索到返回 null</returns>
-    public static string? FuzzySearchId(string source)
+    public static async Task<string?> FuzzySearchId(string source, IDbContext? songDbContext = null)
     {
         if (string.IsNullOrWhiteSpace(source))
             return null;
 
+        var ctx = songDbContext ?? GetSongDbContext();
+
         source = source.Replace(" ", "").ToLower();
 
-        var aliases = SongDb.Value.Query<ArcaeaSongDbAlias>()
+        var aliases = await ctx.Query<ArcaeaSongDbAlias>()
             .Where(alias => alias.SongId == source || alias.Alias.ToLower() == source)
-            .ToList();
+            .ToListAsync();
 
         if (aliases.Count > 0)
             return aliases[0].SongId;
 
-        var charts = SongDb.Value.Query<ArcaeaSongDbChart>().ToList();
+        var charts = await ctx.Query<ArcaeaSongDbChart>().ToListAsync();
+
+        if (songDbContext is null) ctx.Dispose();
 
         return (
                 charts.FirstOrDefault(chart => chart.SongId == source) ??
