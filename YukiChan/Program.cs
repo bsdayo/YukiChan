@@ -39,6 +39,7 @@ public static class Program
             // Plugins
             .Use(new StatusPlugin())
             .Use(new ArcaeaPlugin(yukiConfig.Plugins.Arcaea))
+            .Use(new ImagesPlugin())
             .UseHttpCatPlugin(yukiConfig.Plugins.HttpCat)
 
             // Start
