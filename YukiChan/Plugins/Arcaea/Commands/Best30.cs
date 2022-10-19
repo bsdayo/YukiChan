@@ -29,14 +29,18 @@ public partial class ArcaeaPlugin
             if (string.IsNullOrEmpty(userArg)) // 未提供用户名/好友码
             {
                 var user = await Global.YukiDb.GetArcaeaUser(ctx.Bot.Platform, ctx.Message.Sender.UserId);
-                if (user is null) return "绑定功能正在开发...";
+                if (user is null)
+                    return new MessageBuilder()
+                        .Text("请先使用 /a bind 名称或好友码 绑定你的账号哦~\n")
+                        .Text("你也可以使用 /a b30 名称或好友码 直接查询指定用户。");
 
                 Logger.Info(
                     $"正在查询 {ctx.Message.Sender.Name}({ctx.Message.Sender.UserId}) -> {user.ArcaeaName}({user.ArcaeaId}) 的 Best30 成绩...");
                 await ctx.Bot.SendMessage(ctx.Message, $"正在查询 {user.ArcaeaName} 的 Best30 成绩，请耐心等候...");
 
-                best30 = ArcaeaBest30.FromAua(
-                    await _auaClient.User.Best30(int.Parse(user.ArcaeaId), 9, AuaReplyWith.All));
+                best30 = ArcaeaBest30.FromAua(int.TryParse(user.ArcaeaId, out var parsed)
+                    ? await _auaClient.User.Best30(parsed, 9, AuaReplyWith.All)
+                    : await _auaClient.User.Best30(user.ArcaeaId, 9, AuaReplyWith.All));
             }
             else
             {

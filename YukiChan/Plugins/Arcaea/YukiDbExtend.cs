@@ -26,7 +26,7 @@ public partial class YukiDbManager
     {
         using var ctx = GetDbContext(ArcaeaDbName);
 
-        var old = await GetArcaeaUser(platform, userId);
+        var old = await GetArcaeaUser(platform, userId, ctx);
 
         var user = new ArcaeaDatabaseUser
         {
@@ -35,14 +35,13 @@ public partial class YukiDbManager
             ArcaeaId = arcId,
             ArcaeaName = arcName
         };
-
+        
         if (old is not null)
         {
             user.Id = old.Id;
             await ctx.UpdateAsync(user);
         }
-
-        await ctx.InsertAsync(user);
+        else await ctx.InsertAsync(user);
     }
 
     public async Task<bool> DeleteArcaeaUser(string platform, string userId)
