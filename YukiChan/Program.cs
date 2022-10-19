@@ -33,7 +33,7 @@ public static class Program
 
         app
             // Adapters
-            .UseKonataAdapter(konataConfig)
+            // .UseKonataAdapter(konataConfig)
             .UseOneBotAdapter(GetOneBotAdapterConfig())
 
             // Plugins
