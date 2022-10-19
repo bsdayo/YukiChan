@@ -15,9 +15,11 @@ public partial class ArcaeaPlugin
 {
     [Command("b30 [user: string]")]
     [Option("nya", "-n <:bool>")]
+    [Option("dark", "-d <:bool>")]
     public async Task<MessageContent> OnBest30(MessageContext ctx, ParsedArgs args)
     {
         var nya = args.GetOption<bool>("nya");
+        var dark = args.GetOption<bool>("dark");
         var userArg = args.GetArgument<string>("user");
 
         try
@@ -46,7 +48,7 @@ public partial class ArcaeaPlugin
 
             Logger.Info($"正在为 {best30.User.Name}({best30.User.Id}) 生成 Best30 图片...");
 
-            var image = await ArcaeaImageGenerator.Best30(best30, _auaClient, false, nya, Logger);
+            var image = await ArcaeaImageGenerator.Best30(best30, _auaClient, dark, nya, Logger);
 
             return new MessageBuilder().Image(ImageSegment.FromData(image));
         }
