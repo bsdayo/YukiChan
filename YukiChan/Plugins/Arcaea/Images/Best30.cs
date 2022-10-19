@@ -160,7 +160,8 @@ public static partial class ArcaeaImageGenerator
     public static void DrawMiniScoreCard(this SKCanvas canvas, int x, int y,
         ArcaeaRecord record, byte[] songCover, int rank = 0, bool dark = false)
     {
-        var (colorLight, colorDark) = DifficultyColors[(int)record.Difficulty];
+        var (colorLight, colorDark, colorBorderLight, colorBorderDark, colorInnerLight, colorInnerDark)
+            = DifficultyColors[(int)record.Difficulty];
 
         {
             // 背景
@@ -216,9 +217,10 @@ public static partial class ArcaeaImageGenerator
             // 难度条
             using var rectPaint = new SKPaint
             {
-                Color = SKColor.Parse(colorDark),
+                Color = SKColor.Parse(dark ? colorInnerDark : colorDark),
                 IsAntialias = true
             };
+
             using var textPaint = new SKPaint
             {
                 Color = SKColor.Parse("#ffffff"),
@@ -226,19 +228,33 @@ public static partial class ArcaeaImageGenerator
                 IsAntialias = true,
                 Typeface = FontRegular
             };
-
+            
             canvas.DrawRoundRect(x + 320, y + 15, rank != 0 ? 560 : 665, 60, 10, 10, rectPaint);
             canvas.DrawLimitedText(
                 $"{record.Difficulty} {record.RatingText} [{record.Rating}]",
                 x + 526, y + 61, textPaint, rank != 0 ? 339 : 444);
+                
+            if (dark)
+            {
+                using var borderPaint = new SKPaint
+                {
+                    Color = SKColor.Parse(colorBorderDark),
+                    IsAntialias = true,
+                    IsStroke = true,
+                    StrokeWidth = 3
+                };
+                canvas.DrawRoundRect(x + 320, y + 15, rank != 0 ? 560 : 665, 60, 10, 10, borderPaint);
+            }
         }
 
         {
             // 获得 ptt
             using var rectPaint = new SKPaint
             {
-                Color = SKColor.Parse(colorLight)
+                Color = SKColor.Parse(dark ? colorInnerLight : colorLight),
+                IsAntialias = true
             };
+            
             using var textPaint = new SKPaint
             {
                 Color = SKColors.White,
@@ -248,6 +264,18 @@ public static partial class ArcaeaImageGenerator
             };
             canvas.DrawRoundRect(x + 320, y + 15, 191, 60, 10, 10, rectPaint);
             canvas.DrawText($"{record.Potential:0.0000}", x + 335, y + 61, textPaint);
+            
+            if (dark)
+            {
+                using var borderPaint = new SKPaint
+                {
+                    Color = SKColor.Parse(colorBorderLight),
+                    IsAntialias = true,
+                    IsStroke = true,
+                    StrokeWidth = 3
+                };
+                canvas.DrawRoundRect(x + 320, y + 15, 191, 60, 10, 10, borderPaint);
+            }
         }
 
         {

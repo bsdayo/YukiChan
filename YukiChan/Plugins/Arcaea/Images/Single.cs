@@ -21,7 +21,8 @@ public static partial class ArcaeaImageGenerator
                 .GetSongCover(record.SongId, record.JacketOverride, record.Difficulty, nya, logger)
                 .Result;
 
-            var (colorLight, colorDark) = DifficultyColors[(int)record.Difficulty];
+            var (colorLight, colorDark, colorBorderLight, colorBorderDark, colorInnerLight, colorInnerDark)
+                = DifficultyColors[(int)record.Difficulty];
 
             {
                 var bgPath = "Assets/Arcaea/Images/SingleBackground.jpg";
