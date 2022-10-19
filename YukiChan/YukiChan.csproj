@@ -6,7 +6,7 @@
         <Authors>b1acksoil</Authors>
         <Description>Cross-platform chat bot using Flandre.</Description>
 
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
 
