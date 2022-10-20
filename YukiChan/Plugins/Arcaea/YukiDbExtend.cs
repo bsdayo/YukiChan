@@ -1,11 +1,12 @@
 ﻿using YukiChan.Plugins.Arcaea.Models;
-using IDbContext = Chloe.IDbContext;
+using Chloe;
+using YukiChan.Plugins.Arcaea.Models.Database;
 
 // ReSharper disable CheckNamespace
 
 namespace YukiChan.Database;
 
-[YukiDatabase(ArcaeaDbName, typeof(ArcaeaDatabaseUser) /*, typeof(ArcaeaGuessUser)*/)]
+[YukiDatabase(ArcaeaDbName, typeof(ArcaeaDatabaseUser), typeof(ArcaeaUserPreferences) /*, typeof(ArcaeaGuessUser)*/)]
 public partial class YukiDbManager
 {
     private const string ArcaeaDbName = "arcaea";
@@ -35,7 +36,7 @@ public partial class YukiDbManager
             ArcaeaId = arcId,
             ArcaeaName = arcName
         };
-        
+
         if (old is not null)
         {
             user.Id = old.Id;
@@ -51,5 +52,34 @@ public partial class YukiDbManager
         if (user is null) return false;
         await ctx.DeleteAsync(user);
         return true;
+    }
+
+    public async Task<ArcaeaUserPreferences?> GetArcaeaUserPreferences(string platform, string userId,
+        IDbContext? dbCtx = null)
+    {
+        var ctx = dbCtx ?? GetDbContext(ArcaeaDbName);
+        var pref = await ctx.Query<ArcaeaUserPreferences>()
+            .Where(pref => pref.Platform == platform)
+            .Where(pref => pref.UserId == userId)
+            .FirstOrDefaultAsync();
+        if (dbCtx is null) ctx.Dispose();
+        return pref;
+    }
+
+    public async Task AddOrUpdateArcaeaUserPreferences(string platform, string userId, ArcaeaUserPreferences pref)
+    {
+        pref.Platform = platform;
+        pref.UserId = userId;
+
+        using var ctx = GetDbContext(ArcaeaDbName);
+
+        var old = await GetArcaeaUserPreferences(platform, userId);
+
+        if (old is not null)
+        {
+            pref.Id = old.Id;
+            await ctx.UpdateAsync(pref);
+        }
+        else await ctx.InsertAsync(pref);
     }
 }

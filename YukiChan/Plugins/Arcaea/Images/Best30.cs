@@ -2,6 +2,7 @@
 using Flandre.Core.Utils;
 using SkiaSharp;
 using YukiChan.Plugins.Arcaea.Models;
+using YukiChan.Plugins.Arcaea.Models.Database;
 using YukiChan.Utils;
 
 namespace YukiChan.Plugins.Arcaea.Images;
@@ -9,7 +10,7 @@ namespace YukiChan.Plugins.Arcaea.Images;
 public static partial class ArcaeaImageGenerator
 {
     public static async Task<byte[]> Best30(ArcaeaBest30 best30, AuaClient client,
-        bool dark, bool nya, Logger? logger = null)
+        ArcaeaUserPreferences pref, Logger? logger = null)
     {
         return await Task.Run(() =>
         {
@@ -18,7 +19,7 @@ public static partial class ArcaeaImageGenerator
             var canvas = surface.Canvas;
 
             {
-                var bgPath = $"{YukiDir.ArcaeaAssets}/images/best30-background-{(dark ? "dark" : "light")}.jpg";
+                var bgPath = $"{YukiDir.ArcaeaAssets}/images/best30-background-{(pref.Dark ? "dark" : "light")}.jpg";
                 using var background = SKBitmap.Decode(bgPath);
 
                 if (background is null)
@@ -35,7 +36,7 @@ public static partial class ArcaeaImageGenerator
                 // 名称 / ptt
                 using var paint = new SKPaint
                 {
-                    Color = dark ? SKColors.White : SKColors.Black,
+                    Color = pref.Dark ? SKColors.White : SKColors.Black,
                     TextSize = 128,
                     IsAntialias = true,
                     Typeface = FontBold
@@ -48,7 +49,7 @@ public static partial class ArcaeaImageGenerator
                 // 账号信息
                 using var paint = new SKPaint
                 {
-                    Color = dark ? SKColors.White : SKColors.Black,
+                    Color = pref.Dark ? SKColors.White : SKColors.Black,
                     TextSize = 62,
                     IsAntialias = true,
                     Typeface = FontBold
@@ -75,7 +76,7 @@ public static partial class ArcaeaImageGenerator
                 // Player Best30
                 using var paint = new SKPaint
                 {
-                    Color = dark ? SKColors.White : SKColors.Black,
+                    Color = pref.Dark ? SKColors.White : SKColors.Black,
                     TextSize = 130,
                     IsAntialias = true,
                     Typeface = FontBold
@@ -87,7 +88,7 @@ public static partial class ArcaeaImageGenerator
                 // 分割线
                 using var linePaint = new SKPaint
                 {
-                    Color = dark
+                    Color = pref.Dark
                         ? new SKColor(255, 255, 255, 128)
                         : new SKColor(0, 0, 0, 128)
                 };
@@ -99,7 +100,7 @@ public static partial class ArcaeaImageGenerator
                 // 时间
                 using var paint = new SKPaint
                 {
-                    Color = dark ? SKColors.White : SKColors.Black,
+                    Color = pref.Dark ? SKColors.White : SKColors.Black,
                     IsAntialias = true,
                     TextSize = 80,
                     Typeface = FontRegular
@@ -121,11 +122,11 @@ public static partial class ArcaeaImageGenerator
                 var record = best30.Records[index];
 
                 var songCover = client
-                    .GetSongCover(record.SongId, record.JacketOverride, record.Difficulty, nya, logger)
+                    .GetSongCover(record.SongId, record.JacketOverride, record.Difficulty, pref.Nya, logger)
                     .Result;
 
                 canvas.DrawMiniScoreCard(
-                    100 + col * 1100, 635 + row * 400, record, songCover, index + 1, dark);
+                    100 + col * 1100, 635 + row * 400, record, songCover, index + 1, pref.Dark);
             }
 
             // Overflow
@@ -141,11 +142,11 @@ public static partial class ArcaeaImageGenerator
                     var record = best30.OverflowRecords![index];
 
                     var songCover = client
-                        .GetSongCover(record.SongId, record.JacketOverride, record.Difficulty, nya, logger)
+                        .GetSongCover(record.SongId, record.JacketOverride, record.Difficulty, pref.Nya, logger)
                         .Result;
 
                     canvas.DrawMiniScoreCard(
-                        100 + col * 1100, 4840 + row * 400, record, songCover, index + 31, dark);
+                        100 + col * 1100, 4840 + row * 400, record, songCover, index + 31, pref.Dark);
                 }
 
             var data = surface
@@ -228,12 +229,12 @@ public static partial class ArcaeaImageGenerator
                 IsAntialias = true,
                 Typeface = FontRegular
             };
-            
+
             canvas.DrawRoundRect(x + 320, y + 15, rank != 0 ? 560 : 665, 60, 10, 10, rectPaint);
             canvas.DrawLimitedText(
                 $"{record.Difficulty} {record.RatingText} [{record.Rating}]",
                 x + 526, y + 61, textPaint, rank != 0 ? 339 : 444);
-                
+
             if (dark)
             {
                 using var borderPaint = new SKPaint
@@ -254,7 +255,7 @@ public static partial class ArcaeaImageGenerator
                 Color = SKColor.Parse(dark ? colorInnerLight : colorLight),
                 IsAntialias = true
             };
-            
+
             using var textPaint = new SKPaint
             {
                 Color = SKColors.White,
@@ -264,7 +265,7 @@ public static partial class ArcaeaImageGenerator
             };
             canvas.DrawRoundRect(x + 320, y + 15, 191, 60, 10, 10, rectPaint);
             canvas.DrawText($"{record.Potential:0.0000}", x + 335, y + 61, textPaint);
-            
+
             if (dark)
             {
                 using var borderPaint = new SKPaint

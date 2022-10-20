@@ -34,9 +34,9 @@ public partial class YukiDbManager
         }
     }
 
-    private SQLiteContext GetDbContext(string dbName)
+    private static SQLiteContext GetDbContext(string dbName)
     {
-        return new(() => new SqliteConnection($"DataSource={YukiDir.Databases}/{dbName}.db"));
+        return new SQLiteContext(() => new SqliteConnection($"DataSource={YukiDir.Databases}/{dbName}.db"));
     }
 }
 

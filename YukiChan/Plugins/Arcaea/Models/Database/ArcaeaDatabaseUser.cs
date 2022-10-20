@@ -2,7 +2,7 @@
 
 #pragma warning disable CS8618
 
-namespace YukiChan.Plugins.Arcaea.Models;
+namespace YukiChan.Plugins.Arcaea.Models.Database;
 
 [Table("arcaea_users")]
 public class ArcaeaDatabaseUser

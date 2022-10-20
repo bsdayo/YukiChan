@@ -2,6 +2,7 @@
 using Flandre.Core.Utils;
 using SkiaSharp;
 using YukiChan.Plugins.Arcaea.Models;
+using YukiChan.Plugins.Arcaea.Models.Database;
 using YukiChan.Utils;
 
 namespace YukiChan.Plugins.Arcaea.Images;
@@ -9,7 +10,7 @@ namespace YukiChan.Plugins.Arcaea.Images;
 public static partial class ArcaeaImageGenerator
 {
     public static async Task<byte[]> Single(ArcaeaUser user, ArcaeaRecord record, AuaClient client,
-        bool nya, Logger? logger = null)
+        ArcaeaUserPreferences pref, Logger? logger = null)
     {
         return await Task.Run(() =>
         {
@@ -18,7 +19,7 @@ public static partial class ArcaeaImageGenerator
             var canvas = surface.Canvas;
 
             var cover = client
-                .GetSongCover(record.SongId, record.JacketOverride, record.Difficulty, nya, logger)
+                .GetSongCover(record.SongId, record.JacketOverride, record.Difficulty, pref.Nya, logger)
                 .Result;
 
             var (colorLight, colorDark, colorBorderLight, colorBorderDark, colorInnerLight, colorInnerDark)
