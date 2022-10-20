@@ -324,33 +324,39 @@ public static partial class ArcaeaImageGenerator
             // Pure/Far/Lost 信息
             using var textPaint = new SKPaint
             {
-                Color = dark ? SKColors.White : SKColor.Parse("#333333"),
+                Color = SKColors.White,
                 TextSize = 40,
                 IsAntialias = true,
                 Typeface = FontRegular
             };
-            // 黑色字体
-            canvas.DrawLimitedText(
-                $"Pure / {record.PureCount} (+{record.ShinyPureCount})   " +
-                $"Far / {record.FarCount}   " +
-                $"Lost / {record.LostCount}",
-                x + 335, y + 296, textPaint, 635);
 
-            // // 彩色字体
-            // // Pure
-            // textPaint.Color = SKColor.Parse("#6f3a5f");
-            // canvas.DrawLimitedText($"Pure / {record.PureCount} (+{record.ShinyPureCount})",
-            //     x + 335, y + 296, textPaint, 300);
-            //
-            // // Far
-            // textPaint.Color = SKColor.Parse("#c19c00");
-            // canvas.DrawLimitedText($"Far / {record.FarCount}",
-            //     x + 660, y + 296, textPaint, 150);
-            //
-            // // Lost
-            // textPaint.Color = SKColor.Parse("#bb2b43");
-            // canvas.DrawLimitedText($"Lost / {record.LostCount}",
-            //     x + 815, y + 296, textPaint, 150);
+            if (dark)
+            {
+                // 白色字体
+                canvas.DrawLimitedText(
+                    $"Pure / {record.PureCount} (+{record.ShinyPureCount})   " +
+                    $"Far / {record.FarCount}   " +
+                    $"Lost / {record.LostCount}",
+                    x + 335, y + 296, textPaint, 635);
+            }
+            else
+            {
+                // 彩色字体
+                // Pure
+                textPaint.Color = SKColor.Parse("#6f3a5f");
+                canvas.DrawLimitedText($"Pure / {record.PureCount} (+{record.ShinyPureCount})",
+                    x + 335, y + 296, textPaint, 300);
+
+                // Far
+                textPaint.Color = SKColor.Parse("#c19c00");
+                canvas.DrawLimitedText($"Far / {record.FarCount}",
+                    x + 660, y + 296, textPaint, 150);
+
+                // Lost
+                textPaint.Color = SKColor.Parse("#bb2b43");
+                canvas.DrawLimitedText($"Lost / {record.LostCount}",
+                    x + 815, y + 296, textPaint, 150);
+            }
         }
     }
 }

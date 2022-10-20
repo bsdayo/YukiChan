@@ -26,7 +26,7 @@ public static partial class ArcaeaImageGenerator
                 = DifficultyColors[(int)record.Difficulty];
 
             {
-                var bgPath = "Assets/Arcaea/Images/SingleBackground.jpg";
+                var bgPath = $"{YukiDir.ArcaeaAssets}/images/single-background.jpg";
                 using var background = SKBitmap.Decode(bgPath);
 
                 if (background is null)
@@ -42,7 +42,9 @@ public static partial class ArcaeaImageGenerator
                 // 背景
                 using var cardPaint = new SKPaint
                 {
-                    Color = new SKColor(255, 255, 255, 200),
+                    Color = pref.Dark
+                        ? new SKColor(40, 40, 40, 200)
+                        : new SKColor(255, 255, 255, 200),
                     IsAntialias = true,
                     ImageFilter = SKImageFilter.CreateDropShadow(
                         0, 0, 35, 35, new SKColor(0, 0, 0, 50))
@@ -62,7 +64,7 @@ public static partial class ArcaeaImageGenerator
             {
                 using var titlePaint = new SKPaint
                 {
-                    Color = SKColor.Parse("#333333"),
+                    Color = pref.Dark ? SKColors.White : SKColor.Parse("#333333"),
                     Typeface = FontBold,
                     IsAntialias = true,
                     TextSize = 53
@@ -71,17 +73,17 @@ public static partial class ArcaeaImageGenerator
             }
 
             {
-                var clearImgPath = "Assets/Arcaea/Images/" + record.ClearType switch
+                var clearImgPath = $"{YukiDir.ArcaeaAssets}/images/" + record.ClearType switch
                 {
-                    ArcaeaClearType.NormalClear => "ClearTC.png",
-                    ArcaeaClearType.EasyClear => "ClearTC.png",
-                    ArcaeaClearType.HardClear => "ClearTC.png",
+                    ArcaeaClearType.NormalClear => "clear-tc.png",
+                    ArcaeaClearType.EasyClear => "clear-tc.png",
+                    ArcaeaClearType.HardClear => "clear-tc.png",
 
-                    ArcaeaClearType.TrackLost => "ClearTL.png",
-                    ArcaeaClearType.FullRecall => "ClearFR.png",
-                    ArcaeaClearType.PureMemory => "ClearPM.png",
+                    ArcaeaClearType.TrackLost => "clear-tl.png",
+                    ArcaeaClearType.FullRecall => "clear-fr.png",
+                    ArcaeaClearType.PureMemory => "clear-pm.png",
 
-                    _ => "ClearTC.png"
+                    _ => "clear-tc.png"
                 };
                 using var originalClearImg = SKBitmap.Decode(clearImgPath);
 
@@ -102,7 +104,7 @@ public static partial class ArcaeaImageGenerator
             {
                 using var textPaint = new SKPaint
                 {
-                    Color = SKColor.Parse("#333333"),
+                    Color = pref.Dark ? SKColors.White : SKColor.Parse("#333333"),
                     TextSize = 85,
                     IsAntialias = true,
                     Typeface = GeoSans
@@ -113,14 +115,15 @@ public static partial class ArcaeaImageGenerator
 
             if (record.Grade == ArcaeaGrade.EX)
             {
-                var exImg = SKBitmap.Decode("Assets/Arcaea/Images/GradeEX.png");
+                var exImg = SKBitmap.Decode($"{YukiDir.ArcaeaAssets}/images/grade-ex.png");
                 var scaledExImg = new SKBitmap(132, 111);
                 exImg.ScalePixels(scaledExImg, SKFilterQuality.Medium);
                 canvas.DrawBitmap(scaledExImg, 384, 980);
             }
             else
             {
-                var gradeImg = SKBitmap.Decode($"Assets/Arcaea/Images/Grade{record.Grade}.png");
+                var gradeImg =
+                    SKBitmap.Decode($"{YukiDir.ArcaeaAssets}/images/grade-{record.Grade.ToString().ToLower()}.png");
                 canvas.DrawBitmap(gradeImg, 335, 980);
             }
 
@@ -130,18 +133,19 @@ public static partial class ArcaeaImageGenerator
                 {
                     TextSize = 40,
                     IsAntialias = true,
-                    Typeface = GeoSans
+                    Typeface = GeoSans,
+                    Color = SKColors.White
                 };
                 // Pure
-                textPaint.Color = SKColor.Parse("#6f3a5f");
+                if (!pref.Dark) textPaint.Color = SKColor.Parse("#6f3a5f");
                 canvas.DrawText($"Pure / {record.PureCount} (+{record.ShinyPureCount})", 300, 1150, textPaint);
 
                 // Far
-                textPaint.Color = SKColor.Parse("#c19c00");
+                if (!pref.Dark) textPaint.Color = SKColor.Parse("#c19c00");
                 canvas.DrawText($"Far / {record.FarCount}", 300, 1200, textPaint);
 
                 // Lost
-                textPaint.Color = SKColor.Parse("#bb2b43");
+                if (!pref.Dark) textPaint.Color = SKColor.Parse("#bb2b43");
                 canvas.DrawText($"Lost / {record.LostCount}", 300, 1250, textPaint);
             }
 
@@ -149,12 +153,12 @@ public static partial class ArcaeaImageGenerator
                 // 距离当前天数
                 using var rectPaint = new SKPaint
                 {
-                    Color = SKColor.Parse("#dddddd"),
+                    Color = SKColor.Parse(pref.Dark ? "#333333" : "#dddddd"),
                     IsAntialias = true
                 };
                 using var textPaint = new SKPaint
                 {
-                    Color = SKColor.Parse("#333333"),
+                    Color = SKColor.Parse(pref.Dark ? "#ffffff" : "#333333"),
                     TextSize = 38,
                     IsAntialias = true,
                     Typeface = FontRegular
@@ -162,8 +166,6 @@ public static partial class ArcaeaImageGenerator
 
                 var milis = (long)(DateTime.Now - DateTime.UnixEpoch).TotalMilliseconds;
                 var days = new TimeSpan(0, 0, 0, 0, (int)(milis - record.TimePlayed)).TotalDays;
-
-                logger?.Debug($"milis: {milis}    days: {days}");
 
                 canvas.DrawRoundRect(150, 1295, 600, 60, 10, 10, rectPaint);
                 canvas.DrawCenteredText(
@@ -175,7 +177,7 @@ public static partial class ArcaeaImageGenerator
                 // 难度条
                 using var rectPaint = new SKPaint
                 {
-                    Color = SKColor.Parse(colorDark),
+                    Color = SKColor.Parse(pref.Dark ? colorInnerDark : colorDark),
                     IsAntialias = true
                 };
                 using var textPaint = new SKPaint
@@ -190,13 +192,26 @@ public static partial class ArcaeaImageGenerator
                 canvas.DrawLimitedText(
                     $"{record.Difficulty} {record.RatingText} [{record.Rating}]",
                     332, 1337, textPaint, 334);
+
+                // Border
+                if (pref.Dark)
+                {
+                    using var borderPaint = new SKPaint
+                    {
+                        Color = SKColor.Parse(colorBorderDark),
+                        IsAntialias = true,
+                        IsStroke = true,
+                        StrokeWidth = 3
+                    };
+                    canvas.DrawRoundRect(150, 1295, 490, 60, 10, 10, borderPaint);
+                }
             }
 
             {
                 // 获得 ptt
                 using var rectPaint = new SKPaint
                 {
-                    Color = SKColor.Parse(colorLight)
+                    Color = SKColor.Parse(pref.Dark ? colorInnerLight : colorLight)
                 };
                 using var textPaint = new SKPaint
                 {
@@ -207,6 +222,19 @@ public static partial class ArcaeaImageGenerator
                 };
                 canvas.DrawRoundRect(150, 1295, 162, 60, 10, 10, rectPaint);
                 canvas.DrawText($"{record.Potential:0.0000}", 166, 1337, textPaint);
+
+                // Border
+                if (pref.Dark)
+                {
+                    using var borderPaint = new SKPaint
+                    {
+                        Color = SKColor.Parse(colorBorderLight),
+                        IsAntialias = true,
+                        IsStroke = true,
+                        StrokeWidth = 3
+                    };
+                    canvas.DrawRoundRect(150, 1295, 162, 60, 10, 10, borderPaint);
+                }
             }
 
             {
