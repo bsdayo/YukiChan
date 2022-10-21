@@ -158,7 +158,9 @@ public static class ArcaeaUtils
             .Replace('Ä', 'A')
             .Replace('ö', 'o')
             .Replace('δ', 'd')
-            .Replace('ω', 'w');
+            .Replace('ω', 'w')
+            .Replace('ο', 'o')
+            .Replace('κ', 'k');
     }
 
     public static ArcaeaGrade GetGrade(int score)
