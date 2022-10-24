@@ -20,7 +20,7 @@ public class ImagesPlugin : Plugin
 
         return new MessageBuilder().Image(image);
     }
-    
+
     [Command("capoo")]
     public static MessageContent OnCapoo()
     {

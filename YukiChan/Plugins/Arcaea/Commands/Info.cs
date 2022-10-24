@@ -10,7 +10,7 @@ namespace YukiChan.Plugins.Arcaea;
 
 public partial class ArcaeaPlugin
 {
-    [Command("info <songname: string>")]
+    [Command("a.info <songname: string>")]
     [Option("nya", "-n <:bool>")]
     public async Task<MessageContent> OnInfo(MessageContext ctx, ParsedArgs args)
     {

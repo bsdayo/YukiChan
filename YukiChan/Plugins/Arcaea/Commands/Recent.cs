@@ -15,10 +15,11 @@ namespace YukiChan.Plugins.Arcaea;
 
 public partial class ArcaeaPlugin
 {
-    [Command("recent")]
+    [Command("a.recent")]
     [Option("nya", "-n <nya:bool>")]
     [Option("dark", "-d <dark:bool>")]
     [Option("user", "-u <user:string>")]
+    [Shortcut("查最近")]
     public async Task<MessageContent> OnRecent(MessageContext ctx, ParsedArgs args)
     {
         var userArg = args.GetOption<string>("user");

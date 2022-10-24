@@ -1,6 +1,5 @@
-﻿using YukiChan.Plugins.Arcaea.Models;
-using Chloe;
-using YukiChan.Plugins.Arcaea.Models.Database;
+﻿using YukiChan.Plugins.Arcaea.Models.Database;
+using IDbContext = Chloe.IDbContext;
 
 // ReSharper disable CheckNamespace
 
@@ -42,7 +41,10 @@ public partial class YukiDbManager
             user.Id = old.Id;
             await ctx.UpdateAsync(user);
         }
-        else await ctx.InsertAsync(user);
+        else
+        {
+            await ctx.InsertAsync(user);
+        }
     }
 
     public async Task<bool> DeleteArcaeaUser(string platform, string userId)
@@ -80,6 +82,9 @@ public partial class YukiDbManager
             pref.Id = old.Id;
             await ctx.UpdateAsync(pref);
         }
-        else await ctx.InsertAsync(pref);
+        else
+        {
+            await ctx.InsertAsync(pref);
+        }
     }
 }

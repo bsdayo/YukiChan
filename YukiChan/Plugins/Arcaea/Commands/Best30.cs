@@ -14,9 +14,11 @@ namespace YukiChan.Plugins.Arcaea;
 
 public partial class ArcaeaPlugin
 {
-    [Command("b30 [user: string]")]
+    [Command("a.b30 [user: string]")]
     [Option("nya", "-n <:bool>")]
     [Option("dark", "-d <:bool>")]
+    [Shortcut("查b30")]
+    [Shortcut("查B30")]
     public async Task<MessageContent> OnBest30(MessageContext ctx, ParsedArgs args)
     {
         var userArg = args.GetArgument<string>("user");

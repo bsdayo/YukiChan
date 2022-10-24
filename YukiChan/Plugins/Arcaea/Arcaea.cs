@@ -4,7 +4,7 @@ using Flandre.Core.Common;
 
 namespace YukiChan.Plugins.Arcaea;
 
-[Plugin("Arcaea", BaseCommand = "a")]
+[Plugin("Arcaea")]
 public partial class ArcaeaPlugin : Plugin
 {
     private ArcaeaPluginConfig _config;

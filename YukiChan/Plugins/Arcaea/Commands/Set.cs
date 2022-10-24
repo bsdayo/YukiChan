@@ -9,7 +9,7 @@ namespace YukiChan.Plugins.Arcaea;
 
 public partial class ArcaeaPlugin
 {
-    [Command("set <preferences:string>")]
+    [Command("a.set <preferences:string>")]
     public async Task<MessageContent> OnSet(MessageContext ctx, ParsedArgs args)
     {
         var prefStrList = args.GetArgument<string>("preferences")
