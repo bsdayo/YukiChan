@@ -12,7 +12,7 @@ public static class CommonUtils
             return new MessageBuilder().Add(new AtSegment(ctx.Message.Sender.UserId));
         return new MessageBuilder().Add(new QuoteSegment(ctx.Message));
     }
-    
+
     public static MessageBuilder Reply(this MessageContext ctx, string message)
     {
         return Reply(ctx).Text(message);

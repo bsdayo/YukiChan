@@ -15,7 +15,7 @@ public static class YukiDir
     // Arcaea
     public static readonly string ArcaeaAssets = Path.Combine(Assets, "arcaea");
     public static readonly string ArcaeaCache = Path.Combine(Cache, "arcaea");
-    
+
     // Images
     public static readonly string CatAssets = Path.Combine(Assets, "cats");
     public static readonly string CapooAssets = Path.Combine(Assets, "capoo");
