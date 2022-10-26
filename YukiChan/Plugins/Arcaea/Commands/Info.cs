@@ -3,6 +3,7 @@ using Flandre.Core.Attributes;
 using Flandre.Core.Common;
 using Flandre.Core.Messaging;
 using Flandre.Core.Messaging.Segments;
+using YukiChan.Utils;
 
 // ReSharper disable CheckNamespace
 
@@ -19,7 +20,7 @@ public partial class ArcaeaPlugin
         var song = await ArcaeaSongDatabase.FuzzySearchSong(args.GetArgument<string>("songname"));
 
         if (song is null)
-            return "没有找到该曲目哦~";
+            return ctx.Reply("没有找到该曲目哦~");
 
         var cover = await _auaClient.GetSongCover(song.SongId, nya: nya, logger: Logger);
 

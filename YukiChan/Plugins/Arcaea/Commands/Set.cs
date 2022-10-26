@@ -2,6 +2,7 @@
 using Flandre.Core.Common;
 using Flandre.Core.Messaging;
 using YukiChan.Plugins.Arcaea.Models.Database;
+using YukiChan.Utils;
 
 // ReSharper disable CheckNamespace
 
@@ -38,6 +39,6 @@ public partial class ArcaeaPlugin
         }
 
         await Global.YukiDb.AddOrUpdateArcaeaUserPreferences(ctx.Platform, ctx.UserId, pref);
-        return "已成功为您更新偏好信息。";
+        return ctx.Reply("已成功为您更新偏好信息。");
     }
 }

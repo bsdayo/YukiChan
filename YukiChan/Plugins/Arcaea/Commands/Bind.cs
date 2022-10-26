@@ -2,6 +2,7 @@
 using Flandre.Core.Attributes;
 using Flandre.Core.Common;
 using Flandre.Core.Messaging;
+using YukiChan.Utils;
 
 // ReSharper disable CheckNamespace
 
@@ -35,16 +36,16 @@ public partial class ArcaeaPlugin
 
             if (unc) reply += "\n注：绑定前未进行用户检查。若日后查询时发生错误，可以尝试重新绑定。";
 
-            return reply;
+            return ctx.Reply(reply);
         }
         catch (AuaException ae)
         {
-            return $"发生了奇怪的错误！({ae.Message})";
+            return ctx.Reply($"发生了奇怪的错误！({ae.Message})");
         }
         catch (Exception e)
         {
             Logger.Error(e);
-            return $"发生了奇怪的错误！({e.Message})";
+            return ctx.Reply($"发生了奇怪的错误！({e.Message})");
         }
     }
 }

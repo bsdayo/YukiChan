@@ -7,6 +7,7 @@ using Flandre.Core.Messaging.Segments;
 using YukiChan.Plugins.Arcaea.Images;
 using YukiChan.Plugins.Arcaea.Models;
 using YukiChan.Plugins.Arcaea.Models.Database;
+using YukiChan.Utils;
 
 // ReSharper disable CheckNamespace
 
@@ -31,7 +32,7 @@ public partial class ArcaeaPlugin
             {
                 var user = await Global.YukiDb.GetArcaeaUser(ctx.Bot.Platform, ctx.Message.Sender.UserId);
                 if (user is null)
-                    return new MessageBuilder()
+                    return ctx.Reply()
                         .Text("请先使用 /a bind 名称或好友码 绑定你的账号哦~\n")
                         .Text("你也可以使用 /a b30 名称或好友码 直接查询指定用户。");
 
@@ -60,13 +61,13 @@ public partial class ArcaeaPlugin
 
             var image = await ArcaeaImageGenerator.Best30(best30, _auaClient, pref, Logger);
 
-            return new MessageBuilder().Image(ImageSegment.FromData(image));
+            return ctx.Reply().Image(ImageSegment.FromData(image));
         }
         catch (Exception e)
         {
             if (e is not AuaException)
                 Logger.Error(e);
-            return $"发生了奇怪的错误！({e.Message})";
+            return ctx.Reply($"发生了奇怪的错误！({e.Message})");
         }
     }
 }

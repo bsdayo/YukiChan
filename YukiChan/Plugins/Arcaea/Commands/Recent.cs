@@ -8,6 +8,7 @@ using Flandre.Core.Messaging.Segments;
 using YukiChan.Plugins.Arcaea.Images;
 using YukiChan.Plugins.Arcaea.Models;
 using YukiChan.Plugins.Arcaea.Models.Database;
+using YukiChan.Utils;
 
 // ReSharper disable CheckNamespace
 
@@ -20,6 +21,7 @@ public partial class ArcaeaPlugin
     [Option("dark", "-d <dark:bool>")]
     [Option("user", "-u <user:string>")]
     [Shortcut("查最近")]
+    [Alias("a")]
     public async Task<MessageContent> OnRecent(MessageContext ctx, ParsedArgs args)
     {
         var userArg = args.GetOption<string>("user");
@@ -32,7 +34,7 @@ public partial class ArcaeaPlugin
             {
                 var dbUser = await Global.YukiDb.GetArcaeaUser(ctx.Bot.Platform, ctx.Message.Sender.UserId);
                 if (dbUser is null)
-                    return new MessageBuilder()
+                    return ctx.Reply()
                         .Text("请先使用 /a bind 名称或好友码 绑定你的账号哦~\n")
                         .Text("你也可以使用 /a best -u 名称或好友码 直接查询指定用户。");
 
@@ -44,7 +46,7 @@ public partial class ArcaeaPlugin
                     : await _auaClient.User.Info(dbUser.ArcaeaId, 1, AuaReplyWith.All);
 
                 if (userInfo.RecentScore!.Length == 0)
-                    return "该用户最近没有游玩过曲目呢...";
+                    return ctx.Reply("该用户最近没有游玩过曲目呢...");
             }
             else
             {
@@ -64,7 +66,7 @@ public partial class ArcaeaPlugin
 
             var image = await ArcaeaImageGenerator.Single(info, record, _auaClient, pref, Logger);
 
-            return new MessageBuilder()
+            return ctx.Reply()
                 .Text($"{info.Name} ({info.Potential})\n")
                 .Image(ImageSegment.FromData(image));
         }
@@ -72,7 +74,7 @@ public partial class ArcaeaPlugin
         {
             if (e is not AuaException)
                 Logger.Error(e);
-            return $"发生了奇怪的错误！({e.Message})";
+            return ctx.Reply($"发生了奇怪的错误！({e.Message})");
         }
     }
 }

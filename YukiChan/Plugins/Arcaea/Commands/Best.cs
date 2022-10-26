@@ -8,6 +8,7 @@ using Flandre.Core.Messaging.Segments;
 using YukiChan.Plugins.Arcaea.Images;
 using YukiChan.Plugins.Arcaea.Models;
 using YukiChan.Plugins.Arcaea.Models.Database;
+using YukiChan.Utils;
 
 // ReSharper disable CheckNamespace
 
@@ -26,13 +27,13 @@ public partial class ArcaeaPlugin
 
         var difficulty = ArcaeaUtils.GetRatingClass(args.GetArgument<string>("difficulty"));
         if (difficulty is null)
-            return "输入了错误的难度哦！";
+            return ctx.Reply().Text("输入了错误的难度哦！");
 
         try
         {
             var songId = await ArcaeaSongDatabase.FuzzySearchId(
                 args.GetArgument<string>("songname"));
-            if (songId is null) return "没有找到该曲目哦~";
+            if (songId is null) return ctx.Reply().Text("没有找到该曲目哦~");
 
             AuaUserBestContent auaBest;
 
@@ -40,7 +41,7 @@ public partial class ArcaeaPlugin
             {
                 var dbUser = await Global.YukiDb.GetArcaeaUser(ctx.Bot.Platform, ctx.Message.Sender.UserId);
                 if (dbUser is null)
-                    return new MessageBuilder()
+                    return ctx.Reply()
                         .Text("请先使用 /a bind 名称或好友码 绑定你的账号哦~\n")
                         .Text("你也可以使用 /a best -u 名称或好友码 直接查询指定用户。");
 
@@ -71,7 +72,7 @@ public partial class ArcaeaPlugin
             var user = ArcaeaUser.FromAua(auaBest.AccountInfo);
             var image = await ArcaeaImageGenerator.Single(user, best, _auaClient, pref, Logger);
 
-            return new MessageBuilder()
+            return ctx.Reply()
                 .Text($"{user.Name} ({user.Potential})\n")
                 .Image(ImageSegment.FromData(image));
         }
@@ -79,7 +80,7 @@ public partial class ArcaeaPlugin
         {
             if (e is not AuaException)
                 Logger.Error(e);
-            return $"发生了奇怪的错误！({e.Message})";
+            return ctx.Reply($"发生了奇怪的错误！({e.Message})");
         }
     }
 }
