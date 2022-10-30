@@ -189,38 +189,50 @@ public static class ArcaeaUtils
         return Math.Max(0, ptt);
     }
 
-    // public static ArcaeaGuessMode? GetGuessMode(string text)
-    // {
-    //     return text.ToLower() switch
-    //     {
-    //         "e" => ArcaeaGuessMode.Easy,
-    //         "easy" => ArcaeaGuessMode.Easy,
-    //         "n" => ArcaeaGuessMode.Normal,
-    //         "normal" => ArcaeaGuessMode.Normal,
-    //         "h" => ArcaeaGuessMode.Hard,
-    //         "hard" => ArcaeaGuessMode.Hard,
-    //         "f" => ArcaeaGuessMode.Flash,
-    //         "flash" => ArcaeaGuessMode.Flash,
-    //         "g" => ArcaeaGuessMode.GrayScale,
-    //         "gray" => ArcaeaGuessMode.GrayScale,
-    //         "grayscale" => ArcaeaGuessMode.GrayScale,
-    //         "i" => ArcaeaGuessMode.Invert,
-    //         "invert" => ArcaeaGuessMode.Invert,
-    //         _ => null
-    //     };
-    // }
-    //
-    // public static string GetName(this ArcaeaGuessMode mode)
-    // {
-    //     return mode switch
-    //     {
-    //         ArcaeaGuessMode.Easy => "简单",
-    //         ArcaeaGuessMode.Normal => "正常",
-    //         ArcaeaGuessMode.Hard => "困难",
-    //         ArcaeaGuessMode.Flash => "闪照",
-    //         ArcaeaGuessMode.GrayScale => "灰度",
-    //         ArcaeaGuessMode.Invert => "反色",
-    //         _ => "未知模式"
-    //     };
-    // }
+    public static ArcaeaGuessMode? GetGuessMode(string text)
+    {
+        return text.ToLower() switch
+        {
+            "e" => ArcaeaGuessMode.Easy,
+            "easy" => ArcaeaGuessMode.Easy,
+            "简单" => ArcaeaGuessMode.Easy,
+
+            "n" => ArcaeaGuessMode.Normal,
+            "normal" => ArcaeaGuessMode.Normal,
+            "正常" => ArcaeaGuessMode.Normal,
+
+            "h" => ArcaeaGuessMode.Hard,
+            "hard" => ArcaeaGuessMode.Hard,
+            "困难" => ArcaeaGuessMode.Hard,
+
+            "f" => ArcaeaGuessMode.Flash,
+            "flash" => ArcaeaGuessMode.Flash,
+            "闪照" => ArcaeaGuessMode.Flash,
+
+            "g" => ArcaeaGuessMode.GrayScale,
+            "gray" => ArcaeaGuessMode.GrayScale,
+            "grayscale" => ArcaeaGuessMode.GrayScale,
+            "灰度" => ArcaeaGuessMode.GrayScale,
+
+            "i" => ArcaeaGuessMode.Invert,
+            "invert" => ArcaeaGuessMode.Invert,
+            "反色" => ArcaeaGuessMode.Invert,
+
+            _ => null
+        };
+    }
+
+    public static string GetName(this ArcaeaGuessMode mode)
+    {
+        return mode switch
+        {
+            ArcaeaGuessMode.Easy => "简单",
+            ArcaeaGuessMode.Normal => "正常",
+            ArcaeaGuessMode.Hard => "困难",
+            ArcaeaGuessMode.Flash => "闪照",
+            ArcaeaGuessMode.GrayScale => "灰度",
+            ArcaeaGuessMode.Invert => "反色",
+            _ => "未知模式"
+        };
+    }
 }
