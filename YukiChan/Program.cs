@@ -2,7 +2,7 @@
 using Flandre.Adapters.OneBot;
 using Flandre.Core;
 using Flandre.Core.Utils;
-using Flandre.Plugins.HttpCat;
+using Flandre.Plugins.WolframAlpha;
 using Konata.Core.Common;
 using Tomlyn;
 using YukiChan.Plugins;
@@ -21,6 +21,8 @@ public static class Program
         var yukiConfig = GetYukiConfig();
         var konataConfig = GetKonataAdapterConfig();
         Global.YukiConfig = yukiConfig;
+        
+        yukiConfig.Plugins.WolframAlpha.FontPath = $"{YukiDir.Assets}/fonts/TitilliumWeb-SemiBold.ttf";
 
         var app = new FlandreApp(yukiConfig.App);
 
@@ -41,6 +43,7 @@ public static class Program
             .Use(new ArcaeaPlugin(yukiConfig.Plugins.Arcaea))
             .Use(new ImagesPlugin())
             .Use(new DebugPlugin())
+            .Use(new WolframAlphaPlugin(yukiConfig.Plugins.WolframAlpha))
             // .UseHttpCatPlugin(yukiConfig.Plugins.HttpCat)
 
             // Middlewares

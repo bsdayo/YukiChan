@@ -15,11 +15,12 @@ public static class ArcaeaSongDatabase
         return new SQLiteContext(() => new SqliteConnection($"DataSource={DbPath}"));
     }
 
-    public static ArcaeaSongDbAlias? GetAliasById(string songId)
+    public static async Task<List<ArcaeaSongDbAlias>> GetAliasesById(string songId)
     {
         using var ctx = GetSongDbContext();
-        return ctx.Query<ArcaeaSongDbAlias>()
-            .FirstOrDefault(alias => alias.SongId == songId);
+        return await ctx.Query<ArcaeaSongDbAlias>()
+            .Where(alias => alias.SongId == songId)
+            .ToListAsync();
     }
 
     public static void AddAlias(string songId, string alias)
@@ -40,12 +41,12 @@ public static class ArcaeaSongDatabase
         return ctx.Query<ArcaeaSongDbChart>().ToList();
     }
 
-    public static List<ArcaeaSongDbChart> GetChartsById(string songId)
+    public static async Task<List<ArcaeaSongDbChart>> GetChartsById(string songId)
     {
         using var ctx = GetSongDbContext();
-        return ctx.Query<ArcaeaSongDbChart>()
+        return await ctx.Query<ArcaeaSongDbChart>()
             .Where(chart => chart.SongId == songId)
-            .ToList();
+            .ToListAsync();
     }
 
     public static ArcaeaSongDbPackage? GetPackageBySet(string set)

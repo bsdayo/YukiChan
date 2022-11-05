@@ -30,6 +30,7 @@
         <PackageReference Include="ArcaeaUnlimitedAPI.Lib" Version="1.0.2" />
         <PackageReference Include="Chloe.SQLite" Version="5.1.5" />
         <PackageReference Include="Flandre.Plugins.HttpCat" Version="1.0.0" />
+        <PackageReference Include="Flandre.Plugins.WolframAlpha" Version="1.0.0" />
         <PackageReference Include="Microsoft.Data.Sqlite" Version="6.0.10" />
         <PackageReference Include="SkiaSharp" Version="2.88.3" />
         <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.3" />

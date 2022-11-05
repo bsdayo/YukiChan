@@ -1,5 +1,6 @@
 ﻿using Flandre.Core;
 using Flandre.Plugins.HttpCat;
+using Flandre.Plugins.WolframAlpha;
 using YukiChan.Plugins.Arcaea;
 
 namespace YukiChan;
@@ -20,4 +21,6 @@ public class YukiPluginsConfig
     public ArcaeaPluginConfig Arcaea { get; set; } = new();
 
     public HttpCatPluginConfig HttpCat { get; set; } = new();
+
+    public WolframAlphaConfig WolframAlpha { get; set; } = new();
 }
