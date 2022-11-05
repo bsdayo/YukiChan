@@ -42,9 +42,14 @@ public static class Program
             .Use(new ImagesPlugin())
             .UseHttpCatPlugin(yukiConfig.Plugins.HttpCat)
 
+            // Middlewares
+            .Use(Middlewares.QqGuildFilter)
+
             // Start
             .Start();
     }
+
+    #region GetConfigs
 
     public static YukiConfig GetYukiConfig()
     {
@@ -105,4 +110,6 @@ public static class Program
 
         return config;
     }
+
+    #endregion
 }

@@ -8,6 +8,8 @@ public class YukiConfig
 {
     public bool EnableDebugLog { get; set; } = true;
 
+    public string[] QqGuildAllowedChannel { get; set; } = Array.Empty<string>();
+
     public FlandreAppConfig App { get; set; } = new();
 
     public YukiPluginsConfig Plugins { get; set; } = new();
