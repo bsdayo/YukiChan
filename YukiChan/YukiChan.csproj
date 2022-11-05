@@ -12,6 +12,7 @@
 
         <OutputType>Exe</OutputType>
         <PublishSingleFile>true</PublishSingleFile>
+        <PublishReadyToRun>true</PublishReadyToRun>
         <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
 
         <RepositoryUrl>https://github.com/b1acksoil/YukiChan</RepositoryUrl>
