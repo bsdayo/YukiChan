@@ -40,6 +40,7 @@ public static class Program
             .Use(new StatusPlugin())
             .Use(new ArcaeaPlugin(yukiConfig.Plugins.Arcaea))
             .Use(new ImagesPlugin())
+            .Use(new DebugPlugin())
             .UseHttpCatPlugin(yukiConfig.Plugins.HttpCat)
 
             // Middlewares
