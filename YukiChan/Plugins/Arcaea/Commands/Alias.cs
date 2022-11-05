@@ -1,13 +1,6 @@
-﻿using ArcaeaUnlimitedAPI.Lib.Models;
-using ArcaeaUnlimitedAPI.Lib.Responses;
-using ArcaeaUnlimitedAPI.Lib.Utils;
-using Flandre.Core.Attributes;
+﻿using Flandre.Core.Attributes;
 using Flandre.Core.Common;
 using Flandre.Core.Messaging;
-using Flandre.Core.Messaging.Segments;
-using YukiChan.Plugins.Arcaea.Images;
-using YukiChan.Plugins.Arcaea.Models;
-using YukiChan.Plugins.Arcaea.Models.Database;
 using YukiChan.Utils;
 
 // ReSharper disable CheckNamespace
