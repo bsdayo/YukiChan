@@ -16,7 +16,7 @@ namespace YukiChan.Plugins.Arcaea;
 
 public partial class ArcaeaPlugin
 {
-    [Command("a.best <songname: string> [difficulty:string=ftr]")]
+    [Command("a.best <songname:string> [difficulty:string=ftr]")]
     [Option("nya", "-n <nya:bool>")]
     [Option("dark", "-d <dark:bool>")]
     [Option("user", "-u <user:string>")]

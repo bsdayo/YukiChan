@@ -11,8 +11,9 @@ namespace YukiChan.Plugins.Arcaea;
 
 public partial class ArcaeaPlugin
 {
-    [Command("a.info <songname: string>")]
+    [Command("a.info <songname:text>")]
     [Option("nya", "-n <:bool>")]
+    [Shortcut("查定数")]
     public async Task<MessageContent> OnInfo(MessageContext ctx, ParsedArgs args)
     {
         var nya = args.GetOption<bool>("nya");

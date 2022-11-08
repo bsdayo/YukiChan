@@ -67,7 +67,7 @@ public class ArcaeaRecord
 
     public static ArcaeaRecord FromAla(AlaRecord record)
     {
-        var chart = ArcaeaSongDatabase.GetChartsById(record.SongId)[record.Difficulty];
+        var chart = ArcaeaSongDatabase.GetChartsById(record.SongId).Result[record.Difficulty];
         return new ArcaeaRecord
         {
             Name = chart.NameEn,
