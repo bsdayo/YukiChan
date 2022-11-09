@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <Product>YukiChan</Product>
-        <Version>2.0.0-alpha</Version>
+        <Version>2.0.0-beta</Version>
         <Authors>b1acksoil</Authors>
         <Description>Cross-platform chat bot using Flandre.</Description>
 
@@ -27,11 +27,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="ArcaeaUnlimitedAPI.Lib" Version="1.0.2" />
-        <PackageReference Include="Chloe.SQLite" Version="5.1.5" />
-        <PackageReference Include="Flandre.Plugins.HttpCat" Version="1.0.0" />
+        <PackageReference Include="ArcaeaUnlimitedAPI.Lib" Version="2.1.0" />
+        <PackageReference Include="Chloe.SQLite" Version="5.2.0" />
+        <PackageReference Include="Flandre.Plugins.BaiduTranslate" Version="1.0.0-beta" />
+        <PackageReference Include="Flandre.Plugins.HttpCat" Version="1.1.0" />
         <PackageReference Include="Flandre.Plugins.WolframAlpha" Version="1.0.0" />
-        <PackageReference Include="Microsoft.Data.Sqlite" Version="6.0.10" />
+        <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.0" />
         <PackageReference Include="SkiaSharp" Version="2.88.3" />
         <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.3" />
         <PackageReference Include="Tomlyn" Version="0.15.1" />

@@ -1,4 +1,5 @@
 ﻿using Flandre.Core;
+using Flandre.Plugins.BaiduTranslate;
 using Flandre.Plugins.HttpCat;
 using Flandre.Plugins.WolframAlpha;
 using YukiChan.Plugins.Arcaea;
@@ -23,4 +24,6 @@ public class YukiPluginsConfig
     public HttpCatPluginConfig HttpCat { get; set; } = new();
 
     public WolframAlphaConfig WolframAlpha { get; set; } = new();
+
+    public BaiduTranslatePluginConfig BaiduTranslate { get; set; } = new();
 }

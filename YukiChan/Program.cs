@@ -2,6 +2,8 @@
 using Flandre.Adapters.OneBot;
 using Flandre.Core;
 using Flandre.Core.Utils;
+using Flandre.Plugins.BaiduTranslate;
+using Flandre.Plugins.HttpCat;
 using Flandre.Plugins.WolframAlpha;
 using Konata.Core.Common;
 using Tomlyn;
@@ -21,7 +23,7 @@ public static class Program
         var yukiConfig = GetYukiConfig();
         var konataConfig = GetKonataAdapterConfig();
         Global.YukiConfig = yukiConfig;
-        
+
         yukiConfig.Plugins.WolframAlpha.FontPath = $"{YukiDir.Assets}/fonts/TitilliumWeb-SemiBold.ttf";
 
         var app = new FlandreApp(yukiConfig.App);
@@ -44,7 +46,8 @@ public static class Program
             .Use(new ImagesPlugin())
             .Use(new DebugPlugin())
             .Use(new WolframAlphaPlugin(yukiConfig.Plugins.WolframAlpha))
-            // .UseHttpCatPlugin(yukiConfig.Plugins.HttpCat)
+            .Use(new BaiduTranslatePlugin(yukiConfig.Plugins.BaiduTranslate))
+            .Use(new HttpCatPlugin(yukiConfig.Plugins.HttpCat))
 
             // Middlewares
             .Use(Middlewares.QqGuildFilter)
