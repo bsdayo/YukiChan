@@ -32,7 +32,7 @@ public partial class ArcaeaPlugin
 
     private static readonly Dictionary<string, ArcaeaGuessSession> GuessSessions = new();
 
-    [Command("a.guess [guessOrMode:string]")]
+    [Command("a.guess [guessOrMode:text]")]
     [Shortcut("猜曲绘")]
     public async Task<MessageContent> OnGuess(MessageContext ctx, ParsedArgs args)
     {
