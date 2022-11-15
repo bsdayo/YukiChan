@@ -16,14 +16,14 @@ public static class ImageUtils
     }
 
     public static void DrawCenteredText(this SKCanvas canvas, string text,
-        float x, float y, SKPaint paint, float widthLimit)
+        float x, float y, SKPaint paint, float width)
     {
         var originalWidth = paint.MeasureText(text);
 
-        if (originalWidth > widthLimit)
-            paint.TextScaleX = widthLimit / originalWidth;
+        if (originalWidth > width)
+            paint.TextScaleX = width / originalWidth;
         else
-            x += (widthLimit - originalWidth) / 2;
+            x += (width - originalWidth) / 2;
 
         canvas.DrawText(text, x, y, paint);
     }

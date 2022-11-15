@@ -39,7 +39,7 @@ public static partial class ArcaeaImageGenerator
                     Color = pref.Dark ? SKColors.White : SKColors.Black,
                     TextSize = 128,
                     IsAntialias = true,
-                    Typeface = FontBold
+                    Typeface = TitilliumWeb_SemiBold
                 };
                 canvas.DrawText($"{best30.User.Name} ({best30.User.Potential})",
                     295, 255, paint);
@@ -52,7 +52,7 @@ public static partial class ArcaeaImageGenerator
                     Color = pref.Dark ? SKColors.White : SKColors.Black,
                     TextSize = 62,
                     IsAntialias = true,
-                    Typeface = FontBold
+                    Typeface = TitilliumWeb_SemiBold
                 };
 
                 double best10Total = 0;
@@ -79,7 +79,7 @@ public static partial class ArcaeaImageGenerator
                     Color = pref.Dark ? SKColors.White : SKColors.Black,
                     TextSize = 130,
                     IsAntialias = true,
-                    Typeface = FontBold
+                    Typeface = TitilliumWeb_SemiBold
                 };
                 canvas.DrawText("Player Best30", 2300, 290, paint);
             }
@@ -103,7 +103,7 @@ public static partial class ArcaeaImageGenerator
                     Color = pref.Dark ? SKColors.White : SKColors.Black,
                     IsAntialias = true,
                     TextSize = 80,
-                    Typeface = FontRegular
+                    Typeface = TitilliumWeb_Regular
                 };
                 var time = DateTime.Now.ToString("yyyy.MM.dd HH:mm:ss");
 
@@ -149,12 +149,9 @@ public static partial class ArcaeaImageGenerator
                         100 + col * 1100, 4840 + row * 400, record, songCover, index + 31, pref.Dark);
                 }
 
-            var data = surface
-                .Snapshot()
-                .Encode(SKEncodedImageFormat.Jpeg, 70)
-                .ToArray();
-
-            return data;
+            using var image = surface.Snapshot();
+            using var data = image.Encode(SKEncodedImageFormat.Jpeg, 70);
+            return data.ToArray();
         });
     }
 
@@ -194,7 +191,7 @@ public static partial class ArcaeaImageGenerator
             {
                 TextSize = 45,
                 IsAntialias = true,
-                Typeface = FontBold
+                Typeface = TitilliumWeb_SemiBold
             };
             using var rectPaint = new SKPaint();
             textPaint.Color = SKColor.Parse(rank switch
@@ -227,7 +224,7 @@ public static partial class ArcaeaImageGenerator
                 Color = SKColor.Parse("#ffffff"),
                 TextSize = 45,
                 IsAntialias = true,
-                Typeface = FontRegular
+                Typeface = TitilliumWeb_Regular
             };
 
             canvas.DrawRoundRect(x + 320, y + 15, rank != 0 ? 560 : 665, 60, 10, 10, rectPaint);
@@ -261,7 +258,7 @@ public static partial class ArcaeaImageGenerator
                 Color = SKColors.White,
                 TextSize = 45,
                 IsAntialias = true,
-                Typeface = FontBold
+                Typeface = TitilliumWeb_SemiBold
             };
             canvas.DrawRoundRect(x + 320, y + 15, 191, 60, 10, 10, rectPaint);
             canvas.DrawText($"{record.Potential:0.0000}", x + 335, y + 61, textPaint);
@@ -286,7 +283,7 @@ public static partial class ArcaeaImageGenerator
                 Color = dark ? SKColors.White : SKColor.Parse("#333333"),
                 TextSize = 60,
                 IsAntialias = true,
-                Typeface = FontBold
+                Typeface = TitilliumWeb_SemiBold
             };
 
             canvas.DrawLimitedText(ArcaeaUtils.ReplaceNotSupportedChar(record.Name),
@@ -305,7 +302,7 @@ public static partial class ArcaeaImageGenerator
                     Color = SKColor.Parse("#7fdfff"),
                     TextSize = 97,
                     IsAntialias = true,
-                    Typeface = FontRegular
+                    Typeface = TitilliumWeb_Regular
                 };
                 canvas.DrawText(record.Score.FormatScore(), x + 340, y + 241, maxPaint);
             }
@@ -315,7 +312,7 @@ public static partial class ArcaeaImageGenerator
                 Color = dark ? SKColors.White : SKColor.Parse("#333333"),
                 TextSize = 97,
                 IsAntialias = true,
-                Typeface = FontRegular
+                Typeface = TitilliumWeb_Regular
             };
             canvas.DrawText(record.Score.FormatScore(), x + 335, y + 236, textPaint);
         }
@@ -327,7 +324,7 @@ public static partial class ArcaeaImageGenerator
                 Color = SKColors.White,
                 TextSize = 40,
                 IsAntialias = true,
-                Typeface = FontRegular
+                Typeface = TitilliumWeb_Regular
             };
 
             if (dark)

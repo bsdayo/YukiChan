@@ -37,7 +37,7 @@ public static class YukiDir
 
             // Arcaea
             $"{ArcaeaAssets}/audio-preview", $"{ArcaeaAssets}/aff", $"{ArcaeaAssets}/images",
-            $"{ArcaeaCache}/song", $"{ArcaeaCache}/preview",
+            $"{ArcaeaCache}/song", $"{ArcaeaCache}/char", $"{ArcaeaCache}/preview",
 
             // Images
             $"{Assets}/cats", $"{Assets}/capoo"

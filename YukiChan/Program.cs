@@ -1,4 +1,5 @@
-﻿using Flandre.Adapters.Konata;
+﻿using System.Runtime.CompilerServices;
+using Flandre.Adapters.Konata;
 using Flandre.Adapters.OneBot;
 using Flandre.Core;
 using Flandre.Core.Utils;
@@ -10,6 +11,8 @@ using Tomlyn;
 using YukiChan.Plugins;
 using YukiChan.Plugins.Arcaea;
 using YukiChan.Utils;
+
+[assembly: InternalsVisibleTo("YukiChan.Tools")]
 
 namespace YukiChan;
 
@@ -37,8 +40,8 @@ public static class Program
 
         app
             // Adapters
-            // .UseKonataAdapter(konataConfig)
-            .UseOneBotAdapter(GetOneBotAdapterConfig())
+            .UseKonataAdapter(konataConfig)
+            // .UseOneBotAdapter(GetOneBotAdapterConfig())
 
             // Plugins
             .Use(new StatusPlugin())

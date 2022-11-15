@@ -51,9 +51,8 @@ public static class ArcaeaGuessImageGenerator
             new Random().Next(imageInfo.Height - coverBitmap.Height, 0),
             paint);
 
-        return surface
-            .Snapshot()
-            .Encode(SKEncodedImageFormat.Jpeg, 70)
-            .ToArray();
+        using var image = surface.Snapshot();
+        using var data = image.Encode(SKEncodedImageFormat.Jpeg, 70);
+        return data.ToArray();
     }
 }

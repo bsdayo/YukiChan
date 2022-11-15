@@ -113,6 +113,30 @@ public static class ArcaeaUtils
         return songCover;
     }
 
+    public static async Task<byte[]> GetCharImage(this AuaClient client, int charId,
+        bool awakened = false, Logger? logger = null)
+    {
+        byte[] charImage;
+
+        try
+        {
+            var path = $"{YukiDir.ArcaeaCache}/char/{charId}{(awakened ? "-awakened" : "")}.jpg";
+            if (File.Exists(path))
+                return await File.ReadAllBytesAsync(path);
+
+            charImage = await client.Assets.Char(charId, awakened);
+            await File.WriteAllBytesAsync(path, charImage);
+            logger?.SaveCache(path);
+        }
+        catch
+        {
+            charImage = await File.ReadAllBytesAsync(
+                $"{YukiDir.ArcaeaAssets}/images/song-cover-placeholder.png");
+        }
+
+        return charImage;
+    }
+
     public static string FormatScore(this int score)
     {
         return score
@@ -125,23 +149,10 @@ public static class ArcaeaUtils
     {
         return difficultyText.ToLower() switch
         {
-            "0" => ArcaeaDifficulty.Past,
-            "pst" => ArcaeaDifficulty.Past,
-            "past" => ArcaeaDifficulty.Past,
-
-            "1" => ArcaeaDifficulty.Present,
-            "prs" => ArcaeaDifficulty.Present,
-            "present" => ArcaeaDifficulty.Present,
-
-            "2" => ArcaeaDifficulty.Future,
-            "ftr" => ArcaeaDifficulty.Future,
-            "future" => ArcaeaDifficulty.Future,
-
-            "3" => ArcaeaDifficulty.Beyond,
-            "byd" => ArcaeaDifficulty.Beyond,
-            "byn" => ArcaeaDifficulty.Beyond,
-            "beyond" => ArcaeaDifficulty.Beyond,
-
+            "0" or "pst" or "past" => ArcaeaDifficulty.Past,
+            "1" or "prs" or "present" => ArcaeaDifficulty.Present,
+            "2" or "ftr" or "future" => ArcaeaDifficulty.Future,
+            "3" or "byd" or "byn" or "beyond" => ArcaeaDifficulty.Beyond,
             _ => null
         };
     }
