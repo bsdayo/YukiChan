@@ -91,9 +91,10 @@ public static partial class ArcaeaImageGenerator
             logger.Debug("Getting chart image...");
             using var chartImage = await GetRatingRecordsChartImage(
                 user.AccountInfo.Code, user.AccountInfo.Rating, 1900, 1320, logger);
+            logger.Debug("Chart image got successfully.");
 
             canvas.DrawImage(chartImage, 200, 480);
-            logger.Debug("Chart drawn.");
+            logger.Debug("Chart image drawn.");
         }
         catch (Exception e)
         {
@@ -245,6 +246,7 @@ public static partial class ArcaeaImageGenerator
             logger.Debug("Chart initialized.");
 
             StopEverything();
+            chart.SaveImage("chart.jpg");
             tcs.SetResult(chart.GetImage());
         });
 
