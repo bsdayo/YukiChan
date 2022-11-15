@@ -85,6 +85,7 @@ public static partial class ArcaeaImageGenerator
             canvas.DrawBitmap(resized, 1920, 155);
         }
 
+        try
         {
             // 图表
             logger.Debug("Getting chart image...");
@@ -93,6 +94,10 @@ public static partial class ArcaeaImageGenerator
 
             canvas.DrawImage(chartImage, 200, 480);
             logger.Debug("Chart drawn.");
+        }
+        catch (Exception e)
+        {
+            logger.Error(e);
         }
 
         {
