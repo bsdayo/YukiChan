@@ -36,6 +36,7 @@ public partial class ArcaeaPlugin
             //            ?? new ArcaeaUserPreferences();
             var pref = new ArcaeaUserPreferences();
             var image = await ArcaeaImageGenerator.User(userInfo, pref, _auaClient, Logger);
+            Logger.Debug("Generation done.");
             return ctx.Reply().Image(image);
         }
         catch (Exception e)
