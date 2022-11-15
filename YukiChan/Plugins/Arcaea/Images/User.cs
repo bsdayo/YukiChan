@@ -212,7 +212,7 @@ public static partial class ArcaeaImageGenerator
             {
                 new Axis
                 {
-                    Labeler = value => value.ToString("N2"),
+                    Labeler = value => value.ToString("F2"),
                     // LabelsPaint = new SolidColorPaint(SKColors.Black) { SKTypeface = TitilliumWeb_Regular },
                     TextSize = 40,
                     MinStep = 0.2,
