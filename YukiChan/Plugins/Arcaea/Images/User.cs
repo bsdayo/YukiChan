@@ -133,6 +133,14 @@ public static partial class ArcaeaImageGenerator
         var tcs = new TaskCompletionSource<SKImage>();
         var timer = new Timer(20000);
         var client = new WebsocketClient(new Uri("wss://arc.estertion.win:616"));
+        
+        var userPttColorIndex = userPtt switch
+        {
+            < 350 => 0,
+            >= 350 and < 700 => 1,
+            >= 700 and < 1100 => 2,
+            >= 110 => 3
+        };
 
         void StopEverything()
         {
@@ -190,7 +198,7 @@ public static partial class ArcaeaImageGenerator
                     LabelsRotation = 20,
                     UnitWidth = TimeSpan.FromDays(1).Ticks,
                     MinStep = TimeSpan.FromDays(1).Ticks,
-                    LabelsPaint = new SolidColorPaint(SKColors.Black) { SKTypeface = TitilliumWeb_Regular },
+                    // LabelsPaint = new SolidColorPaint(SKColors.Black) { SKTypeface = TitilliumWeb_Regular },
                     TextSize = 40,
                     SeparatorsPaint = new SolidColorPaint(SKColors.LightSlateGray)
                     {
@@ -205,7 +213,7 @@ public static partial class ArcaeaImageGenerator
                 new Axis
                 {
                     Labeler = value => value.ToString("N2"),
-                    LabelsPaint = new SolidColorPaint(SKColors.Black) { SKTypeface = TitilliumWeb_Regular },
+                    // LabelsPaint = new SolidColorPaint(SKColors.Black) { SKTypeface = TitilliumWeb_Regular },
                     TextSize = 40,
                     MinStep = 0.2,
                     SeparatorsPaint = new SolidColorPaint(SKColors.LightSlateGray)
@@ -214,14 +222,6 @@ public static partial class ArcaeaImageGenerator
                         PathEffect = new DashEffect(new[] { 12f, 12f })
                     }
                 }
-            };
-
-            var userPttColorIndex = userPtt switch
-            {
-                < 350 => 0,
-                >= 350 and < 700 => 1,
-                >= 700 and < 1100 => 2,
-                >= 110 => 3
             };
 
             var series = new LineSeries<DateTimePoint>
@@ -244,9 +244,7 @@ public static partial class ArcaeaImageGenerator
             };
 
             logger.Debug("Chart initialized.");
-
             StopEverything();
-            chart.SaveImage("chart.jpg");
             tcs.SetResult(chart.GetImage());
         });
 
