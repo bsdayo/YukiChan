@@ -92,6 +92,7 @@ public static partial class ArcaeaImageGenerator
                 user.AccountInfo.Code, user.AccountInfo.Rating, 1900, 1320, logger);
 
             canvas.DrawImage(chartImage, 200, 480);
+            logger.Debug("Chart drawn.");
         }
 
         {
@@ -134,6 +135,7 @@ public static partial class ArcaeaImageGenerator
             client.Dispose();
             timer.Close();
             timer.Dispose();
+            logger.Debug("Everything stopped.");
         }
 
         client.MessageReceived.Subscribe(message =>
@@ -253,6 +255,7 @@ public static partial class ArcaeaImageGenerator
         logger.Debug("Client started.");
 
         client.Send(userId);
+        logger.Debug("Message sent.");
 
         return tcs.Task;
     }
