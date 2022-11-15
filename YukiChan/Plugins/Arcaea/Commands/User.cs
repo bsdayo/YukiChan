@@ -32,8 +32,9 @@ public partial class ArcaeaPlugin
             }
 
             var userInfo = await _auaClient.User.Info(userId ?? userArg, 1, AuaReplyWith.All);
-            var pref = await Global.YukiDb.GetArcaeaUserPreferences(ctx.Bot.Platform, ctx.Message.Sender.UserId)
-                       ?? new ArcaeaUserPreferences();
+            // var pref = await Global.YukiDb.GetArcaeaUserPreferences(ctx.Bot.Platform, ctx.Message.Sender.UserId)
+            //            ?? new ArcaeaUserPreferences();
+            var pref = new ArcaeaUserPreferences();
             var image = await ArcaeaImageGenerator.User(userInfo, pref, _auaClient, Logger);
             return ctx.Reply().Image(image);
         }
