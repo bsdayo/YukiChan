@@ -40,8 +40,8 @@ public static class Program
 
         app
             // Adapters
-            .UseKonataAdapter(konataConfig)
-            // .UseOneBotAdapter(GetOneBotAdapterConfig())
+            // .UseKonataAdapter(konataConfig)
+            .UseOneBotAdapter(GetOneBotAdapterConfig())
 
             // Plugins
             .Use(new StatusPlugin())
