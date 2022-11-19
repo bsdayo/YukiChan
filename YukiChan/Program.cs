@@ -2,6 +2,7 @@
 using Flandre.Adapters.Konata;
 using Flandre.Adapters.OneBot;
 using Flandre.Core;
+using Flandre.Core.Extensions;
 using Flandre.Core.Utils;
 using Flandre.Plugins.BaiduTranslate;
 using Flandre.Plugins.HttpCat;
@@ -51,14 +52,25 @@ public static class Program
             .Use(new WolframAlphaPlugin(yukiConfig.Plugins.WolframAlpha))
             .Use(new BaiduTranslatePlugin(yukiConfig.Plugins.BaiduTranslate))
             .Use(new HttpCatPlugin(yukiConfig.Plugins.HttpCat))
+            .Use(new MainBotPlugin())
 
             // Middlewares
             .Use(Middlewares.HandleGuildAssignee)
             .Use(Middlewares.QqGuildFilter)
+            
+            // Load
+            .LoadGuildAssignees()
 
             // Start
             .Start();
     }
+
+    public static FlandreApp LoadGuildAssignees(this FlandreApp app)
+    {
+        foreach (var guildData in Global.YukiDb.GetAllGuildData().Result)
+            app.SetGuildAssignee(guildData.Platform, guildData.GuildId, guildData.Assignee);
+        return app;
+    } 
 
     #region GetConfigs
 

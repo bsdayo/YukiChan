@@ -50,6 +50,13 @@ public partial class YukiDbManager
             .Where(guild => guild.GuildId == guildId)
             .FirstOrDefaultAsync();
     }
+    
+    public async Task<List<GuildData>> GetAllGuildData()
+    {
+        using var ctx = GetDbContext(GuildDataDbName);
+        return await ctx.Query<GuildData>()
+            .ToListAsync();
+    }
 
     public async Task InsertGuildDataIfNotExists(string platform, string guildId, string assignee)
     {
@@ -66,6 +73,18 @@ public partial class YukiDbManager
         };
 
         await ctx.InsertAsync(user);
+    }
+    
+    public async Task UpdateGuildData(string platform, string guildId, string assignee)
+    {
+        using var ctx = GetDbContext(GuildDataDbName);
+
+        var user = await GetGuildData(platform, guildId);
+        if (user is null) return;
+
+        user.Assignee = assignee;
+
+        await ctx.UpdateAsync(user);
     }
 }
 
