@@ -2,6 +2,7 @@
 
 namespace YukiChan.Database.Models;
 
+[Table("guilds")]
 public class GuildData
 {
     [Column("platform")] public required string Platform { get; set; }
