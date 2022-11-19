@@ -56,7 +56,7 @@ public partial class YukiDbManager
         using var ctx = GetDbContext(GuildDataDbName);
 
         var old = await GetGuildData(platform, guildId);
-        if (old is null) return;
+        if (old is not null) return;
 
         var user = new GuildData
         {
