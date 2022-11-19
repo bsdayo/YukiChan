@@ -69,7 +69,8 @@ public static partial class ArcaeaImageGenerator
                     IsAntialias = true,
                     TextSize = 53
                 };
-                canvas.DrawCenteredText(record.Name, 160, 770, titlePaint, 580);
+                canvas.DrawCenteredText(ArcaeaUtils.ReplaceNotSupportedChar(record.Name),
+                    160, 770, titlePaint, 580);
             }
 
             {
