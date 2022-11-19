@@ -53,6 +53,7 @@ public static class Program
             .Use(new HttpCatPlugin(yukiConfig.Plugins.HttpCat))
 
             // Middlewares
+            .Use(Middlewares.HandleGuildAssignee)
             .Use(Middlewares.QqGuildFilter)
 
             // Start

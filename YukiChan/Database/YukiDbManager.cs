@@ -4,16 +4,19 @@ using Chloe.SQLite;
 using Chloe.SQLite.DDL;
 using Flandre.Core.Utils;
 using Microsoft.Data.Sqlite;
+using YukiChan.Database.Models;
 using YukiChan.Utils;
 
 namespace YukiChan.Database;
 
 // [YukiDatabase(CommandHistoryDbName, typeof(CommandHistory))]
+[YukiDatabase(GuildDataDbName, typeof(GuildData))]
 public partial class YukiDbManager
 {
     private readonly Logger _logger = new("Database");
 
     private const string CommandHistoryDbName = "command-history";
+    private const string GuildDataDbName = "guilds";
 
     public YukiDbManager()
     {
@@ -37,6 +40,32 @@ public partial class YukiDbManager
     private static SQLiteContext GetDbContext(string dbName)
     {
         return new SQLiteContext(() => new SqliteConnection($"DataSource={YukiDir.Databases}/{dbName}.db"));
+    }
+
+    public async Task<GuildData?> GetGuildData(string platform, string guildId)
+    {
+        using var ctx = GetDbContext(GuildDataDbName);
+        return await ctx.Query<GuildData>()
+            .Where(guild => guild.Platform == platform)
+            .Where(guild => guild.GuildId == guildId)
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task InsertGuildDataIfNotExists(string platform, string guildId, string assignee)
+    {
+        using var ctx = GetDbContext(GuildDataDbName);
+
+        var old = await GetGuildData(platform, guildId);
+        if (old is null) return;
+
+        var user = new GuildData
+        {
+            Platform = platform,
+            GuildId = guildId,
+            Assignee = assignee
+        };
+
+        await ctx.InsertAsync(user);
     }
 }
 
