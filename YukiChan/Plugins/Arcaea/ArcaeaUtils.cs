@@ -200,6 +200,18 @@ public static class ArcaeaUtils
         return Math.Max(0, ptt);
     }
 
+    public static (string, ArcaeaDifficulty) ParseMixedSongNameAndDifficulty(string textArg)
+    {
+        var arr = textArg.Split(' ',
+            StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+        var difficulty = GetRatingClass(arr[^1]);
+
+        var songname = difficulty is null
+            ? textArg
+            : string.Join(' ', arr[..^1]);
+        return (songname, difficulty ?? ArcaeaDifficulty.Future);
+    }
+
     public static ArcaeaGuessMode? GetGuessMode(string text)
     {
         return text.ToLower() switch

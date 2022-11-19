@@ -11,21 +11,20 @@ namespace YukiChan.Plugins.Arcaea;
 
 public partial class ArcaeaPlugin
 {
-    [Command("a.preview <songname: string> [difficulty: string = ftr]")]
+    [Command("a.preview <songnameAndDifficulty:text>")]
     [Shortcut("查预览")]
     public async Task<MessageContent> OnPreview(MessageContext ctx, ParsedArgs args)
     {
-        var difficulty = ArcaeaUtils.GetRatingClass(args.GetArgument<string>("difficulty"));
-        if (difficulty is null)
-            return ctx.Reply("输入了错误的难度！");
+        var (songname, difficulty) = ArcaeaUtils.ParseMixedSongNameAndDifficulty(
+            args.GetArgument<string>("songnameAndDifficulty"));
 
-        var songId = await ArcaeaSongDatabase.FuzzySearchId(args.GetArgument<string>("songname"));
+        var songId = await ArcaeaSongDatabase.FuzzySearchId(songname);
         if (songId is null) return ctx.Reply("没有找到该曲目呢...");
 
         try
         {
             byte[] preview;
-            var cachePath = $"{YukiDir.ArcaeaCache}/preview/{songId}-{difficulty.ToString()!.ToLower()}.jpg";
+            var cachePath = $"{YukiDir.ArcaeaCache}/preview/{songId}-{difficulty.ToString().ToLower()}.jpg";
 
             try
             {
@@ -33,7 +32,7 @@ public partial class ArcaeaPlugin
             }
             catch
             {
-                preview = await _auaClient.Assets.Preview(songId, AuaSongQueryType.SongId, difficulty.Value);
+                preview = await _auaClient.Assets.Preview(songId, AuaSongQueryType.SongId, difficulty);
                 await File.WriteAllBytesAsync(cachePath, preview);
                 Logger.SaveCache(cachePath);
             }

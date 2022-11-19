@@ -16,7 +16,7 @@ namespace YukiChan.Plugins.Arcaea;
 
 public partial class ArcaeaPlugin
 {
-    [Command("a.best <songname:string> [difficulty:string=ftr]")]
+    [Command("a.best <songnameAndDifficulty:text>")]
     [Option("nya", "-n <nya:bool>")]
     [Option("dark", "-d <dark:bool>")]
     [Option("user", "-u <user:string>")]
@@ -25,14 +25,12 @@ public partial class ArcaeaPlugin
     {
         var userArg = args.GetOption<string>("user");
 
-        var difficulty = ArcaeaUtils.GetRatingClass(args.GetArgument<string>("difficulty"));
-        if (difficulty is null)
-            return ctx.Reply().Text("输入了错误的难度哦！");
+        var (songname, difficulty) = ArcaeaUtils.ParseMixedSongNameAndDifficulty(
+            args.GetArgument<string>("songnameAndDifficulty"));
 
         try
         {
-            var songId = await ArcaeaSongDatabase.FuzzySearchId(
-                args.GetArgument<string>("songname"));
+            var songId = await ArcaeaSongDatabase.FuzzySearchId(songname);
             if (songId is null) return ctx.Reply().Text("没有找到该曲目哦~");
 
             AuaUserBestContent auaBest;
@@ -49,15 +47,15 @@ public partial class ArcaeaPlugin
                     $"正在查询 {ctx.Message.Sender.Name}({ctx.Message.Sender.UserId}) -> {dbUser.ArcaeaName}({dbUser.ArcaeaId}) 的 {songId} 最高成绩...");
 
                 auaBest = int.TryParse(dbUser.ArcaeaId, out var parsed)
-                    ? await _auaClient.User.Best(parsed, songId, AuaSongQueryType.SongId, difficulty.Value,
+                    ? await _auaClient.User.Best(parsed, songId, AuaSongQueryType.SongId, difficulty,
                         AuaReplyWith.All)
-                    : await _auaClient.User.Best(dbUser.ArcaeaId, songId, AuaSongQueryType.SongId, difficulty.Value,
+                    : await _auaClient.User.Best(dbUser.ArcaeaId, songId, AuaSongQueryType.SongId, difficulty,
                         AuaReplyWith.All);
             }
             else
             {
                 Logger.Info($"正在查询 {userArg} 的 {songId} 最高成绩...");
-                auaBest = await _auaClient.User.Best(userArg, songId, AuaSongQueryType.SongId, difficulty.Value,
+                auaBest = await _auaClient.User.Best(userArg, songId, AuaSongQueryType.SongId, difficulty,
                     AuaReplyWith.All);
             }
 
