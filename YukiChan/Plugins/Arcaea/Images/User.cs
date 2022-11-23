@@ -210,10 +210,9 @@ public static partial class ArcaeaImageGenerator
 
             var yAxesMinStep = (dtps.Max(d => d.Value) - dtps.Min(d => d.Value)) switch
             {
-                <= 0.5 => 0.04,
-                > 0.5 and <= 1.0 => 0.08,
-                > 1.0 and <= 2.0 => 0.12,
-                > 2.0 and <= 3.0 => 0.16,
+                <= 1.0 => 0.05,
+                > 1.0 and <= 2.0 => 0.10,
+                > 2.0 and <= 3.0 => 0.15,
                 _ => 0.20
             };
 
