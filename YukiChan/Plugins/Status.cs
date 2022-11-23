@@ -30,10 +30,10 @@ public class StatusPlugin : Plugin
         var bs = new BuildStamp(typeof(Program));
         var uptime = new StringBuilder() // "12d 23:45:34.123"
             .Append($"{UpTimeStopwatch.Elapsed.Days}d ")
-            .Append($"{UpTimeStopwatch.Elapsed.Hours}:")
-            .Append($"{UpTimeStopwatch.Elapsed.Minutes}:")
-            .Append($"{UpTimeStopwatch.Elapsed.Seconds}.")
-            .Append($"{UpTimeStopwatch.Elapsed.Milliseconds}")
+            .Append($"{UpTimeStopwatch.Elapsed.Hours:00}:")
+            .Append($"{UpTimeStopwatch.Elapsed.Minutes:00}:")
+            .Append($"{UpTimeStopwatch.Elapsed.Seconds:00}.")
+            .Append($"{UpTimeStopwatch.Elapsed.Milliseconds:000}")
             .ToString();
 
         return new MessageBuilder()
