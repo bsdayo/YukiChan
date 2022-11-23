@@ -13,6 +13,8 @@ namespace YukiChan.Plugins.Arcaea;
 public partial class ArcaeaPlugin
 {
     [Command("a.user [user:string]")]
+    [Option("nya", "-n <:bool>")]
+    [Option("dark", "-d <:bool>")]
     [Shortcut("查用户")]
     public async Task<MessageContent> OnUser(MessageContext ctx, ParsedArgs args)
     {
@@ -32,9 +34,10 @@ public partial class ArcaeaPlugin
             }
 
             var userInfo = await _auaClient.User.Info(userId ?? userArg, 1, AuaReplyWith.All);
-            // var pref = await Global.YukiDb.GetArcaeaUserPreferences(ctx.Bot.Platform, ctx.Message.Sender.UserId)
-            //            ?? new ArcaeaUserPreferences();
-            var pref = new ArcaeaUserPreferences();
+            var pref = await Global.YukiDb.GetArcaeaUserPreferences(ctx.Bot.Platform, ctx.Message.Sender.UserId)
+                       ?? new ArcaeaUserPreferences();
+            pref.Dark = pref.Dark || args.GetOption<bool>("dark");
+            pref.Nya = pref.Nya || args.GetOption<bool>("nya");
             var image = await ArcaeaImageGenerator.User(userInfo, pref, _auaClient, Logger);
             Logger.Debug("Generation done.");
             return ctx.Reply().Image(image);

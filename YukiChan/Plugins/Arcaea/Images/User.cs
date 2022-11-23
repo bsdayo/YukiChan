@@ -90,7 +90,7 @@ public static partial class ArcaeaImageGenerator
             // 图表
             logger.Debug("Getting chart image...");
             using var chartImage = await GetRatingRecordsChartImage(
-                user.AccountInfo.Code, user.AccountInfo.Rating, 1900, 1320, logger);
+                user.AccountInfo.Code, user.AccountInfo.Rating, 1900, 1320, pref, logger);
             logger.Debug("Chart image got successfully.");
 
             canvas.DrawImage(chartImage, 200, 480);
@@ -128,12 +128,12 @@ public static partial class ArcaeaImageGenerator
     }
 
     private static Task<SKImage> GetRatingRecordsChartImage(string userId, int userPtt, int width, int height,
-        Logger logger)
+        ArcaeaUserPreferences pref, Logger logger)
     {
         var tcs = new TaskCompletionSource<SKImage>();
         var timer = new Timer(20000);
         var client = new WebsocketClient(new Uri("wss://arc.estertion.win:616"));
-        
+
         var userPttColorIndex = userPtt switch
         {
             < 350 => 0,
@@ -198,7 +198,7 @@ public static partial class ArcaeaImageGenerator
                     LabelsRotation = 20,
                     UnitWidth = TimeSpan.FromDays(1).Ticks,
                     MinStep = TimeSpan.FromDays(1).Ticks,
-                    // LabelsPaint = new SolidColorPaint(SKColors.Black) { SKTypeface = TitilliumWeb_Regular },
+                    LabelsPaint = new SolidColorPaint(pref.Dark ? SKColors.White : SKColor.Parse("#333333")),
                     TextSize = 40,
                     SeparatorsPaint = new SolidColorPaint(SKColors.LightSlateGray)
                     {
@@ -208,14 +208,23 @@ public static partial class ArcaeaImageGenerator
                 }
             };
 
+            var yAxesMinStep = (dtps.Max(d => d.Value) - dtps.Min(d => d.Value)) switch
+            {
+                <= 0.5 => 0.04,
+                > 0.5 and <= 1.0 => 0.08,
+                > 1.0 and <= 2.0 => 0.12,
+                > 2.0 and <= 3.0 => 0.16,
+                _ => 0.20
+            };
+
             var yAxes = new[]
             {
                 new Axis
                 {
                     Labeler = value => value.ToString("F2"),
-                    // LabelsPaint = new SolidColorPaint(SKColors.Black) { SKTypeface = TitilliumWeb_Regular },
+                    LabelsPaint = new SolidColorPaint(pref.Dark ? SKColors.White : SKColor.Parse("#333333")),
                     TextSize = 40,
-                    MinStep = 0.2,
+                    MinStep = yAxesMinStep,
                     SeparatorsPaint = new SolidColorPaint(SKColors.LightSlateGray)
                     {
                         StrokeThickness = 4,
