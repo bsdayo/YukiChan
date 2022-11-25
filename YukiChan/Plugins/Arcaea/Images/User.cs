@@ -182,7 +182,7 @@ public static partial class ArcaeaImageGenerator
                 .Deserialize<JsonElement[][]>()!;
 
             var dtpsList = new List<DateTimePoint>();
-            int max = 0, min = 0;
+            int max = 0, min = 10000;
             foreach (var elements in ratingRecords)
             {
                 var date = elements[0].GetString()!;
@@ -193,7 +193,7 @@ public static partial class ArcaeaImageGenerator
 
                 if (val >= max) max = val;
                 if (val <= min) min = val;
-                
+
                 dtpsList.Add(new DateTimePoint(new DateTime(year, month, day), val / 100d));
             }
 
@@ -219,7 +219,7 @@ public static partial class ArcaeaImageGenerator
                     }
                 }
             };
-            
+
             var yAxesMinStep = (max - min) switch
             {
                 <= 16 => 0.01,
