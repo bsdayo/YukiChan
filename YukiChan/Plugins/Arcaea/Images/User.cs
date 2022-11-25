@@ -182,13 +182,19 @@ public static partial class ArcaeaImageGenerator
                 .Deserialize<JsonElement[][]>()!;
 
             var dtpsList = new List<DateTimePoint>();
+            int max = 0, min = 0;
             foreach (var elements in ratingRecords)
             {
                 var date = elements[0].GetString()!;
                 var year = int.Parse(date[..2]) + 2000;
                 var month = int.Parse(date[2..4]);
                 var day = int.Parse(date[4..]);
-                dtpsList.Add(new DateTimePoint(new DateTime(year, month, day), elements[1].GetUInt16() / 100d));
+                var val = elements[1].GetInt32();
+
+                if (val >= max) max = val;
+                if (val <= min) min = val;
+                
+                dtpsList.Add(new DateTimePoint(new DateTime(year, month, day), val / 100d));
             }
 
             var now = DateTime.Now;
@@ -213,17 +219,16 @@ public static partial class ArcaeaImageGenerator
                     }
                 }
             };
-
-            var maxDiff = dtpsList.Max(d => d.Value) - dtpsList.Min(d => d.Value);
-            var yAxesMinStep = maxDiff switch
+            
+            var yAxesMinStep = (max - min) switch
             {
-                <= 0.2 => 0.01,
-                > 0.2 and <= 0.3 => 0.02,
-                > 0.3 and <= 0.5 => 0.03,
-                > 0.5 and <= 1.0 => 0.05,
-                > 1.0 and <= 2.0 => 0.10,
-                > 2.0 and <= 3.0 => 0.15,
-                _ => 0.20
+                <= 16 => 0.01,
+                > 16 and <= 26 => 0.02,
+                > 26 and <= 46 => 0.03,
+                > 46 and <= 96 => 0.05,
+                > 96 and <= 196 => 0.10,
+                > 196 and <= 296 => 0.15,
+                > 296 => 0.20
             };
 
             var yAxes = new[]
@@ -234,7 +239,9 @@ public static partial class ArcaeaImageGenerator
                     LabelsPaint = new SolidColorPaint(pref.Dark ? SKColors.White : SKColor.Parse("#333333")),
                     TextSize = 40,
                     MinStep = yAxesMinStep,
-                    ForceStepToMin = maxDiff < 1.0,
+                    MinLimit = min == 0 ? 0 : ((min - 2) / 100d),
+                    MaxLimit = (max + 2) / 100d,
+                    ForceStepToMin = max == min,
                     SeparatorsPaint = new SolidColorPaint(SKColors.LightSlateGray)
                     {
                         StrokeThickness = 4,
