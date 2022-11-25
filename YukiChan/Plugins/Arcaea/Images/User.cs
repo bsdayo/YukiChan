@@ -214,7 +214,8 @@ public static partial class ArcaeaImageGenerator
                 }
             };
 
-            var yAxesMinStep = (dtpsList.Max(d => d.Value) - dtpsList.Min(d => d.Value)) switch
+            var maxDiff = dtpsList.Max(d => d.Value) - dtpsList.Min(d => d.Value);
+            var yAxesMinStep = maxDiff switch
             {
                 <= 0.2 => 0.01,
                 > 0.2 and <= 0.3 => 0.02,
@@ -233,6 +234,7 @@ public static partial class ArcaeaImageGenerator
                     LabelsPaint = new SolidColorPaint(pref.Dark ? SKColors.White : SKColor.Parse("#333333")),
                     TextSize = 40,
                     MinStep = yAxesMinStep,
+                    ForceStepToMin = maxDiff < 1.0,
                     SeparatorsPaint = new SolidColorPaint(SKColors.LightSlateGray)
                     {
                         StrokeThickness = 4,
