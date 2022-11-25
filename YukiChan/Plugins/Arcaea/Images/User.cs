@@ -229,7 +229,7 @@ public static partial class ArcaeaImageGenerator
                     Labeler = value => value.ToString("F2"),
                     LabelsPaint = new SolidColorPaint(pref.Dark ? SKColors.White : SKColor.Parse("#333333")),
                     TextSize = 40,
-                    MinStep = yAxesMinStep,
+                    // MinStep = yAxesMinStep,
                     SeparatorsPaint = new SolidColorPaint(SKColors.LightSlateGray)
                     {
                         StrokeThickness = 4,
