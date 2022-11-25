@@ -216,7 +216,10 @@ public static partial class ArcaeaImageGenerator
 
             var yAxesMinStep = (dtpsList.Max(d => d.Value) - dtpsList.Min(d => d.Value)) switch
             {
-                <= 1.0 => 0.05,
+                <= 0.2 => 0.01,
+                > 0.2 and <= 0.3 => 0.02,
+                > 0.3 and <= 0.5 => 0.03,
+                > 0.5 and <= 1.0 => 0.05,
                 > 1.0 and <= 2.0 => 0.10,
                 > 2.0 and <= 3.0 => 0.15,
                 _ => 0.20
@@ -229,7 +232,7 @@ public static partial class ArcaeaImageGenerator
                     Labeler = value => value.ToString("F2"),
                     LabelsPaint = new SolidColorPaint(pref.Dark ? SKColors.White : SKColor.Parse("#333333")),
                     TextSize = 40,
-                    // MinStep = yAxesMinStep,
+                    MinStep = yAxesMinStep,
                     SeparatorsPaint = new SolidColorPaint(SKColors.LightSlateGray)
                     {
                         StrokeThickness = 4,

@@ -31,7 +31,7 @@ public partial class ArcaeaPlugin
         var weekArg = args.GetOption<bool>("week");
         string? userId = null;
 
-        var lastDays = 0;
+        var lastDays = 1_000_000_000;
         if (yearArg) lastDays = 365;
         if (seasonArg) lastDays = 90;
         if (monthArg) lastDays = 30;
