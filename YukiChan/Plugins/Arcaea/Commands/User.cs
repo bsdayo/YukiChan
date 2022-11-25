@@ -15,11 +15,27 @@ public partial class ArcaeaPlugin
     [Command("a.user [user:string]")]
     [Option("nya", "-n <:bool>")]
     [Option("dark", "-d <:bool>")]
+    //
+    [Option("year", "-y <:bool>")]
+    [Option("season", "-s <:bool>")]
+    [Option("month", "-m <:bool>")]
+    [Option("week", "-w <:bool>")]
+    //
     [Shortcut("查用户")]
     public async Task<MessageContent> OnUser(MessageContext ctx, ParsedArgs args)
     {
         var userArg = args.GetArgument<string>("user");
+        var yearArg = args.GetArgument<bool>("year");
+        var seasonArg = args.GetArgument<bool>("season");
+        var monthArg = args.GetArgument<bool>("month");
+        var weekArg = args.GetArgument<bool>("week");
         string? userId = null;
+
+        var lastDays = 0;
+        if (yearArg) lastDays = 365;
+        if (seasonArg) lastDays = 90;
+        if (monthArg) lastDays = 30;
+        if (weekArg) lastDays = 7;
 
         try
         {
@@ -38,7 +54,7 @@ public partial class ArcaeaPlugin
                        ?? new ArcaeaUserPreferences();
             pref.Dark = pref.Dark || args.GetOption<bool>("dark");
             pref.Nya = pref.Nya || args.GetOption<bool>("nya");
-            var image = await ArcaeaImageGenerator.User(userInfo, pref, _auaClient, Logger);
+            var image = await ArcaeaImageGenerator.User(userInfo, pref, _auaClient, lastDays, Logger);
             Logger.Debug("Generation done.");
             return ctx.Reply().Image(image);
         }

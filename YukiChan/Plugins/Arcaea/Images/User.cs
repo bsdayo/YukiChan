@@ -23,7 +23,7 @@ namespace YukiChan.Plugins.Arcaea.Images;
 public static partial class ArcaeaImageGenerator
 {
     public static async Task<byte[]> User(AuaUserInfoContent user, ArcaeaUserPreferences pref, AuaClient auaClient,
-        Logger logger)
+        int lastDays, Logger logger)
     {
         var imageInfo = new SKImageInfo(3400, 2000);
         using var surface = SKSurface.Create(imageInfo);
@@ -90,7 +90,8 @@ public static partial class ArcaeaImageGenerator
             // 图表
             logger.Debug("Getting chart image...");
             using var chartImage = await GetRatingRecordsChartImage(
-                user.AccountInfo.Code, user.AccountInfo.Rating, 1900, 1320, pref, logger);
+                user.AccountInfo.Code, user.AccountInfo.Rating, 1900, 1320,
+                pref, lastDays, logger);
             logger.Debug("Chart image got successfully.");
 
             canvas.DrawImage(chartImage, 200, 480);
@@ -128,7 +129,7 @@ public static partial class ArcaeaImageGenerator
     }
 
     private static Task<SKImage> GetRatingRecordsChartImage(string userId, int userPtt, int width, int height,
-        ArcaeaUserPreferences pref, Logger logger)
+        ArcaeaUserPreferences pref, int lastDays, Logger logger)
     {
         var tcs = new TaskCompletionSource<SKImage>();
         var timer = new Timer(20000);
@@ -232,9 +233,11 @@ public static partial class ArcaeaImageGenerator
                 }
             };
 
+            var now = DateTime.Now;
+
             var series = new LineSeries<DateTimePoint>
             {
-                Values = dtps,
+                Values = dtps.Where(dtp => (now - dtp.DateTime).TotalDays <= lastDays),
                 GeometrySize = 0,
                 Stroke = new SolidColorPaint(SKColor.Parse(DifficultyColors[userPttColorIndex].ColorDark))
                     { StrokeThickness = 10 },
