@@ -181,15 +181,20 @@ public static partial class ArcaeaImageGenerator
                 .GetProperty("rating_records")
                 .Deserialize<JsonElement[][]>()!;
 
-            var dtps = new List<DateTimePoint>();
+            var dtpsList = new List<DateTimePoint>();
             foreach (var elements in ratingRecords)
             {
                 var date = elements[0].GetString()!;
                 var year = int.Parse(date[..2]) + 2000;
                 var month = int.Parse(date[2..4]);
                 var day = int.Parse(date[4..]);
-                dtps.Add(new DateTimePoint(new DateTime(year, month, day), elements[1].GetUInt16() / 100d));
+                dtpsList.Add(new DateTimePoint(new DateTime(year, month, day), elements[1].GetUInt16() / 100d));
             }
+
+            var now = DateTime.Now;
+            dtpsList = dtpsList
+                .Where(dtp => (now - dtp.DateTime).TotalDays <= lastDays)
+                .ToList();
 
             var xAxes = new[]
             {
@@ -209,7 +214,7 @@ public static partial class ArcaeaImageGenerator
                 }
             };
 
-            var yAxesMinStep = (dtps.Max(d => d.Value) - dtps.Min(d => d.Value)) switch
+            var yAxesMinStep = (dtpsList.Max(d => d.Value) - dtpsList.Min(d => d.Value)) switch
             {
                 <= 1.0 => 0.05,
                 > 1.0 and <= 2.0 => 0.10,
@@ -233,11 +238,9 @@ public static partial class ArcaeaImageGenerator
                 }
             };
 
-            var now = DateTime.Now;
-
             var series = new LineSeries<DateTimePoint>
             {
-                Values = dtps.Where(dtp => (now - dtp.DateTime).TotalDays <= lastDays),
+                Values = dtpsList,
                 GeometrySize = 0,
                 Stroke = new SolidColorPaint(SKColor.Parse(DifficultyColors[userPttColorIndex].ColorDark))
                     { StrokeThickness = 10 },
