@@ -240,7 +240,7 @@ public static partial class ArcaeaImageGenerator
                     TextSize = 40,
                     MinStep = yAxesMinStep,
                     MinLimit = min == 0 ? 0 : ((min - 2) / 100d),
-                    MaxLimit = (max + 2) / 100d,
+                    // MaxLimit = (max + 2) / 100d,
                     ForceStepToMin = max == min,
                     SeparatorsPaint = new SolidColorPaint(SKColors.LightSlateGray)
                     {
