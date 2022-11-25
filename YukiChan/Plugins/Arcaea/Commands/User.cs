@@ -25,10 +25,10 @@ public partial class ArcaeaPlugin
     public async Task<MessageContent> OnUser(MessageContext ctx, ParsedArgs args)
     {
         var userArg = args.GetArgument<string>("user");
-        var yearArg = args.GetArgument<bool>("year");
-        var seasonArg = args.GetArgument<bool>("season");
-        var monthArg = args.GetArgument<bool>("month");
-        var weekArg = args.GetArgument<bool>("week");
+        var yearArg = args.GetOption<bool>("year");
+        var seasonArg = args.GetOption<bool>("season");
+        var monthArg = args.GetOption<bool>("month");
+        var weekArg = args.GetOption<bool>("week");
         string? userId = null;
 
         var lastDays = 0;
