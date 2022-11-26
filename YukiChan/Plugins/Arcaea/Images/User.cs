@@ -23,7 +23,7 @@ namespace YukiChan.Plugins.Arcaea.Images;
 public static partial class ArcaeaImageGenerator
 {
     public static async Task<byte[]> User(AuaUserInfoContent user, ArcaeaUserPreferences pref, AuaClient auaClient,
-        int lastDays, Logger logger)
+        int lastDays, bool smooth, Logger logger)
     {
         var imageInfo = new SKImageInfo(3400, 2000);
         using var surface = SKSurface.Create(imageInfo);
@@ -59,23 +59,6 @@ public static partial class ArcaeaImageGenerator
         }
 
         {
-            // 名字和 ptt
-            using var textPaint = new SKPaint
-            {
-                Color = pref.Dark ? SKColors.White : SKColor.Parse("#333333"),
-                TextSize = 90,
-                IsAntialias = true,
-                Typeface = TitilliumWeb_SemiBold
-            };
-            canvas.DrawText(
-                $"{user.AccountInfo.Name} ({(user.AccountInfo.Rating >= 0 ? user.AccountInfo.Rating / 100d : "?")})",
-                200, 290, textPaint);
-            textPaint.TextSize = 45;
-            canvas.DrawText($"JoinDate / {user.AccountInfo.JoinDate.FormatTimestamp(true)}",
-                205, 385, textPaint);
-        }
-
-        {
             // 立绘
             var charImage = await auaClient.GetCharImage(
                 user.AccountInfo.Character, user.AccountInfo.IsCharUncapped, logger);
@@ -85,21 +68,50 @@ public static partial class ArcaeaImageGenerator
             canvas.DrawBitmap(resized, 1920, 155);
         }
 
+        double scopedMax = 0, scopedMin = 0, startPtt = 0, endPtt = 0;
+
         try
         {
             // 图表
             logger.Debug("Getting chart image...");
-            using var chartImage = await GetRatingRecordsChartImage(
-                user.AccountInfo.Code, user.AccountInfo.Rating, 1900, 1320,
-                pref, lastDays, logger);
+            (var chartImage, scopedMax, scopedMin, startPtt, endPtt) =
+                await GetRatingRecordsChartImage(
+                    user.AccountInfo.Code, user.AccountInfo.Rating, 1900, 1320,
+                    pref, lastDays, smooth, logger);
             logger.Debug("Chart image got successfully.");
 
             canvas.DrawImage(chartImage, 200, 480);
             logger.Debug("Chart image drawn.");
+            chartImage.Dispose();
         }
         catch (Exception e)
         {
             logger.Error(e);
+        }
+
+        {
+            // 名字和 ptt
+            using var textPaint = new SKPaint
+            {
+                Color = pref.Dark ? SKColors.White : SKColor.Parse("#333333"),
+                TextSize = 90,
+                IsAntialias = true,
+                Typeface = TitilliumWeb_SemiBold
+            };
+            canvas.DrawText(
+                $"{user.AccountInfo.Name} ({
+                    (user.AccountInfo.Rating >= 0
+                        ? (user.AccountInfo.Rating / 100d).ToString("F2")
+                        : "?")})",
+                200, 290, textPaint);
+            textPaint.TextSize = 45;
+
+            var descSb = new StringBuilder()
+                .Append($"JoinDate / {user.AccountInfo.JoinDate.FormatTimestamp(true)}")
+                .Append($"    Max / {scopedMax:F2}")
+                .Append($"    Min / {scopedMin:F2}")
+                .Append($"    {startPtt:F2} -> {endPtt:F2}");
+            canvas.DrawText(descSb.ToString(), 205, 385, textPaint);
         }
 
         {
@@ -128,10 +140,12 @@ public static partial class ArcaeaImageGenerator
         return data.ToArray();
     }
 
-    private static Task<SKImage> GetRatingRecordsChartImage(string userId, int userPtt, int width, int height,
-        ArcaeaUserPreferences pref, int lastDays, Logger logger)
+    private static Task<(SKImage, double, double, double, double)> GetRatingRecordsChartImage(string userId,
+        int userPtt, int width,
+        int height,
+        ArcaeaUserPreferences pref, int lastDays, bool smooth, Logger logger)
     {
-        var tcs = new TaskCompletionSource<SKImage>();
+        var tcs = new TaskCompletionSource<(SKImage, double, double, double, double)>();
         var timer = new Timer(20000);
         var client = new WebsocketClient(new Uri("wss://arc.estertion.win:616"));
 
@@ -182,7 +196,6 @@ public static partial class ArcaeaImageGenerator
                 .Deserialize<JsonElement[][]>()!;
 
             var dtpsList = new List<DateTimePoint>();
-            int max = 0, min = 10000;
             foreach (var elements in ratingRecords)
             {
                 var date = elements[0].GetString()!;
@@ -190,9 +203,6 @@ public static partial class ArcaeaImageGenerator
                 var month = int.Parse(date[2..4]);
                 var day = int.Parse(date[4..]);
                 var val = elements[1].GetInt32();
-
-                if (val >= max) max = val;
-                if (val <= min) min = val;
 
                 dtpsList.Add(new DateTimePoint(new DateTime(year, month, day), val / 100d));
             }
@@ -220,6 +230,11 @@ public static partial class ArcaeaImageGenerator
                 }
             };
 
+            var scopedMax = dtpsList.Max(d => d.Value)!.Value;
+            var scopedMin = dtpsList.Min(d => d.Value)!.Value;
+            var max = (int)(scopedMax * 100);
+            var min = (int)(scopedMin * 100);
+
             var yAxesMinStep = (max - min) switch
             {
                 <= 16 => 0.01,
@@ -231,6 +246,8 @@ public static partial class ArcaeaImageGenerator
                 > 296 => 0.20
             };
 
+            logger.Debug($"Max: {max}, Min: {min}, MinStep: {yAxesMinStep}");
+
             var yAxes = new[]
             {
                 new Axis
@@ -239,9 +256,8 @@ public static partial class ArcaeaImageGenerator
                     LabelsPaint = new SolidColorPaint(pref.Dark ? SKColors.White : SKColor.Parse("#333333")),
                     TextSize = 40,
                     MinStep = yAxesMinStep,
-                    MinLimit = min == 0 ? 0 : ((min - 2) / 100d),
+                    // MinLimit = min == 0 ? 0 : ((min - 2) / 100d),
                     // MaxLimit = (max + 2) / 100d,
-                    ForceStepToMin = max == min,
                     SeparatorsPaint = new SolidColorPaint(SKColors.LightSlateGray)
                     {
                         StrokeThickness = 4,
@@ -259,6 +275,8 @@ public static partial class ArcaeaImageGenerator
                 Fill = new SolidColorPaint(SKColor.Parse(DifficultyColors[userPttColorIndex].ColorLight).WithAlpha(100))
             };
 
+            if (!smooth) series.LineSmoothness = 0;
+
             var chart = new SKCartesianChart
             {
                 Width = width,
@@ -271,7 +289,8 @@ public static partial class ArcaeaImageGenerator
 
             logger.Debug("Chart initialized.");
             StopEverything();
-            tcs.SetResult(chart.GetImage());
+            tcs.SetResult((chart.GetImage(), scopedMax, scopedMin,
+                dtpsList[0].Value!.Value, dtpsList[^1].Value!.Value));
         });
 
         timer.Elapsed += (_, _) =>

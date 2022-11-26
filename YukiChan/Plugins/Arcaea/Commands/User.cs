@@ -15,6 +15,7 @@ public partial class ArcaeaPlugin
     [Command("a.user [user:string]")]
     [Option("nya", "-n <:bool>")]
     [Option("dark", "-d <:bool>")]
+    [Option("smooth", "-S <:bool>")]
     //
     [Option("year", "-y <:bool>")]
     [Option("season", "-s <:bool>")]
@@ -29,6 +30,7 @@ public partial class ArcaeaPlugin
         var seasonArg = args.GetOption<bool>("season");
         var monthArg = args.GetOption<bool>("month");
         var weekArg = args.GetOption<bool>("week");
+        var smooth = args.GetOption<bool>("smooth");
         string? userId = null;
 
         var lastDays = 1_000_000_000;
@@ -54,7 +56,7 @@ public partial class ArcaeaPlugin
                        ?? new ArcaeaUserPreferences();
             pref.Dark = pref.Dark || args.GetOption<bool>("dark");
             pref.Nya = pref.Nya || args.GetOption<bool>("nya");
-            var image = await ArcaeaImageGenerator.User(userInfo, pref, _auaClient, lastDays, Logger);
+            var image = await ArcaeaImageGenerator.User(userInfo, pref, _auaClient, lastDays, smooth, Logger);
             Logger.Debug("Generation done.");
             return ctx.Reply().Image(image);
         }
