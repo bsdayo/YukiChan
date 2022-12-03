@@ -1,5 +1,5 @@
 # Build
-dotnet publish -c Release -r linux-arm64 --no-self-contained -o ./build/linux-arm64/ ./YukiChan
+dotnet publish -c Release -r linux-arm64 --no-self-contained -o ./build/linux-arm64/ ./YukiChan/YukiChan.csproj
 
 # Cleanup
 rm ./build/linux-arm64/*.xml

@@ -1,12 +1,15 @@
-﻿using Flandre.Core.Extensions;
-using Flandre.Core.Messaging;
-using Flandre.Core.Utils;
+﻿using Flandre.Core.Messaging;
+using Flandre.Framework.Common;
+using Flandre.Framework.Extensions;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using YukiChan.Database;
 
 namespace YukiChan;
 
 public static class Middlewares
 {
-    public static void QqGuildFilter(MessageContext ctx, Action next)
+    public static void QqGuildFilter(MiddlewareContext ctx, Action next)
     {
         if (ctx.Platform == "qqguild"
             && !Global.YukiConfig.QqGuildAllowedChannels.Contains(ctx.ChannelId))
@@ -15,7 +18,7 @@ public static class Middlewares
         next();
     }
 
-    public static async Task HandleGuildAssignee(MessageContext ctx, Action next)
+    public static async Task HandleGuildAssignee(MiddlewareContext ctx, Action next)
     {
         try
         {
@@ -23,13 +26,14 @@ public static class Middlewares
                 && ctx.GuildId is not null
                 && !ctx.App.IsGuildAssigned(ctx.Platform, ctx.GuildId))
             {
-                ctx.SetBotAsGuildAssignee();
-                await Global.YukiDb.InsertGuildDataIfNotExists(ctx.Platform, ctx.GuildId, ctx.SelfId);
+                ctx.App.SetGuildAssignee(ctx.Platform, ctx.GuildId, ctx.SelfId);
+                await ctx.App.Services.GetRequiredService<YukiDbManager>()
+                    .InsertGuildDataIfNotExists(ctx.Platform, ctx.GuildId, ctx.SelfId);
             }
         }
         catch (Exception e)
         {
-            new Logger("Middleware").Error(e);
+            ctx.App.Logger.LogError(e, "");
         }
 
         next();

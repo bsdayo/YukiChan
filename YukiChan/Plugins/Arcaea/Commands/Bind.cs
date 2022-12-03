@@ -1,7 +1,8 @@
 ﻿using ArcaeaUnlimitedAPI.Lib.Utils;
-using Flandre.Core.Attributes;
-using Flandre.Core.Common;
 using Flandre.Core.Messaging;
+using Flandre.Framework.Attributes;
+using Flandre.Framework.Common;
+using Microsoft.Extensions.Logging;
 using YukiChan.Utils;
 
 // ReSharper disable CheckNamespace
@@ -21,14 +22,14 @@ public partial class ArcaeaPlugin
         {
             if (!unc)
             {
-                var userdata = await _auaClient.User.Info(user);
+                var userdata = await _service.AuaClient.User.Info(user);
                 user = userdata.AccountInfo.Name;
-                await Global.YukiDb.AddOrUpdateArcaeaUser(ctx.Bot.Platform, ctx.Message.Sender.UserId,
+                await _database.AddOrUpdateArcaeaUser(ctx.Bot.Platform, ctx.Message.Sender.UserId,
                     userdata.AccountInfo.Code, user);
             }
             else
             {
-                await Global.YukiDb.AddOrUpdateArcaeaUser(ctx.Bot.Platform, ctx.Message.Sender.UserId,
+                await _database.AddOrUpdateArcaeaUser(ctx.Bot.Platform, ctx.Message.Sender.UserId,
                     user, user);
             }
 
@@ -44,7 +45,7 @@ public partial class ArcaeaPlugin
         }
         catch (Exception e)
         {
-            Logger.Error(e);
+            _logger.LogError(e, string.Empty);
             return ctx.Reply($"发生了奇怪的错误！({e.Message})");
         }
     }

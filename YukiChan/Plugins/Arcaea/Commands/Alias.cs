@@ -1,6 +1,6 @@
-﻿using Flandre.Core.Attributes;
-using Flandre.Core.Common;
-using Flandre.Core.Messaging;
+﻿using Flandre.Core.Messaging;
+using Flandre.Framework.Attributes;
+using Flandre.Framework.Common;
 using YukiChan.Utils;
 
 // ReSharper disable CheckNamespace
@@ -19,7 +19,7 @@ public partial class ArcaeaPlugin
         var chart = await ArcaeaSongDatabase.GetChartsById(songId);
         var aliases = (await ArcaeaSongDatabase.GetAliasesById(songId))
             .Select(alias => alias.Alias);
-            
+
         return ctx.Reply()
             .Text($"{chart[0].NameEn} - {chart[0].Artist}\n")
             .Text("可用的别名有：\n")

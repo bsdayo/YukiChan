@@ -1,25 +1,21 @@
-﻿using ArcaeaUnlimitedAPI.Lib;
-using Flandre.Core.Attributes;
-using Flandre.Core.Common;
+﻿using Flandre.Framework.Common;
+using Microsoft.Extensions.Logging;
+using YukiChan.Database;
 
 namespace YukiChan.Plugins.Arcaea;
 
-[Plugin("Arcaea")]
-public partial class ArcaeaPlugin : Plugin
+public sealed partial class ArcaeaPlugin : Plugin
 {
-    private ArcaeaPluginConfig _config;
+    private readonly ArcaeaService _service;
 
-    private readonly AuaClient _auaClient;
+    private readonly YukiDbManager _database;
 
-    public ArcaeaPlugin(ArcaeaPluginConfig config)
+    private readonly ILogger<ArcaeaPlugin> _logger;
+
+    public ArcaeaPlugin(ArcaeaService service, YukiDbManager database, ILogger<ArcaeaPlugin> logger)
     {
-        _config = config;
-        _auaClient = new AuaClient
-        {
-            ApiUrl = config.AuaApiUrl,
-            UserAgent = config.AuaToken,
-            Token = config.AuaToken,
-            Timeout = config.AuaTimeout
-        }.Initialize();
+        _service = service;
+        _database = database;
+        _logger = logger;
     }
 }

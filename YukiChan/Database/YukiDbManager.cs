@@ -2,8 +2,8 @@
 using Chloe.Annotations;
 using Chloe.SQLite;
 using Chloe.SQLite.DDL;
-using Flandre.Core.Utils;
 using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.Logging;
 using YukiChan.Database.Models;
 using YukiChan.Utils;
 
@@ -13,26 +13,30 @@ namespace YukiChan.Database;
 [YukiDatabase(GuildDataDbName, typeof(GuildData))]
 public partial class YukiDbManager
 {
-    private readonly Logger _logger = new("Database");
+    public ILogger<YukiDbManager> Logger { get; }
 
     private const string CommandHistoryDbName = "command-history";
     private const string GuildDataDbName = "guilds";
 
-    public YukiDbManager()
+    public YukiDbManager(ILogger<YukiDbManager> logger)
     {
+        Logger = logger;
+
         var attrs = GetType().GetCustomAttributes<YukiDatabaseAttribute>(false);
 
         foreach (var attr in attrs)
         {
             using var ctx = GetDbContext(attr.Name);
-            _logger.Debug($"更新数据库 {YukiDir.Databases}/{attr.Name}.db");
+            Logger.LogDebug("更新数据库 {DbPath}/{DbName}.db",
+                YukiDir.Databases, attr.Name);
 
             foreach (var tableType in attr.TableTypes)
             {
                 var tableAttr = tableType.GetCustomAttribute<TableAttribute>();
                 var tableName = tableAttr is not null ? tableAttr.Name : tableType.Name;
                 new SQLiteTableGenerator(ctx).CreateTable(tableType, tableName);
-                _logger.Debug($"  通过类 {tableType.Name} 创建表 {tableName}");
+                Logger.LogDebug("  通过类 {ClassName} 创建表 {TableName}",
+                    tableType.Name, tableName);
             }
         }
     }
@@ -50,7 +54,7 @@ public partial class YukiDbManager
             .Where(guild => guild.GuildId == guildId)
             .FirstOrDefaultAsync();
     }
-    
+
     public async Task<List<GuildData>> GetAllGuildData()
     {
         using var ctx = GetDbContext(GuildDataDbName);
@@ -74,7 +78,7 @@ public partial class YukiDbManager
 
         await ctx.InsertAsync(user);
     }
-    
+
     public async Task UpdateGuildData(string platform, string guildId, string assignee)
     {
         using var ctx = GetDbContext(GuildDataDbName);

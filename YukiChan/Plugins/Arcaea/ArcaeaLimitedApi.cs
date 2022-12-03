@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
-using Flandre.Core.Utils;
+using Microsoft.Extensions.Logging;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
@@ -16,9 +16,9 @@ public class AlaClient
 
     public string ApiUrl { get; set; } = "https://arcaea-limitedapi.lowiro.com/api/v0";
 
-    private readonly Logger _logger;
+    private readonly ILogger<ArcaeaPlugin> _logger;
 
-    public AlaClient(Logger logger)
+    public AlaClient(ILogger<ArcaeaPlugin> logger)
     {
         _logger = logger;
         HttpClient.BaseAddress = new Uri(ApiUrl);

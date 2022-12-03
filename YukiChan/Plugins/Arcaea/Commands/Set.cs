@@ -1,6 +1,6 @@
-﻿using Flandre.Core.Attributes;
-using Flandre.Core.Common;
-using Flandre.Core.Messaging;
+﻿using Flandre.Core.Messaging;
+using Flandre.Framework.Attributes;
+using Flandre.Framework.Common;
 using YukiChan.Plugins.Arcaea.Models.Database;
 using YukiChan.Utils;
 
@@ -17,7 +17,7 @@ public partial class ArcaeaPlugin
             .Replace('，', ',')
             .Split(',');
 
-        var pref = await Global.YukiDb.GetArcaeaUserPreferences(
+        var pref = await _database.GetArcaeaUserPreferences(
             ctx.Platform, ctx.UserId) ?? new ArcaeaUserPreferences();
 
         bool ParseBoolSet(string[] set)
@@ -38,7 +38,7 @@ public partial class ArcaeaPlugin
             }
         }
 
-        await Global.YukiDb.AddOrUpdateArcaeaUserPreferences(ctx.Platform, ctx.UserId, pref);
+        await _database.AddOrUpdateArcaeaUserPreferences(ctx.Platform, ctx.UserId, pref);
         return ctx.Reply("已成功为您更新偏好信息。");
     }
 }

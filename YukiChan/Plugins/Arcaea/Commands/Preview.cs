@@ -1,8 +1,9 @@
 ﻿using ArcaeaUnlimitedAPI.Lib.Models;
 using ArcaeaUnlimitedAPI.Lib.Utils;
-using Flandre.Core.Attributes;
-using Flandre.Core.Common;
 using Flandre.Core.Messaging;
+using Flandre.Framework.Attributes;
+using Flandre.Framework.Common;
+using Microsoft.Extensions.Logging;
 using YukiChan.Utils;
 
 // ReSharper disable CheckNamespace
@@ -32,9 +33,9 @@ public partial class ArcaeaPlugin
             }
             catch
             {
-                preview = await _auaClient.Assets.Preview(songId, AuaSongQueryType.SongId, difficulty);
+                preview = await _service.AuaClient.Assets.Preview(songId, AuaSongQueryType.SongId, difficulty);
                 await File.WriteAllBytesAsync(cachePath, preview);
-                Logger.SaveCache(cachePath);
+                _logger.SaveCache(cachePath);
             }
 
             return ctx.Reply().Image(preview);
@@ -46,12 +47,12 @@ public partial class ArcaeaPlugin
         }
         catch (YukiException e)
         {
-            Logger.Error(e);
+            _logger.LogError(e, string.Empty);
             return ctx.Reply(e.Message);
         }
         catch (Exception e)
         {
-            Logger.Error(e);
+            _logger.LogError(e, string.Empty);
             return ctx.Reply($"发生了奇怪的错误！({e.Message})");
         }
     }

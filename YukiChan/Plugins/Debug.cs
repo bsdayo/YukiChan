@@ -1,15 +1,14 @@
-﻿using Flandre.Core.Attributes;
-using Flandre.Core.Common;
-using Flandre.Core.Messaging;
+﻿using Flandre.Core.Messaging;
+using Flandre.Framework.Attributes;
+using Flandre.Framework.Common;
 using YukiChan.Utils;
 
 namespace YukiChan.Plugins;
 
-[Plugin("Debug")]
 public class DebugPlugin : Plugin
 {
     [Command("debug.envinfo")]
-    public static MessageContent OnEnvInfo(MessageContext ctx)
+    public static MessageContent OnEnvInfo(CommandContext ctx)
     {
         return ctx.Reply()
             .Text("[Debug.EnvInfo]\n")

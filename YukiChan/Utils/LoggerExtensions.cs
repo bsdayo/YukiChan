@@ -1,23 +1,16 @@
-﻿using System.Text;
-using Flandre.Core.Events.Logger;
-using Flandre.Core.Utils;
+﻿using Microsoft.Extensions.Logging;
 
 namespace YukiChan.Utils;
 
 public static class LoggerExtensions
 {
-    public static void SaveToFile(LoggerLoggingEvent e)
+    public static void SaveCache(this ILogger logger, string path)
     {
-        var date = DateTime.Now.ToString("yyyy-MM-dd");
-        var logFs = new FileStream($"{YukiDir.Logs}/yuki/{date}.log",
-            FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
-        using var sw = new StreamWriter(logFs, Encoding.UTF8);
-        sw.WriteLine(e.Message);
-        sw.Flush();
+        logger.LogInformation("Cache saved: {Path}", path);
     }
 
-    public static void SaveCache(this Logger logger, string path)
+    public static void LogError(this ILogger logger, Exception e)
     {
-        logger.Info($"保存缓存: {path}");
+        logger.LogError(e, "Error occurred.");
     }
 }

@@ -1,5 +1,5 @@
 ﻿using ArcaeaUnlimitedAPI.Lib;
-using Flandre.Core.Utils;
+using Microsoft.Extensions.Logging;
 using SkiaSharp;
 using YukiChan.Plugins.Arcaea.Models;
 using YukiChan.Plugins.Arcaea.Models.Database;
@@ -10,7 +10,7 @@ namespace YukiChan.Plugins.Arcaea.Images;
 public static partial class ArcaeaImageGenerator
 {
     public static async Task<byte[]> Single(ArcaeaUser user, ArcaeaRecord record, AuaClient client,
-        ArcaeaUserPreferences pref, Logger? logger = null)
+        ArcaeaUserPreferences pref, ILogger? logger = null)
     {
         return await Task.Run(() =>
         {
@@ -30,7 +30,7 @@ public static partial class ArcaeaImageGenerator
                 using var background = SKBitmap.Decode(bgPath);
 
                 if (background is null)
-                    logger?.Warning($"资源文件缺失: {bgPath}");
+                    logger?.LogWarning($"资源文件缺失: {bgPath}");
 
                 using var scaledBackground = new SKBitmap(900, 1520);
                 background?.ScalePixels(scaledBackground, SKFilterQuality.Medium);

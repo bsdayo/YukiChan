@@ -1,9 +1,10 @@
 ﻿// ReSharper disable CheckNamespace
 
 using ArcaeaUnlimitedAPI.Lib.Models;
-using Flandre.Core.Attributes;
-using Flandre.Core.Common;
 using Flandre.Core.Messaging;
+using Flandre.Framework.Attributes;
+using Flandre.Framework.Common;
+using Microsoft.Extensions.Logging;
 using YukiChan.Plugins.Arcaea.Images;
 using YukiChan.Plugins.Arcaea.Models;
 using YukiChan.Utils;
@@ -41,7 +42,7 @@ public partial class ArcaeaPlugin
             ? $"{ctx.Platform}:{ctx.Message.ChannelId}"
             : $"{ctx.Platform}:private:{ctx.UserId}";
 
-        Logger.Debug(sessionId);
+        _logger.LogDebug(sessionId);
 
         try
         {
@@ -79,7 +80,7 @@ public partial class ArcaeaPlugin
         }
         catch (Exception e)
         {
-            Logger.Error(e);
+            _logger.LogError(e, string.Empty);
             return ctx.Reply($"发生了奇怪的错误！({e.Message})");
         }
     }
@@ -96,14 +97,15 @@ public partial class ArcaeaPlugin
             .Where(chart => chart.RatingClass == (int)ArcaeaDifficulty.Future)
             .ToArray();
         var randomChart = allCharts[new Random().Next(allCharts.Length)];
-        var cover = await _auaClient.GetSongCover(randomChart.SongId, randomChart.JacketOverride,
+        var cover = await _service.AuaClient.GetSongCover(randomChart.SongId, randomChart.JacketOverride,
             (ArcaeaDifficulty)randomChart.RatingClass);
 
         GuessSessions[sessionId].Chart = randomChart;
         GuessSessions[sessionId].Cover = cover;
         GuessSessions[sessionId].IsReady = true;
 
-        Logger.Debug($"{sessionId} 启动了新的猜曲绘会话：{mode.GetName()} => {randomChart.NameEn} ({randomChart.SongId})");
+        _logger.LogDebug("{SessionId} 启动了新的猜曲绘会话：{ModeName} => {SongNameEn} ({SongId})",
+            sessionId, mode.GetName(), randomChart.NameEn, randomChart.SongId);
 
         // 超时揭晓答案
 #pragma warning disable CS4014

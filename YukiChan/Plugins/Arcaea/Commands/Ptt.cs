@@ -1,7 +1,7 @@
 ﻿using ArcaeaUnlimitedAPI.Lib.Models;
-using Flandre.Core.Attributes;
-using Flandre.Core.Common;
 using Flandre.Core.Messaging;
+using Flandre.Framework.Attributes;
+using Flandre.Framework.Common;
 using YukiChan.Utils;
 
 // ReSharper disable CheckNamespace

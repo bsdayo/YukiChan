@@ -1,13 +1,12 @@
 ﻿using System.Diagnostics;
 using System.Text;
-using Flandre.Core.Attributes;
-using Flandre.Core.Common;
 using Flandre.Core.Messaging;
+using Flandre.Framework.Attributes;
+using Flandre.Framework.Common;
 using YukiChan.Utils;
 
 namespace YukiChan.Plugins;
 
-[Plugin("Status")]
 public class StatusPlugin : Plugin
 {
     public static int MessageReceived { get; private set; }
@@ -19,9 +18,10 @@ public class StatusPlugin : Plugin
         UpTimeStopwatch.Start();
     }
 
-    public override void OnMessageReceived(MessageContext ctx)
+    public override Task OnMessageReceived(MessageContext ctx)
     {
         MessageReceived++;
+        return Task.CompletedTask;
     }
 
     [Command("status")]

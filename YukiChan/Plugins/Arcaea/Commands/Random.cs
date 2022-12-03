@@ -1,7 +1,7 @@
 ﻿using ArcaeaUnlimitedAPI.Lib.Models;
-using Flandre.Core.Attributes;
-using Flandre.Core.Common;
 using Flandre.Core.Messaging;
+using Flandre.Framework.Attributes;
+using Flandre.Framework.Common;
 using YukiChan.Plugins.Arcaea.Models;
 using YukiChan.Utils;
 
@@ -66,12 +66,12 @@ public partial class ArcaeaPlugin
         }
         catch (YukiException e)
         {
-            Logger.Error(e);
+            _logger.LogError(e);
             return ctx.Reply(e.Message);
         }
         catch (Exception e)
         {
-            Logger.Error(e);
+            _logger.LogError(e);
             return ctx.Reply($"发生了奇怪的错误！({e.Message})");
         }
     }
@@ -83,7 +83,7 @@ public partial class ArcaeaPlugin
 
         var chart = allCharts[new Random().Next(allCharts.Length)];
 
-        var songCover = await _auaClient.GetSongCover(
+        var songCover = await _service.AuaClient.GetSongCover(
             chart.SongId, chart.JacketOverride, (ArcaeaDifficulty)chart.RatingClass);
 
         return ctx.Reply()

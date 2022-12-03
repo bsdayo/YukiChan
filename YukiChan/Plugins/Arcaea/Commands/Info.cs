@@ -1,8 +1,8 @@
 ﻿using ArcaeaUnlimitedAPI.Lib.Models;
-using Flandre.Core.Attributes;
-using Flandre.Core.Common;
 using Flandre.Core.Messaging;
 using Flandre.Core.Messaging.Segments;
+using Flandre.Framework.Attributes;
+using Flandre.Framework.Common;
 using YukiChan.Utils;
 
 // ReSharper disable CheckNamespace
@@ -23,14 +23,14 @@ public partial class ArcaeaPlugin
         if (song is null)
             return ctx.Reply("没有找到该曲目哦~");
 
-        var cover = await _auaClient.GetSongCover(song.SongId, nya: nya, logger: Logger);
+        var cover = await _service.AuaClient.GetSongCover(song.SongId, nya: nya, logger: _logger);
 
         var mb = new MessageBuilder().Image(ImageSegment.FromData(cover));
 
         if (song.Difficulties.Length > 3 && song.Difficulties[3].JacketOverride)
         {
-            var bydCover = await _auaClient.GetSongCover(song.SongId, true,
-                ArcaeaDifficulty.Beyond, nya, Logger);
+            var bydCover = await _service.AuaClient.GetSongCover(song.SongId, true,
+                ArcaeaDifficulty.Beyond, nya, _logger);
             mb.Image(ImageSegment.FromData(bydCover));
         }
 

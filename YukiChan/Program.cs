@@ -1,16 +1,11 @@
 ﻿using System.Runtime.CompilerServices;
-using Flandre.Adapters.Konata;
 using Flandre.Adapters.OneBot;
-using Flandre.Core;
-using Flandre.Core.Extensions;
-using Flandre.Core.Utils;
-using Flandre.Plugins.BaiduTranslate;
-using Flandre.Plugins.HttpCat;
-using Flandre.Plugins.WolframAlpha;
-using Konata.Core.Common;
+using Flandre.Framework;
+using Flandre.Framework.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 using Tomlyn;
+using YukiChan.Database;
 using YukiChan.Plugins;
-using YukiChan.Plugins.Arcaea;
 using YukiChan.Utils;
 
 [assembly: InternalsVisibleTo("YukiChan.Tools")]
@@ -22,55 +17,45 @@ public static class Program
     public static void Main(string[] args)
     {
         YukiDir.EnsureExistence();
-        Logger.DefaultLoggingHandlers.Add(LoggerExtensions.SaveToFile);
-
         var yukiConfig = GetYukiConfig();
-        var konataConfig = GetKonataAdapterConfig();
-        Global.YukiConfig = yukiConfig;
-
-        yukiConfig.Plugins.WolframAlpha.FontPath = $"{YukiDir.Assets}/fonts/TitilliumWeb-SemiBold.ttf";
-
-        var app = new FlandreApp(yukiConfig.App);
-
-        // Update Konata config
-        app.OnAppReady += (_, _) =>
-            File.WriteAllText($"{YukiDir.Configs}/konata.toml", Toml.FromModel(konataConfig));
-
         if (args.Contains("--complete-configs"))
             File.WriteAllText($"{YukiDir.Configs}/yuki.toml", Toml.FromModel(yukiConfig));
 
-        app
+        var builder = new FlandreAppBuilder(yukiConfig.App);
+
+        // yukiConfig.Plugins.WolframAlpha.FontPath = $"{YukiDir.Assets}/fonts/TitilliumWeb-SemiBold.ttf";
+
+        builder
             // Adapters
-            // .UseKonataAdapter(konataConfig)
-            .UseOneBotAdapter(GetOneBotAdapterConfig())
+            .UseAdapter(new OneBotAdapter(GetOneBotAdapterConfig()))
 
             // Plugins
-            .Use(new StatusPlugin())
-            .Use(new ArcaeaPlugin(yukiConfig.Plugins.Arcaea))
-            .Use(new ImagesPlugin())
-            .Use(new DebugPlugin())
-            .Use(new WolframAlphaPlugin(yukiConfig.Plugins.WolframAlpha))
-            .Use(new BaiduTranslatePlugin(yukiConfig.Plugins.BaiduTranslate))
-            .Use(new HttpCatPlugin(yukiConfig.Plugins.HttpCat))
-            .Use(new MainBotPlugin())
+            .UseArcaeaPlugin(yukiConfig.Plugins.Arcaea)
+            .UsePlugin<StatusPlugin>()
+            .UsePlugin<ImagesPlugin>()
+            .UsePlugin<DebugPlugin>()
+            .UsePlugin<MainBotPlugin>()
+
+            // Build FlandreApp
+            .Build()
 
             // Middlewares
-            .Use(Middlewares.HandleGuildAssignee)
-            .Use(Middlewares.QqGuildFilter)
-            
+            .UseMiddleware(Middlewares.HandleGuildAssignee)
+            .UseMiddleware(Middlewares.QqGuildFilter)
+
             // Load
             .LoadGuildAssignees()
 
-            // Start
-            .Start();
+            // Run
+            .Run();
     }
 
     public static FlandreApp LoadGuildAssignees(this FlandreApp app)
     {
-        foreach (var guildData in Global.YukiDb.GetAllGuildData().Result)
+        foreach (var guildData in app.Services.GetRequiredService<YukiDbManager>().GetAllGuildData().Result)
             app.SetGuildAssignee(guildData.Platform, guildData.GuildId, guildData.Assignee);
         return app;
-    } 
+    }
 
     #region GetConfigs
 
@@ -101,34 +86,6 @@ public static class Program
         else
         {
             config = Toml.ToModel<OneBotAdapterConfig>(File.ReadAllText($"{YukiDir.Configs}/onebot.toml"));
-        }
-
-        return config;
-    }
-
-    public static KonataAdapterConfig GetKonataAdapterConfig()
-    {
-        KonataAdapterConfig config;
-        if (!File.Exists($"{YukiDir.Configs}/konata.toml"))
-        {
-            string? qq = null, password = null;
-            while (qq is null || password is null)
-            {
-                Console.Write("QQ: ");
-                qq = Console.ReadLine()?.Trim();
-                Console.Write("Password: ");
-                password = Console.ReadLine()?.Trim();
-            }
-
-            config = new KonataAdapterConfig(new List<KonataBotConfig>
-            {
-                new() { KeyStore = new BotKeyStore(qq, password) }
-            });
-            File.WriteAllText($"{YukiDir.Configs}/konata.toml", Toml.FromModel(config));
-        }
-        else
-        {
-            config = Toml.ToModel<KonataAdapterConfig>(File.ReadAllText($"{YukiDir.Configs}/konata.toml"));
         }
 
         return config;

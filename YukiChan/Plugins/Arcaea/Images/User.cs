@@ -5,12 +5,12 @@ using ArcaeaUnlimitedAPI.Lib;
 using ArcaeaUnlimitedAPI.Lib.Models;
 using ArcaeaUnlimitedAPI.Lib.Responses;
 using BrotliSharpLib;
-using Flandre.Core.Utils;
 using LiveChartsCore.Defaults;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using LiveChartsCore.SkiaSharpView.Painting.Effects;
 using LiveChartsCore.SkiaSharpView.SKCharts;
+using Microsoft.Extensions.Logging;
 using SkiaSharp;
 using Websocket.Client;
 using YukiChan.Plugins.Arcaea.Models;
@@ -23,7 +23,7 @@ namespace YukiChan.Plugins.Arcaea.Images;
 public static partial class ArcaeaImageGenerator
 {
     public static async Task<byte[]> User(AuaUserInfoContent user, ArcaeaUserPreferences pref, AuaClient auaClient,
-        int lastDays, bool smooth, Logger logger)
+        int lastDays, bool smooth, ILogger logger)
     {
         var imageInfo = new SKImageInfo(3400, 2000);
         using var surface = SKSurface.Create(imageInfo);
@@ -35,7 +35,7 @@ public static partial class ArcaeaImageGenerator
             using var background = SKBitmap.Decode(bgPath);
 
             if (background is null)
-                logger.Warning($"资源文件缺失: {bgPath}");
+                logger.LogWarning($"资源文件缺失: {bgPath}");
 
             using var scaledBackground = new SKBitmap(
                 3400, (background?.Height ?? 6200) * (3400 / (background?.Width ?? 3400)));
@@ -73,20 +73,20 @@ public static partial class ArcaeaImageGenerator
         try
         {
             // 图表
-            logger.Debug("Getting chart image...");
+            logger.LogDebug("Getting chart image...");
             (var chartImage, scopedMax, scopedMin, startPtt, endPtt) =
                 await GetRatingRecordsChartImage(
                     user.AccountInfo.Code, user.AccountInfo.Rating, 1900, 1320,
                     pref, lastDays, smooth, logger);
-            logger.Debug("Chart image got successfully.");
+            logger.LogDebug("Chart image got successfully.");
 
             canvas.DrawImage(chartImage, 200, 480);
-            logger.Debug("Chart image drawn.");
+            logger.LogDebug("Chart image drawn.");
             chartImage.Dispose();
         }
         catch (Exception e)
         {
-            logger.Error(e);
+            logger.LogError(e, "");
         }
 
         {
@@ -143,7 +143,7 @@ public static partial class ArcaeaImageGenerator
     private static Task<(SKImage, double, double, double, double)> GetRatingRecordsChartImage(string userId,
         int userPtt, int width,
         int height,
-        ArcaeaUserPreferences pref, int lastDays, bool smooth, Logger logger)
+        ArcaeaUserPreferences pref, int lastDays, bool smooth, ILogger logger)
     {
         var tcs = new TaskCompletionSource<(SKImage, double, double, double, double)>();
         var timer = new Timer(20000);
@@ -164,14 +164,14 @@ public static partial class ArcaeaImageGenerator
             client.Dispose();
             timer.Close();
             timer.Dispose();
-            logger.Debug("Everything stopped.");
+            logger.LogDebug("Everything stopped.");
         }
 
         client.MessageReceived.Subscribe(message =>
         {
             if (message.MessageType == WebSocketMessageType.Text)
             {
-                logger.Debug($"Received text message: {message.Text}");
+                logger.LogDebug($"Received text message: {message.Text}");
                 var err = message.Text switch
                 {
                     "invalid id" => "用户不存在",
@@ -246,7 +246,7 @@ public static partial class ArcaeaImageGenerator
                 > 296 => 0.20
             };
 
-            logger.Debug($"Max: {max}, Min: {min}, MinStep: {yAxesMinStep}");
+            logger.LogDebug($"Max: {max}, Min: {min}, MinStep: {yAxesMinStep}");
 
             var yAxes = new[]
             {
@@ -287,7 +287,7 @@ public static partial class ArcaeaImageGenerator
                 Background = SKColors.Transparent
             };
 
-            logger.Debug("Chart initialized.");
+            logger.LogDebug("Chart initialized.");
             StopEverything();
             tcs.SetResult((chart.GetImage(), scopedMax, scopedMin,
                 dtpsList[0].Value!.Value, dtpsList[^1].Value!.Value));
@@ -302,10 +302,10 @@ public static partial class ArcaeaImageGenerator
 
         timer.Start();
         client.Start().Wait();
-        logger.Debug("Client started.");
+        logger.LogDebug("Client started.");
 
         client.Send(userId);
-        logger.Debug("Message sent.");
+        logger.LogDebug("Message sent.");
 
         return tcs.Task;
     }

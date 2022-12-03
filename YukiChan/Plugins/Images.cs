@@ -1,11 +1,10 @@
-﻿using Flandre.Core.Attributes;
-using Flandre.Core.Common;
-using Flandre.Core.Messaging;
+﻿using Flandre.Core.Messaging;
+using Flandre.Framework.Attributes;
+using Flandre.Framework.Common;
 using YukiChan.Utils;
 
 namespace YukiChan.Plugins;
 
-[Plugin("Images")]
 public class ImagesPlugin : Plugin
 {
     [Command("cat")]

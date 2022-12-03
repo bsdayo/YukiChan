@@ -23,18 +23,18 @@
     <ItemGroup>
         <ProjectReference Include="..\Flandre\src\Flandre.Adapters.OneBot\Flandre.Adapters.OneBot.csproj" />
         <ProjectReference Include="..\Flandre\src\Flandre.Core\Flandre.Core.csproj" />
-        <ProjectReference Include="..\Flandre\src\Flandre.Adapters.Konata\Flandre.Adapters.Konata.csproj" />
+        <ProjectReference Include="..\Flandre\src\Flandre.Framework\Flandre.Framework.csproj" />
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="ArcaeaUnlimitedAPI.Lib" Version="2.1.0" />
         <PackageReference Include="BrotliSharpLib" Version="0.3.3" />
         <PackageReference Include="Chloe.SQLite" Version="5.2.0" />
-        <PackageReference Include="Flandre.Plugins.BaiduTranslate" Version="1.0.0-beta" />
-        <PackageReference Include="Flandre.Plugins.HttpCat" Version="1.1.0" />
-        <PackageReference Include="Flandre.Plugins.WolframAlpha" Version="1.0.0" />
         <PackageReference Include="LiveChartsCore.SkiaSharpView" Version="2.0.0-beta.516" />
         <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.0" />
+        <PackageReference Include="Serilog.Extensions.Logging" Version="3.1.1-dev-10301" />
+        <PackageReference Include="Serilog.Sinks.File" Version="5.0.1-dev-00947" />
+        <PackageReference Include="Serilog.Sinks.Spectre" Version="0.3.1" />
         <PackageReference Include="SkiaSharp" Version="2.88.3" />
         <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="2.88.3" />
         <PackageReference Include="Tomlyn" Version="0.16.1" />

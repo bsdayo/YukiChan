@@ -1,23 +1,27 @@
-﻿using Flandre.Core.Attributes;
-using Flandre.Core.Common;
-using Flandre.Core.Extensions;
-using Flandre.Core.Messaging;
+﻿using Flandre.Core.Messaging;
+using Flandre.Framework.Attributes;
+using Flandre.Framework.Common;
+using Flandre.Framework.Extensions;
+using YukiChan.Database;
 using YukiChan.Utils;
 
 namespace YukiChan.Plugins;
 
-[Plugin("MainBot")]
 public class MainBotPlugin : Plugin
 {
+    private readonly YukiDbManager _database;
+
+    public MainBotPlugin(YukiDbManager database) => _database = database;
+
     [Command("mainbot")]
-    public static async Task<MessageContent> OnMainBot(MessageContext ctx)
+    public async Task<MessageContent> OnMainBot(CommandContext ctx)
     {
         if (ctx.Message.SourceType != MessageSourceType.Channel || ctx.GuildId is null)
             return ctx.Reply("当前不在群聊环境中哦！");
-        
-        ctx.SetBotAsGuildAssignee();
-        await Global.YukiDb.UpdateGuildData(ctx.Platform, ctx.GuildId, ctx.SelfId);
-        
+
+        ctx.App.SetGuildAssignee(ctx.Platform, ctx.GuildId, ctx.SelfId);
+        await _database.UpdateGuildData(ctx.Platform, ctx.GuildId, ctx.SelfId);
+
         return ctx.Reply("已将本机设置为群内主 Bot~");
     }
 }

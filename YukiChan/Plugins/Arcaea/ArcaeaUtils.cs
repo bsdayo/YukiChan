@@ -1,6 +1,6 @@
 ﻿using ArcaeaUnlimitedAPI.Lib;
 using ArcaeaUnlimitedAPI.Lib.Models;
-using Flandre.Core.Utils;
+using Microsoft.Extensions.Logging;
 using YukiChan.Plugins.Arcaea.Models;
 using YukiChan.Utils;
 
@@ -67,7 +67,7 @@ public static class ArcaeaUtils
     /// <param name="logger">日志记录</param>
     public static async Task<byte[]> GetSongCover(this AuaClient client, string songId,
         bool jacketOverride = false, ArcaeaDifficulty difficulty = ArcaeaDifficulty.Future, bool nya = false,
-        Logger? logger = null)
+        ILogger? logger = null)
     {
         byte[] songCover;
 
@@ -114,7 +114,7 @@ public static class ArcaeaUtils
     }
 
     public static async Task<byte[]> GetCharImage(this AuaClient client, int charId,
-        bool awakened = false, Logger? logger = null)
+        bool awakened = false, ILogger? logger = null)
     {
         byte[] charImage;
 
