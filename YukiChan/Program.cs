@@ -2,7 +2,12 @@
 using Flandre.Adapters.OneBot;
 using Flandre.Framework;
 using Flandre.Framework.Extensions;
+using Flandre.Plugins.BaiduTranslate;
+using Flandre.Plugins.HttpCat;
+using Flandre.Plugins.WolframAlpha;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Serilog;
 using Tomlyn;
 using YukiChan.Database;
 using YukiChan.Plugins;
@@ -25,12 +30,16 @@ public static class Program
 
         // yukiConfig.Plugins.WolframAlpha.FontPath = $"{YukiDir.Assets}/fonts/TitilliumWeb-SemiBold.ttf";
 
-        builder.AddYukiServices()
+        builder.ConfigureSerilog().AddYukiServices()
+
             // Adapters
             .UseAdapter(new OneBotAdapter(GetOneBotAdapterConfig()))
 
             // Plugins
             .UseArcaeaPlugin(yukiConfig.Plugins.Arcaea)
+            .UseBaiduTranslatePlugin(yukiConfig.Plugins.BaiduTranslate)
+            .UseWolframAlphaPlugin(yukiConfig.Plugins.WolframAlpha)
+            .UseHttpCatPlugin(yukiConfig.Plugins.HttpCat)
             .UsePlugin<StatusPlugin>()
             .UsePlugin<ImagesPlugin>()
             .UsePlugin<DebugPlugin>()
@@ -50,13 +59,26 @@ public static class Program
             .Run();
     }
 
-    public static FlandreAppBuilder AddYukiServices(this FlandreAppBuilder builder)
+    private static FlandreAppBuilder AddYukiServices(this FlandreAppBuilder builder)
     {
         builder.Services.AddSingleton<YukiDbManager>();
         return builder;
     }
 
-    public static FlandreApp LoadGuildAssignees(this FlandreApp app)
+    private static FlandreAppBuilder ConfigureSerilog(this FlandreAppBuilder builder)
+    {
+        Log.Logger = new LoggerConfiguration()
+            .Enrich.FromLogContext()
+            .WriteTo.Console()
+            .WriteTo.File($"{YukiDir.Logs}/.log", rollingInterval: RollingInterval.Day, shared: true)
+            .CreateLogger();
+
+        builder.Services.AddLogging(lb =>
+            lb.ClearProviders().AddSerilog(dispose: true));
+        return builder;
+    }
+
+    private static FlandreApp LoadGuildAssignees(this FlandreApp app)
     {
         foreach (var guildData in app.Services.GetRequiredService<YukiDbManager>().GetAllGuildData().Result)
             app.SetGuildAssignee(guildData.Platform, guildData.GuildId, guildData.Assignee);
