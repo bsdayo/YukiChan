@@ -29,7 +29,7 @@ public static class Program
 
         var builder = new FlandreAppBuilder(YukiConfig.App);
 
-        // _yukiConfig.Plugins.WolframAlpha.FontPath = $"{YukiDir.Assets}/fonts/TitilliumWeb-SemiBold.ttf";
+        YukiConfig.Plugins.WolframAlpha.FontPath = $"{YukiDir.Assets}/fonts/TitilliumWeb-SemiBold.ttf";
 
         builder.ConfigureSerilog().AddYukiServices()
 
@@ -72,6 +72,7 @@ public static class Program
             .Enrich.FromLogContext()
             .WriteTo.Console()
             .WriteTo.File($"{YukiDir.Logs}/yuki/.log", rollingInterval: RollingInterval.Day, shared: true)
+            .MinimumLevel.Debug()
             .CreateLogger();
 
         builder.Services.AddLogging(lb =>
