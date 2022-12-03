@@ -19,16 +19,17 @@ namespace YukiChan;
 
 public static class Program
 {
+    private static readonly YukiConfig YukiConfig = GetYukiConfig();
+
     public static void Main(string[] args)
     {
         YukiDir.EnsureExistence();
-        var yukiConfig = GetYukiConfig();
         if (args.Contains("--complete-configs"))
-            File.WriteAllText($"{YukiDir.Configs}/yuki.toml", Toml.FromModel(yukiConfig));
+            File.WriteAllText($"{YukiDir.Configs}/yuki.toml", Toml.FromModel(YukiConfig));
 
-        var builder = new FlandreAppBuilder(yukiConfig.App);
+        var builder = new FlandreAppBuilder(YukiConfig.App);
 
-        // yukiConfig.Plugins.WolframAlpha.FontPath = $"{YukiDir.Assets}/fonts/TitilliumWeb-SemiBold.ttf";
+        // _yukiConfig.Plugins.WolframAlpha.FontPath = $"{YukiDir.Assets}/fonts/TitilliumWeb-SemiBold.ttf";
 
         builder.ConfigureSerilog().AddYukiServices()
 
@@ -36,10 +37,10 @@ public static class Program
             .UseAdapter(new OneBotAdapter(GetOneBotAdapterConfig()))
 
             // Plugins
-            .UseArcaeaPlugin(yukiConfig.Plugins.Arcaea)
-            .UseBaiduTranslatePlugin(yukiConfig.Plugins.BaiduTranslate)
-            .UseWolframAlphaPlugin(yukiConfig.Plugins.WolframAlpha)
-            .UseHttpCatPlugin(yukiConfig.Plugins.HttpCat)
+            .UseArcaeaPlugin(YukiConfig.Plugins.Arcaea)
+            .UseBaiduTranslatePlugin(YukiConfig.Plugins.BaiduTranslate)
+            .UseWolframAlphaPlugin(YukiConfig.Plugins.WolframAlpha)
+            .UseHttpCatPlugin(YukiConfig.Plugins.HttpCat)
             .UsePlugin<StatusPlugin>()
             .UsePlugin<ImagesPlugin>()
             .UsePlugin<DebugPlugin>()
@@ -74,7 +75,11 @@ public static class Program
             .CreateLogger();
 
         builder.Services.AddLogging(lb =>
-            lb.ClearProviders().AddSerilog(dispose: true));
+        {
+            lb.ClearProviders();
+            lb.AddSerilog(dispose: true);
+            lb.SetMinimumLevel(YukiConfig.EnableDebugLog ? LogLevel.Debug : LogLevel.Information);
+        });
         return builder;
     }
 
