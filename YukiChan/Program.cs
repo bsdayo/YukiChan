@@ -70,7 +70,7 @@ public static class Program
         Log.Logger = new LoggerConfiguration()
             .Enrich.FromLogContext()
             .WriteTo.Console()
-            .WriteTo.File($"{YukiDir.Logs}/.log", rollingInterval: RollingInterval.Day, shared: true)
+            .WriteTo.File($"{YukiDir.Logs}/yuki/.log", rollingInterval: RollingInterval.Day, shared: true)
             .CreateLogger();
 
         builder.Services.AddLogging(lb =>
