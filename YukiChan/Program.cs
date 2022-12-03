@@ -25,7 +25,7 @@ public static class Program
 
         // yukiConfig.Plugins.WolframAlpha.FontPath = $"{YukiDir.Assets}/fonts/TitilliumWeb-SemiBold.ttf";
 
-        builder
+        builder.AddYukiServices()
             // Adapters
             .UseAdapter(new OneBotAdapter(GetOneBotAdapterConfig()))
 
@@ -48,6 +48,12 @@ public static class Program
 
             // Run
             .Run();
+    }
+
+    public static FlandreAppBuilder AddYukiServices(this FlandreAppBuilder builder)
+    {
+        builder.Services.AddSingleton<YukiDbManager>();
+        return builder;
     }
 
     public static FlandreApp LoadGuildAssignees(this FlandreApp app)
