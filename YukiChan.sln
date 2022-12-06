@@ -1,16 +1,16 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YukiChan", "YukiChan\YukiChan.csproj", "{278D0BFB-5B10-4091-B9FC-A6E7E49760AD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YukiChan", "src\YukiChan\YukiChan.csproj", "{278D0BFB-5B10-4091-B9FC-A6E7E49760AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flandre.Core", "Flandre\src\Flandre.Core\Flandre.Core.csproj", "{84EFF6C7-751D-4BD7-B5BD-36AE43B4B616}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flandre.Core", "deps\Flandre\src\Flandre.Core\Flandre.Core.csproj", "{84EFF6C7-751D-4BD7-B5BD-36AE43B4B616}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flandre.Adapters.Konata", "Flandre\src\Flandre.Adapters.Konata\Flandre.Adapters.Konata.csproj", "{258969A5-88D6-49FA-8E64-24A48558D231}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flandre.Adapters.Konata", "deps\Flandre\src\Flandre.Adapters.Konata\Flandre.Adapters.Konata.csproj", "{258969A5-88D6-49FA-8E64-24A48558D231}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flandre.Adapters.OneBot", "Flandre\src\Flandre.Adapters.OneBot\Flandre.Adapters.OneBot.csproj", "{94C42D30-EE5A-492F-9899-E385771B2D88}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flandre.Adapters.OneBot", "deps\Flandre\src\Flandre.Adapters.OneBot\Flandre.Adapters.OneBot.csproj", "{94C42D30-EE5A-492F-9899-E385771B2D88}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YukiChan.Tools", "YukiChan.Tools\YukiChan.Tools.csproj", "{3F544FC5-C028-43F0-8348-CC454AAB6510}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YukiChan.Tools", "src\YukiChan.Tools\YukiChan.Tools.csproj", "{3F544FC5-C028-43F0-8348-CC454AAB6510}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flandre.Framework", "Flandre\src\Flandre.Framework\Flandre.Framework.csproj", "{E0E16F8D-7E6D-4E98-97AF-31A0FE5700DD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flandre.Framework", "deps\Flandre\src\Flandre.Framework\Flandre.Framework.csproj", "{E0E16F8D-7E6D-4E98-97AF-31A0FE5700DD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
