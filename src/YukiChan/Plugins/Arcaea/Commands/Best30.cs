@@ -46,8 +46,8 @@ public partial class ArcaeaPlugin
                     user.ArcaeaName, user.ArcaeaId);
 
                 await ctx.Bot.SendMessage(ctx.Message, official
-                    ? $"正在查询 {user.ArcaeaName} 的 Best30 成绩，请耐心等候..."
-                    : $"正在使用官方 API 查询 {user.ArcaeaName} 的 Best30 成绩，请耐心等候...");
+                    ? $"正在使用官方 API 查询 {user.ArcaeaName} 的 Best30 成绩，请耐心等候..."
+                    : $"正在查询 {user.ArcaeaName} 的 Best30 成绩，请耐心等候...");
 
                 // 用户绑定时如果使用 -u (--uncheck) 选项，user.ArcaeaId 的类型不可预料（例如使用名字绑定）
                 if (int.TryParse(user.ArcaeaId, out var parsed))
