@@ -39,7 +39,9 @@ public partial class ArcaeaPlugin
                         .Text("你也可以使用 /a b30 名称或好友码 直接查询指定用户。");
 
                 _logger.LogInformation(
-                    $"正在查询 {ctx.Message.Sender.Name}({ctx.Message.Sender.UserId}) -> {user.ArcaeaName}({user.ArcaeaId}) 的 Best30 成绩...");
+                    "正在查询 {UserName}({UserId}) -> {ArcaeaName}({ArcaeaId}) 的 Best30 成绩...",
+                    ctx.Message.Sender.Name, ctx.Message.Sender.UserId,
+                    user.ArcaeaName, user.ArcaeaId);
                 await ctx.Bot.SendMessage(ctx.Message, $"正在查询 {user.ArcaeaName} 的 Best30 成绩，请耐心等候...");
 
                 // 用户绑定时如果使用 -u (--uncheck) 选项，user.ArcaeaId 的类型不可预料（例如使用名字绑定）

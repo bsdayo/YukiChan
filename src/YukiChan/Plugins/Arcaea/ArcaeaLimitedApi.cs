@@ -7,7 +7,7 @@ namespace YukiChan.Plugins.Arcaea;
 
 public class AlaClient
 {
-    public HttpClient HttpClient { get; set; } = new();
+    private readonly HttpClient _httpClient = new();
 
     public required string Token { get; set; }
 
@@ -17,16 +17,16 @@ public class AlaClient
 
     public AlaClient()
     {
-        HttpClient.BaseAddress = new Uri(ApiUrl);
-        HttpClient.Timeout = new TimeSpan(0, 0, 0, Timeout);
-        HttpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {Token}");
+        _httpClient.BaseAddress = new Uri(ApiUrl);
+        _httpClient.Timeout = new TimeSpan(0, 0, 0, Timeout);
+        _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {Token}");
     }
 
     public async Task<AlaRecord[]> Best30(string usercode)
     {
         try
         {
-            var json = await HttpClient.GetStringAsync($"user/{usercode}/best");
+            var json = await _httpClient.GetStringAsync($"user/{usercode}/best");
             var resp = JsonSerializer.Deserialize<AlaResponse<AlaRecord[]>>(json)!;
             if (resp.Message is not null)
                 throw new AlaException(resp.Message);
@@ -42,7 +42,7 @@ public class AlaClient
     {
         try
         {
-            var json = await HttpClient.GetStringAsync($"user/{usercode}");
+            var json = await _httpClient.GetStringAsync($"user/{usercode}");
             var resp = JsonSerializer.Deserialize<AlaResponse<AlaUser>>(json)!;
             if (resp.Message is not null)
                 throw new AlaException(resp.Message);
