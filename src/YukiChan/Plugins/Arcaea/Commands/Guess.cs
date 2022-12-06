@@ -42,8 +42,6 @@ public partial class ArcaeaPlugin
             ? $"{ctx.Platform}:{ctx.Message.ChannelId}"
             : $"{ctx.Platform}:private:{ctx.UserId}";
 
-        _logger.LogDebug(sessionId);
-
         try
         {
             if (GuessSessions.TryGetValue(sessionId, out var session))
@@ -80,7 +78,7 @@ public partial class ArcaeaPlugin
         }
         catch (Exception e)
         {
-            _logger.LogError(e, string.Empty);
+            _logger.LogError(e, "Error occurred in a.guess");
             return ctx.Reply($"发生了奇怪的错误！({e.Message})");
         }
     }
