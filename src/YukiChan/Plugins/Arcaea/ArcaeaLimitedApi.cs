@@ -15,11 +15,12 @@ public class AlaClient
 
     public int Timeout { get; set; } = 60;
 
-    public AlaClient()
+    public AlaClient Initialize()
     {
         _httpClient.BaseAddress = new Uri(ApiUrl);
         _httpClient.Timeout = new TimeSpan(0, 0, 0, Timeout);
         _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {Token}");
+        return this;
     }
 
     public async Task<AlaRecord[]> Best30(string usercode)

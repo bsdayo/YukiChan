@@ -22,6 +22,6 @@ public class ArcaeaService
         {
             Token = config.AlaToken,
             Timeout = config.AlaTimeout
-        };
+        }.Initialize();
     }
 }
