@@ -2,7 +2,8 @@
 using Microsoft.Extensions.Logging;
 using SkiaSharp;
 using YukiChan.Plugins.Arcaea.Models;
-using YukiChan.Plugins.Arcaea.Models.Database;
+using YukiChan.Shared;
+using YukiChan.Shared.Database.Models.Arcaea;
 using YukiChan.Utils;
 
 namespace YukiChan.Plugins.Arcaea.Images;

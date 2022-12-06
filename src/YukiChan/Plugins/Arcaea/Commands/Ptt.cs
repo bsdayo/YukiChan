@@ -2,7 +2,7 @@
 using Flandre.Core.Messaging;
 using Flandre.Framework.Attributes;
 using Flandre.Framework.Common;
-using YukiChan.Utils;
+using YukiChan.Shared.Utils;
 
 // ReSharper disable CheckNamespace
 namespace YukiChan.Plugins.Arcaea;

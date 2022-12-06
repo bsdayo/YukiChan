@@ -22,8 +22,8 @@ public class YukiPluginsConfig
     public ArcaeaPluginConfig Arcaea { get; set; } = new();
 
     public HttpCatPluginConfig HttpCat { get; set; } = new();
-    
+
     public WolframAlphaPluginConfig WolframAlpha { get; set; } = new();
-    
+
     public BaiduTranslatePluginConfig BaiduTranslate { get; set; } = new();
 }

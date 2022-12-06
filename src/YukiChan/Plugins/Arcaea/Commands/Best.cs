@@ -8,8 +8,8 @@ using Flandre.Framework.Common;
 using Microsoft.Extensions.Logging;
 using YukiChan.Plugins.Arcaea.Images;
 using YukiChan.Plugins.Arcaea.Models;
-using YukiChan.Plugins.Arcaea.Models.Database;
-using YukiChan.Utils;
+using YukiChan.Shared.Database.Models.Arcaea;
+using YukiChan.Shared.Utils;
 
 // ReSharper disable CheckNamespace
 

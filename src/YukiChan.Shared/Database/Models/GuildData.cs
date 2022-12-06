@@ -1,6 +1,6 @@
 ﻿using Chloe.Annotations;
 
-namespace YukiChan.Database.Models;
+namespace YukiChan.Shared.Database.Models;
 
 [Table("guilds")]
 public class GuildData

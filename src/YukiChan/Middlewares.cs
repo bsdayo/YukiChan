@@ -3,7 +3,7 @@ using Flandre.Framework.Common;
 using Flandre.Framework.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using YukiChan.Database;
+using YukiChan.Shared.Database;
 
 namespace YukiChan;
 
@@ -12,7 +12,8 @@ public static class Middlewares
     public static void QqGuildFilter(MiddlewareContext ctx, Action next)
     {
         if (ctx.Platform == "qqguild"
-            && !Global.YukiConfig.QqGuildAllowedChannels.Contains(ctx.ChannelId))
+            && !ctx.App.Services.GetRequiredService<YukiConfig>()
+                .QqGuildAllowedChannels.Contains(ctx.ChannelId))
             return;
 
         next();

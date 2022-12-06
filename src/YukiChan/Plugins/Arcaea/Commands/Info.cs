@@ -3,7 +3,7 @@ using Flandre.Core.Messaging;
 using Flandre.Core.Messaging.Segments;
 using Flandre.Framework.Attributes;
 using Flandre.Framework.Common;
-using YukiChan.Utils;
+using YukiChan.Shared.Utils;
 
 // ReSharper disable CheckNamespace
 

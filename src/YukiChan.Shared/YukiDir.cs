@@ -1,4 +1,4 @@
-﻿namespace YukiChan.Utils;
+﻿namespace YukiChan.Shared;
 
 public static class YukiDir
 {

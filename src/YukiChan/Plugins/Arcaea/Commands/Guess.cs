@@ -7,7 +7,7 @@ using Flandre.Framework.Common;
 using Microsoft.Extensions.Logging;
 using YukiChan.Plugins.Arcaea.Images;
 using YukiChan.Plugins.Arcaea.Models;
-using YukiChan.Utils;
+using YukiChan.Shared.Utils;
 
 namespace YukiChan.Plugins.Arcaea;
 

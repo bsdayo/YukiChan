@@ -2,7 +2,7 @@
 using Flandre.Core.Messaging;
 using Flandre.Core.Messaging.Segments;
 
-namespace YukiChan.Utils;
+namespace YukiChan.Shared.Utils;
 
 public static class CommonUtils
 {

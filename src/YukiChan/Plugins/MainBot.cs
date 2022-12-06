@@ -2,8 +2,8 @@
 using Flandre.Framework.Attributes;
 using Flandre.Framework.Common;
 using Flandre.Framework.Extensions;
-using YukiChan.Database;
-using YukiChan.Utils;
+using YukiChan.Shared.Database;
+using YukiChan.Shared.Utils;
 
 namespace YukiChan.Plugins;
 

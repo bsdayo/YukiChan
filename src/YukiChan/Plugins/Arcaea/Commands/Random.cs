@@ -3,6 +3,7 @@ using Flandre.Core.Messaging;
 using Flandre.Framework.Attributes;
 using Flandre.Framework.Common;
 using YukiChan.Plugins.Arcaea.Models;
+using YukiChan.Shared.Utils;
 using YukiChan.Utils;
 
 // ReSharper disable CheckNamespace

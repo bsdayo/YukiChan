@@ -14,7 +14,9 @@ using Microsoft.Extensions.Logging;
 using SkiaSharp;
 using Websocket.Client;
 using YukiChan.Plugins.Arcaea.Models;
-using YukiChan.Plugins.Arcaea.Models.Database;
+using YukiChan.Shared;
+using YukiChan.Shared.Database.Models.Arcaea;
+using YukiChan.Shared.Utils;
 using YukiChan.Utils;
 using Timer = System.Timers.Timer;
 

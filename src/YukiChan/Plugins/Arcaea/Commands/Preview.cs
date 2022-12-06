@@ -4,6 +4,8 @@ using Flandre.Core.Messaging;
 using Flandre.Framework.Attributes;
 using Flandre.Framework.Common;
 using Microsoft.Extensions.Logging;
+using YukiChan.Shared;
+using YukiChan.Shared.Utils;
 using YukiChan.Utils;
 
 // ReSharper disable CheckNamespace

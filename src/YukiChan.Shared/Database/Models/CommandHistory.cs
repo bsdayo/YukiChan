@@ -3,7 +3,7 @@
 #pragma warning disable CS8618
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
-namespace YukiChan.Database.Models;
+namespace YukiChan.Shared.Database.Models;
 
 [Table("command_history")]
 public class CommandHistory

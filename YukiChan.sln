@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YukiChan.Tools", "src\YukiC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flandre.Framework", "deps\Flandre\src\Flandre.Framework\Flandre.Framework.csproj", "{E0E16F8D-7E6D-4E98-97AF-31A0FE5700DD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YukiChan.Shared", "src\YukiChan.Shared\YukiChan.Shared.csproj", "{B11ADF0F-14B9-4446-85ED-6AEF3A81AF29}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,5 +46,9 @@ Global
 		{E0E16F8D-7E6D-4E98-97AF-31A0FE5700DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0E16F8D-7E6D-4E98-97AF-31A0FE5700DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0E16F8D-7E6D-4E98-97AF-31A0FE5700DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B11ADF0F-14B9-4446-85ED-6AEF3A81AF29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B11ADF0F-14B9-4446-85ED-6AEF3A81AF29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B11ADF0F-14B9-4446-85ED-6AEF3A81AF29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B11ADF0F-14B9-4446-85ED-6AEF3A81AF29}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

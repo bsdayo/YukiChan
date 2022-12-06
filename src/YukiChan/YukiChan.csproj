@@ -24,17 +24,16 @@
         <ProjectReference Include="..\..\deps\Flandre\src\Flandre.Adapters.OneBot\Flandre.Adapters.OneBot.csproj" />
         <ProjectReference Include="..\..\deps\Flandre\src\Flandre.Core\Flandre.Core.csproj" />
         <ProjectReference Include="..\..\deps\Flandre\src\Flandre.Framework\Flandre.Framework.csproj" />
+        <ProjectReference Include="..\YukiChan.Shared\YukiChan.Shared.csproj" />
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="ArcaeaUnlimitedAPI.Lib" Version="2.1.0" />
         <PackageReference Include="BrotliSharpLib" Version="0.3.3" />
-        <PackageReference Include="Chloe.SQLite" Version="5.2.0" />
         <PackageReference Include="Flandre.Plugins.BaiduTranslate" Version="2.0.0" />
         <PackageReference Include="Flandre.Plugins.HttpCat" Version="2.0.0" />
         <PackageReference Include="Flandre.Plugins.WolframAlpha" Version="2.0.0" />
         <PackageReference Include="LiveChartsCore.SkiaSharpView" Version="2.0.0-beta.516" />
-        <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.0" />
         <PackageReference Include="Serilog.Extensions.Logging" Version="3.1.1-dev-10301" />
         <PackageReference Include="Serilog.Sinks.Console" Version="4.1.1-dev-00896" />
         <PackageReference Include="Serilog.Sinks.File" Version="5.0.1-dev-00947" />

@@ -4,30 +4,29 @@ using Chloe.SQLite;
 using Chloe.SQLite.DDL;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
-using YukiChan.Database.Models;
-using YukiChan.Utils;
+using YukiChan.Shared.Database.Models;
 
-namespace YukiChan.Database;
+namespace YukiChan.Shared.Database;
 
 // [YukiDatabase(CommandHistoryDbName, typeof(CommandHistory))]
 [YukiDatabase(GuildDataDbName, typeof(GuildData))]
 public partial class YukiDbManager
 {
-    public ILogger<YukiDbManager> Logger { get; }
+    private readonly ILogger<YukiDbManager> _logger;
 
     private const string CommandHistoryDbName = "command-history";
     private const string GuildDataDbName = "guilds";
 
     public YukiDbManager(ILogger<YukiDbManager> logger)
     {
-        Logger = logger;
+        _logger = logger;
 
         var attrs = GetType().GetCustomAttributes<YukiDatabaseAttribute>(false);
 
         foreach (var attr in attrs)
         {
             using var ctx = GetDbContext(attr.Name);
-            Logger.LogDebug("更新数据库 {DbPath}/{DbName}.db",
+            _logger.LogDebug("更新数据库 {DbPath}/{DbName}.db",
                 YukiDir.Databases, attr.Name);
 
             foreach (var tableType in attr.TableTypes)
@@ -35,7 +34,7 @@ public partial class YukiDbManager
                 var tableAttr = tableType.GetCustomAttribute<TableAttribute>();
                 var tableName = tableAttr is not null ? tableAttr.Name : tableType.Name;
                 new SQLiteTableGenerator(ctx).CreateTable(tableType, tableName);
-                Logger.LogDebug("  通过类 {ClassName} 创建表 {TableName}",
+                _logger.LogDebug("  通过类 {ClassName} 创建表 {TableName}",
                     tableType.Name, tableName);
             }
         }

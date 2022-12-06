@@ -1,9 +1,9 @@
-﻿using YukiChan.Plugins.Arcaea.Models.Database;
+﻿using YukiChan.Shared.Database.Models.Arcaea;
 using IDbContext = Chloe.IDbContext;
 
 // ReSharper disable CheckNamespace
 
-namespace YukiChan.Database;
+namespace YukiChan.Shared.Database;
 
 [YukiDatabase(ArcaeaDbName, typeof(ArcaeaDatabaseUser), typeof(ArcaeaUserPreferences) /*, typeof(ArcaeaGuessUser)*/)]
 public partial class YukiDbManager

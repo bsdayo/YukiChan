@@ -1,6 +1,6 @@
 ﻿using Flandre.Framework.Common;
 using Microsoft.Extensions.Logging;
-using YukiChan.Database;
+using YukiChan.Shared.Database;
 
 namespace YukiChan.Plugins.Arcaea;
 

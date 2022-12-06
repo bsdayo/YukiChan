@@ -9,9 +9,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Tomlyn;
-using YukiChan.Database;
 using YukiChan.Plugins;
-using YukiChan.Utils;
+using YukiChan.Shared;
+using YukiChan.Shared.Database;
 
 [assembly: InternalsVisibleTo("YukiChan.Tools")]
 
@@ -62,6 +62,7 @@ public static class Program
 
     private static FlandreAppBuilder AddYukiServices(this FlandreAppBuilder builder)
     {
+        builder.Services.AddSingleton(YukiConfig);
         builder.Services.AddSingleton<YukiDbManager>();
         return builder;
     }

@@ -1,4 +1,4 @@
-﻿namespace YukiChan.Utils;
+﻿namespace YukiChan.Shared.Utils;
 
 public static class NetUtils
 {

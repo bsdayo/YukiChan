@@ -2,6 +2,7 @@
 using ArcaeaUnlimitedAPI.Lib.Models;
 using Microsoft.Extensions.Logging;
 using YukiChan.Plugins.Arcaea.Models;
+using YukiChan.Shared;
 using YukiChan.Utils;
 
 namespace YukiChan.Plugins.Arcaea;

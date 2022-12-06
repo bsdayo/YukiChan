@@ -1,5 +1,5 @@
 ﻿using ArcaeaUnlimitedAPI.Lib.Models;
-using YukiChan.Utils;
+using YukiChan.Shared.Utils;
 
 #pragma warning disable CS8618
 
