@@ -46,9 +46,12 @@ public partial class ArcaeaPlugin
                 if (int.TryParse(user.ArcaeaId, out var parsed))
                 {
                     if (args.GetOption<bool>("official"))
+                    {
+                        var usercode = user.ArcaeaId.PadLeft(9, '0');
                         best30 = ArcaeaBest30.FromAla(
-                            await _service.AlaClient.User(user.ArcaeaId),
-                            await _service.AlaClient.Best30(user.ArcaeaId), user.ArcaeaId);
+                            await _service.AlaClient.User(usercode),
+                            await _service.AlaClient.Best30(usercode), usercode);
+                    }
                     else
                         best30 = ArcaeaBest30.FromAua(
                             await _service.AuaClient.User.Best30(parsed, 9, AuaReplyWith.All));
@@ -68,9 +71,19 @@ public partial class ArcaeaPlugin
                 await ctx.Bot.SendMessage(ctx.Message, "正在查询该用户的 Best30 成绩，请耐心等候...");
                 best30 = ArcaeaBest30.FromAua(
                     await _service.AuaClient.User.Best30(userArg, 9, AuaReplyWith.All));
+
+                if (args.GetOption<bool>("official"))
+                {
+                    if (!int.TryParse(userArg, out var parsed))
+                        return ctx.Reply("官方 API 仅支持好友码绑定，请重新使用好友码绑定后重试。");
+                    var usercode = parsed.ToString().PadLeft(9, '0');
+                    best30 = ArcaeaBest30.FromAla(
+                        await _service.AlaClient.User(usercode),
+                        await _service.AlaClient.Best30(usercode), usercode);
+                }
             }
 
-            _logger.LogInformation($"正在为 {best30.User.Name}({best30.User.Id}) 生成 Best30 图片...");
+            _logger.LogInformation("正在为 {ArcaeaName}({ArcaeaId}) 生成 Best30 图片...", best30.User.Name, best30.User.Id);
 
             var pref = await _database.GetArcaeaUserPreferences(ctx.Bot.Platform, ctx.Message.Sender.UserId)
                        ?? new ArcaeaUserPreferences();
