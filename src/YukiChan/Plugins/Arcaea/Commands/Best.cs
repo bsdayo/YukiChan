@@ -45,7 +45,9 @@ public partial class ArcaeaPlugin
                         .Text("你也可以使用 /a best -u 名称或好友码 直接查询指定用户。");
 
                 _logger.LogInformation(
-                    $"正在查询 {ctx.Message.Sender.Name}({ctx.Message.Sender.UserId}) -> {dbUser.ArcaeaName}({dbUser.ArcaeaId}) 的 {songId} 最高成绩...");
+                    "正在查询 {UserName}({UserId}) -> {ArcaeaName}({ArcaeaId}) 的 {SongId} 最高成绩...",
+                    ctx.Message.Sender.Name, ctx.Message.Sender.UserId,
+                    dbUser.ArcaeaName, dbUser.ArcaeaId, songId);
 
                 auaBest = int.TryParse(dbUser.ArcaeaId, out var parsed)
                     ? await _service.AuaClient.User.Best(parsed, songId, AuaSongQueryType.SongId, difficulty,
@@ -55,12 +57,14 @@ public partial class ArcaeaPlugin
             }
             else
             {
-                _logger.LogInformation($"正在查询 {userArg} 的 {songId} 最高成绩...");
+                _logger.LogInformation("正在查询 {ArcaeaName} 的 {SongId} 最高成绩...", userArg, songId);
                 auaBest = await _service.AuaClient.User.Best(userArg, songId, AuaSongQueryType.SongId, difficulty,
                     AuaReplyWith.All);
             }
 
-            _logger.LogInformation($"正在为 {auaBest.AccountInfo.Name}({auaBest.AccountInfo.Code}) 生成 Best 图片...");
+            _logger.LogInformation(
+                "正在为 {ArcaeaName}({ArcaeaId}) 生成 Best 图片...",
+                auaBest.AccountInfo.Name, auaBest.AccountInfo.Code);
 
             var pref = await _database.GetArcaeaUserPreferences(ctx.Bot.Platform, ctx.Message.Sender.UserId)
                        ?? new ArcaeaUserPreferences();

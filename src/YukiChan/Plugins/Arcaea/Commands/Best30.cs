@@ -25,6 +25,7 @@ public partial class ArcaeaPlugin
     public async Task<MessageContent> OnBest30(MessageContext ctx, ParsedArgs args)
     {
         var userArg = args.GetArgument<string>("user");
+        var official = args.GetOption<bool>("official");
 
         try
         {
@@ -39,15 +40,19 @@ public partial class ArcaeaPlugin
                         .Text("你也可以使用 /a b30 名称或好友码 直接查询指定用户。");
 
                 _logger.LogInformation(
-                    "正在查询 {UserName}({UserId}) -> {ArcaeaName}({ArcaeaId}) 的 Best30 成绩...",
+                    "正在使用 {ApiName} 查询 {UserName}({UserId}) -> {ArcaeaName}({ArcaeaId}) 的 Best30 成绩...",
+                    official ? "ALA" : "AUA",
                     ctx.Message.Sender.Name, ctx.Message.Sender.UserId,
                     user.ArcaeaName, user.ArcaeaId);
-                await ctx.Bot.SendMessage(ctx.Message, $"正在查询 {user.ArcaeaName} 的 Best30 成绩，请耐心等候...");
+
+                await ctx.Bot.SendMessage(ctx.Message, official
+                    ? $"正在查询 {user.ArcaeaName} 的 Best30 成绩，请耐心等候..."
+                    : $"正在使用官方 API 查询 {user.ArcaeaName} 的 Best30 成绩，请耐心等候...");
 
                 // 用户绑定时如果使用 -u (--uncheck) 选项，user.ArcaeaId 的类型不可预料（例如使用名字绑定）
                 if (int.TryParse(user.ArcaeaId, out var parsed))
                 {
-                    if (args.GetOption<bool>("official"))
+                    if (official)
                     {
                         var usercode = user.ArcaeaId.PadLeft(9, '0');
                         best30 = ArcaeaBest30.FromAla(
@@ -60,7 +65,7 @@ public partial class ArcaeaPlugin
                 }
                 else
                 {
-                    if (args.GetOption<bool>("official"))
+                    if (official)
                         return ctx.Reply("官方 API 仅支持好友码绑定，请重新使用好友码绑定后重试。");
 
                     best30 = ArcaeaBest30.FromAua(
@@ -69,12 +74,12 @@ public partial class ArcaeaPlugin
             }
             else
             {
-                _logger.LogInformation($"正在查询 {userArg} 的 Best30 成绩...");
+                _logger.LogInformation("正在查询 {UserName} 的 Best30 成绩...", userArg);
                 await ctx.Bot.SendMessage(ctx.Message, "正在查询该用户的 Best30 成绩，请耐心等候...");
                 best30 = ArcaeaBest30.FromAua(
                     await _service.AuaClient.User.Best30(userArg, 9, AuaReplyWith.All));
 
-                if (args.GetOption<bool>("official"))
+                if (official)
                 {
                     if (!int.TryParse(userArg, out var parsed))
                         return ctx.Reply("官方 API 仅支持好友码绑定，请重新使用好友码绑定后重试。");

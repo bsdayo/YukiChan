@@ -41,7 +41,9 @@ public partial class ArcaeaPlugin
                         .Text("你也可以使用 /a best -u 名称或好友码 直接查询指定用户。");
 
                 _logger.LogInformation(
-                    $"正在查询 {ctx.Message.Sender.Name}({ctx.Message.Sender.UserId}) -> {dbUser.ArcaeaName}({dbUser.ArcaeaId}) 的最近成绩...");
+                    "正在查询 {UserName}({UserId}) -> {ArcaeaName}({ArcaeaId}) 的最近成绩...",
+                    ctx.Message.Sender.Name, ctx.Message.Sender.UserId,
+                    dbUser.ArcaeaName, dbUser.ArcaeaId);
 
                 userInfo = int.TryParse(dbUser.ArcaeaId, out var parsed)
                     ? await _service.AuaClient.User.Info(parsed, 1, AuaReplyWith.All)
@@ -52,14 +54,14 @@ public partial class ArcaeaPlugin
             }
             else
             {
-                _logger.LogInformation($"正在查询 {userArg} 的最近成绩...");
+                _logger.LogInformation("正在查询 {ArcaeaName} 的最近成绩...", userArg);
                 userInfo = await _service.AuaClient.User.Info(userArg, 1, AuaReplyWith.All);
             }
 
             var info = ArcaeaUser.FromAua(userInfo.AccountInfo);
             var record = ArcaeaRecord.FromAua(userInfo.RecentScore![0], userInfo.SongInfo![0]);
 
-            _logger.LogInformation($"正在为 {info.Name}({info.Id}) 生成最近成绩图片...");
+            _logger.LogInformation("正在为 {ArcaeaName}({ArcaeaId}) 生成最近成绩图片...", info.Name, info.Id);
 
             var pref = await _database.GetArcaeaUserPreferences(ctx.Bot.Platform, ctx.Message.Sender.UserId)
                        ?? new ArcaeaUserPreferences();
