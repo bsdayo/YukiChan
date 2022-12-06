@@ -11,7 +11,7 @@ public class AlaClient
 
     public required string Token { get; set; }
 
-    public string ApiUrl { get; set; } = "https://arcaea-limitedapi.lowiro.com/api/v0";
+    public string ApiUrl { get; set; } = "https://arcaea-limitedapi.lowiro.com/api/v0/";
 
     public int Timeout { get; set; } = 60;
 
@@ -26,7 +26,7 @@ public class AlaClient
     {
         try
         {
-            var json = await _httpClient.GetStringAsync($"user/{usercode}/best");
+            var json = await _httpClient.GetStringAsync($"/user/{usercode}/best");
             var resp = JsonSerializer.Deserialize<AlaResponse<AlaRecord[]>>(json)!;
             if (resp.Message is not null)
                 throw new AlaException(resp.Message);
@@ -42,7 +42,7 @@ public class AlaClient
     {
         try
         {
-            var json = await _httpClient.GetStringAsync($"user/{usercode}");
+            var json = await _httpClient.GetStringAsync($"/user/{usercode}");
             var resp = JsonSerializer.Deserialize<AlaResponse<AlaUser>>(json)!;
             if (resp.Message is not null)
                 throw new AlaException(resp.Message);
