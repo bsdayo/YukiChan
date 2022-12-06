@@ -63,9 +63,4 @@ public class ArcaeaBest30
 
         return best30;
     }
-
-    public static ArcaeaBest30 FromAla(AlaUser user, AlaRecord[] alaRecords, int usercode)
-    {
-        return FromAla(user, alaRecords, usercode.ToString().PadLeft(9, '0'));
-    }
 }

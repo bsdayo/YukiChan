@@ -1,6 +1,5 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
-using Microsoft.Extensions.Logging;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
@@ -10,17 +9,14 @@ public class AlaClient
 {
     public HttpClient HttpClient { get; set; } = new();
 
-    public string Token { get; set; } = "";
-
-    public int Timeout { get; set; } = 60;
+    public required string Token { get; set; }
 
     public string ApiUrl { get; set; } = "https://arcaea-limitedapi.lowiro.com/api/v0";
 
-    private readonly ILogger<ArcaeaPlugin> _logger;
+    public int Timeout { get; set; } = 60;
 
-    public AlaClient(ILogger<ArcaeaPlugin> logger)
+    public AlaClient()
     {
-        _logger = logger;
         HttpClient.BaseAddress = new Uri(ApiUrl);
         HttpClient.Timeout = new TimeSpan(0, 0, 0, Timeout);
         HttpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {Token}");
@@ -42,11 +38,6 @@ public class AlaClient
         }
     }
 
-    public async Task<AlaRecord[]> Best30(int usercode)
-    {
-        return await Best30(usercode.ToString().PadLeft(9, '0'));
-    }
-
     public async Task<AlaUser> User(string usercode)
     {
         try
@@ -61,11 +52,6 @@ public class AlaClient
         {
             throw new AlaException(e.Message);
         }
-    }
-
-    public async Task<AlaUser> User(int usercode)
-    {
-        return await User(usercode.ToString().PadLeft(9, '0'));
     }
 }
 

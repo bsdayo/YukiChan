@@ -19,6 +19,7 @@ public partial class ArcaeaPlugin
     [Command("a.b30 [user: string]")]
     [Option("nya", "-n <:bool>")]
     [Option("dark", "-d <:bool>")]
+    [Option("official", "-o <:bool>")]
     [Shortcut("查b30")]
     [Shortcut("查B30")]
     public async Task<MessageContent> OnBest30(MessageContext ctx, ParsedArgs args)
@@ -41,9 +42,25 @@ public partial class ArcaeaPlugin
                     $"正在查询 {ctx.Message.Sender.Name}({ctx.Message.Sender.UserId}) -> {user.ArcaeaName}({user.ArcaeaId}) 的 Best30 成绩...");
                 await ctx.Bot.SendMessage(ctx.Message, $"正在查询 {user.ArcaeaName} 的 Best30 成绩，请耐心等候...");
 
-                best30 = ArcaeaBest30.FromAua(int.TryParse(user.ArcaeaId, out var parsed)
-                    ? await _service.AuaClient.User.Best30(parsed, 9, AuaReplyWith.All)
-                    : await _service.AuaClient.User.Best30(user.ArcaeaId, 9, AuaReplyWith.All));
+                // 用户绑定时如果使用 -u (--uncheck) 选项，user.ArcaeaId 的类型不可预料（例如使用名字绑定）
+                if (int.TryParse(user.ArcaeaId, out var parsed))
+                {
+                    if (args.GetOption<bool>("official"))
+                        best30 = ArcaeaBest30.FromAla(
+                            await _service.AlaClient.User(user.ArcaeaId),
+                            await _service.AlaClient.Best30(user.ArcaeaId), user.ArcaeaId);
+                    else
+                        best30 = ArcaeaBest30.FromAua(
+                            await _service.AuaClient.User.Best30(parsed, 9, AuaReplyWith.All));
+                }
+                else
+                {
+                    if (args.GetOption<bool>("official"))
+                        return ctx.Reply("官方 API 仅支持好友码绑定，请重新使用好友码绑定后重试。");
+
+                    best30 = ArcaeaBest30.FromAua(
+                        await _service.AuaClient.User.Best30(user.ArcaeaId, 9, AuaReplyWith.All));
+                }
             }
             else
             {
