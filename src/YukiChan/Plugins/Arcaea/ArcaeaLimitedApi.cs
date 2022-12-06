@@ -26,7 +26,7 @@ public class AlaClient
     {
         try
         {
-            var json = await HttpClient.GetStringAsync($"/user/{usercode}/best");
+            var json = await HttpClient.GetStringAsync($"user/{usercode}/best");
             var resp = JsonSerializer.Deserialize<AlaResponse<AlaRecord[]>>(json)!;
             if (resp.Message is not null)
                 throw new AlaException(resp.Message);
@@ -42,7 +42,7 @@ public class AlaClient
     {
         try
         {
-            var json = await HttpClient.GetStringAsync($"/user/{usercode}");
+            var json = await HttpClient.GetStringAsync($"user/{usercode}");
             var resp = JsonSerializer.Deserialize<AlaResponse<AlaUser>>(json)!;
             if (resp.Message is not null)
                 throw new AlaException(resp.Message);
