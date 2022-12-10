@@ -27,12 +27,6 @@ public sealed class UpdateSongDbCommand : AsyncCommand<UpdateSongDbCommand.Setti
             return 1;
         }
 
-        if (!File.Exists(settings.OldDbPath))
-        {
-            LogUtils.PathNotExists(settings.OldDbPath);
-            return 1;
-        }
-
         var newDb = new ArcaeaSongDatabase(settings.NewDbPath);
         var oldDb = string.IsNullOrWhiteSpace(settings.OldDbPath)
             ? ArcaeaSongDatabase.Default
@@ -43,40 +37,33 @@ public sealed class UpdateSongDbCommand : AsyncCommand<UpdateSongDbCommand.Setti
         await AnsiConsole.Progress()
             .StartAsync(async progress =>
             {
-                try
+                var chartTask = progress.AddTask("Migrating charts");
+                var packageTask = progress.AddTask("Migrating packages");
+                var aliasTask = progress.AddTask("Migrating aliases");
+
+                var charts = await newDb.GetAllCharts();
+                chartTask.MaxValue = charts.Count;
+                var packages = await newDb.GetAllPackages();
+                packageTask.MaxValue = packages.Count;
+                var aliases = await newDb.GetAllAliases();
+                aliasTask.MaxValue = aliases.Count;
+
+                foreach (var chart in charts)
                 {
-                    var chartTask = progress.AddTask("Migrating charts");
-                    var packageTask = progress.AddTask("Migrating packages");
-                    var aliasTask = progress.AddTask("Migrating aliases");
-
-                    var charts = await newDb.GetAllCharts();
-                    chartTask.MaxValue = charts.Count;
-                    var packages = await newDb.GetAllPackages();
-                    packageTask.MaxValue = packages.Count;
-                    var aliases = await newDb.GetAllAliases();
-                    aliasTask.MaxValue = aliases.Count;
-
-                    foreach (var chart in charts)
-                    {
-                        await oldDb.InsertOrUpdateChart(chart);
-                        chartTask.Increment(1);
-                    }
-
-                    foreach (var package in packages)
-                    {
-                        await oldDb.InsertOrUpdatePackage(package);
-                        packageTask.Increment(1);
-                    }
-
-                    foreach (var alias in aliases)
-                    {
-                        await oldDb.InsertOrUpdateAlias(alias);
-                        aliasTask.Increment(1);
-                    }
+                    await oldDb.InsertOrUpdateChart(chart);
+                    chartTask.Increment(1);
                 }
-                catch (Exception e)
+
+                foreach (var package in packages)
                 {
-                    Console.WriteLine(e.Message + '\n' + e.StackTrace);
+                    await oldDb.InsertOrUpdatePackage(package);
+                    packageTask.Increment(1);
+                }
+
+                foreach (var alias in aliases)
+                {
+                    await oldDb.InsertOrUpdateAlias(alias);
+                    aliasTask.Increment(1);
                 }
             });
 
