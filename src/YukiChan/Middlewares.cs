@@ -12,9 +12,11 @@ public static class Middlewares
     public static void QqGroupWarnFilter(MiddlewareContext ctx, Action next)
     {
         next();
-        if (ctx.App.Services.GetRequiredService<YukiConfig>()
-                .NoWarnQqGroups.Contains(ctx.ChannelId)
-            && (bool)ctx.Response?.GetText().Contains("未找到指令"))
+        var isWarn = ctx.Response?.GetText().Contains("未找到指令");
+        if (isWarn != null
+            && ctx.App.Services.GetRequiredService<YukiConfig>()
+                .NoWarnQqGroups.Contains(ctx.ChannelId) 
+            && isWarn.Value)
             ctx.Response = null;
     }
 
