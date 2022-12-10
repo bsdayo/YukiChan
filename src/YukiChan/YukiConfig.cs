@@ -12,6 +12,8 @@ public class YukiConfig
 
     public string[] QqGuildAllowedChannels { get; set; } = Array.Empty<string>();
 
+    public string[] NoWarnQqGroups { get; set; } = Array.Empty<string>();
+
     public FlandreAppConfig App { get; set; } = new();
 
     public YukiPluginsConfig Plugins { get; set; } = new();

@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using Flandre.Adapters.OneBot;
+﻿using Flandre.Adapters.OneBot;
 using Flandre.Framework;
 using Flandre.Framework.Extensions;
 using Flandre.Plugins.BaiduTranslate;
@@ -12,8 +11,6 @@ using Tomlyn;
 using YukiChan.Plugins;
 using YukiChan.Shared;
 using YukiChan.Shared.Database;
-
-[assembly: InternalsVisibleTo("YukiChan.Tools")]
 
 namespace YukiChan;
 
