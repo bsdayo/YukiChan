@@ -8,11 +8,11 @@
         <PublishSingleFile>true</PublishSingleFile>
         <PublishReadyToRun>true</PublishReadyToRun>
         <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
-        <ValidateExecutableReferencesMatchSelfContained>false</ValidateExecutableReferencesMatchSelfContained>
+        <NoWarn>8765</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\YukiChan\YukiChan.csproj" />
+      <ProjectReference Include="..\YukiChan.Shared\YukiChan.Shared.csproj" />
     </ItemGroup>
 
     <ItemGroup>

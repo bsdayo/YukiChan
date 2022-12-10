@@ -3,6 +3,7 @@ using Flandre.Core.Messaging;
 using Flandre.Core.Messaging.Segments;
 using Flandre.Framework.Attributes;
 using Flandre.Framework.Common;
+using YukiChan.Shared.Database;
 using YukiChan.Shared.Utils;
 
 // ReSharper disable CheckNamespace
@@ -18,7 +19,7 @@ public partial class ArcaeaPlugin
     {
         var nya = args.GetOption<bool>("nya");
 
-        var song = await ArcaeaSongDatabase.FuzzySearchSong(args.GetArgument<string>("songname"));
+        var song = await ArcaeaSongDatabase.Default.FuzzySearchSong(args.GetArgument<string>("songname"));
 
         if (song is null)
             return ctx.Reply("没有找到该曲目哦~");

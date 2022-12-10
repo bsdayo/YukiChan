@@ -1,11 +1,11 @@
 ﻿using Chloe.Annotations;
 
-namespace YukiChan.Plugins.Arcaea.Models;
+namespace YukiChan.Shared.Models.Arcaea;
 
 #pragma warning disable CS8618
 
 [Table("alias")]
-public class ArcaeaSongDbAlias
+public sealed class ArcaeaSongDbAlias
 {
     [Column("sid")] public string SongId { get; set; }
 

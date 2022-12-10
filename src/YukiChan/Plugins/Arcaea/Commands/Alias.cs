@@ -1,6 +1,7 @@
 ﻿using Flandre.Core.Messaging;
 using Flandre.Framework.Attributes;
 using Flandre.Framework.Common;
+using YukiChan.Shared.Database;
 using YukiChan.Shared.Utils;
 
 // ReSharper disable CheckNamespace
@@ -13,11 +14,11 @@ public partial class ArcaeaPlugin
     [Shortcut("查别名")]
     public async Task<MessageContent> OnAlias(MessageContext ctx, ParsedArgs args)
     {
-        var songId = await ArcaeaSongDatabase.FuzzySearchId(args.GetArgument<string>("songname"));
+        var songId = await ArcaeaSongDatabase.Default.FuzzySearchId(args.GetArgument<string>("songname"));
         if (songId is null) return ctx.Reply("没有找到该曲目哦~");
 
-        var chart = await ArcaeaSongDatabase.GetChartsById(songId);
-        var aliases = (await ArcaeaSongDatabase.GetAliasesById(songId))
+        var chart = await ArcaeaSongDatabase.Default.GetChartsById(songId);
+        var aliases = (await ArcaeaSongDatabase.Default.GetAliasesById(songId))
             .Select(alias => alias.Alias);
 
         return ctx.Reply()

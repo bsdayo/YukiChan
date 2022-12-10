@@ -1,45 +1,11 @@
 ﻿using ArcaeaUnlimitedAPI.Lib.Models;
+using YukiChan.Shared.Database;
+using YukiChan.Shared.Models.Arcaea;
 
-// ReSharper disable InconsistentNaming
+namespace YukiChan.Plugins.Arcaea.Factories;
 
-#pragma warning disable CS8618
-
-namespace YukiChan.Plugins.Arcaea.Models;
-
-public class ArcaeaRecord
+public static class ArcaeaRecordFactory
 {
-    public string Name { get; init; }
-
-    public string SongId { get; init; }
-
-    public double Potential { get; init; }
-
-    public string Rating { get; init; }
-
-    public string RatingText { get; init; }
-
-    public ArcaeaDifficulty Difficulty { get; init; }
-
-    public int Score { get; init; }
-
-    public int ShinyPureCount { get; init; }
-
-    public int PureCount { get; init; }
-
-    public int FarCount { get; init; }
-
-    public int LostCount { get; init; }
-
-    public ArcaeaClearType ClearType { get; init; }
-
-    public ArcaeaGrade Grade { get; init; }
-
-    public int RecollectionRate { get; init; }
-
-    public bool JacketOverride { get; init; }
-
-    public long TimePlayed { get; init; }
-
     public static ArcaeaRecord FromAua(AuaRecord record, AuaChartInfo chartInfo)
     {
         return new ArcaeaRecord
@@ -67,7 +33,7 @@ public class ArcaeaRecord
 
     public static ArcaeaRecord FromAla(AlaRecord record)
     {
-        var chart = ArcaeaSongDatabase.GetChartsById(record.SongId).Result[record.Difficulty];
+        var chart = ArcaeaSongDatabase.Default.GetChartsById(record.SongId).Result[record.Difficulty];
         return new ArcaeaRecord
         {
             Name = chart.NameEn,
@@ -90,25 +56,4 @@ public class ArcaeaRecord
             TimePlayed = record.TimePlayed
         };
     }
-}
-
-public enum ArcaeaClearType
-{
-    TrackLost = 0,
-    NormalClear = 1,
-    FullRecall = 2,
-    PureMemory = 3,
-    EasyClear = 4,
-    HardClear = 5
-}
-
-public enum ArcaeaGrade
-{
-    D,
-    C,
-    B,
-    A,
-    AA,
-    EX,
-    EXP
 }

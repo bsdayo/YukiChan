@@ -5,9 +5,10 @@ using Flandre.Core.Messaging.Segments;
 using Flandre.Framework.Attributes;
 using Flandre.Framework.Common;
 using Microsoft.Extensions.Logging;
+using YukiChan.Plugins.Arcaea.Factories;
 using YukiChan.Plugins.Arcaea.Images;
-using YukiChan.Plugins.Arcaea.Models;
 using YukiChan.Shared.Database.Models.Arcaea;
+using YukiChan.Shared.Models.Arcaea;
 using YukiChan.Shared.Utils;
 
 // ReSharper disable CheckNamespace
@@ -55,20 +56,22 @@ public partial class ArcaeaPlugin
                     if (official)
                     {
                         var usercode = user.ArcaeaId.PadLeft(9, '0');
-                        best30 = ArcaeaBest30.FromAla(
+                        best30 = ArcaeaBest30Factory.FromAla(
                             await _service.AlaClient.User(usercode),
                             await _service.AlaClient.Best30(usercode), usercode);
                     }
                     else
-                        best30 = ArcaeaBest30.FromAua(
+                    {
+                        best30 = ArcaeaBest30Factory.FromAua(
                             await _service.AuaClient.User.Best30(parsed, 9, AuaReplyWith.All));
+                    }
                 }
                 else
                 {
                     if (official)
                         return ctx.Reply("官方 API 仅支持好友码绑定，请重新使用好友码绑定后重试。");
 
-                    best30 = ArcaeaBest30.FromAua(
+                    best30 = ArcaeaBest30Factory.FromAua(
                         await _service.AuaClient.User.Best30(user.ArcaeaId, 9, AuaReplyWith.All));
                 }
             }
@@ -76,7 +79,7 @@ public partial class ArcaeaPlugin
             {
                 _logger.LogInformation("正在查询 {UserName} 的 Best30 成绩...", userArg);
                 await ctx.Bot.SendMessage(ctx.Message, "正在查询该用户的 Best30 成绩，请耐心等候...");
-                best30 = ArcaeaBest30.FromAua(
+                best30 = ArcaeaBest30Factory.FromAua(
                     await _service.AuaClient.User.Best30(userArg, 9, AuaReplyWith.All));
 
                 if (official)
@@ -84,7 +87,7 @@ public partial class ArcaeaPlugin
                     if (!int.TryParse(userArg, out var parsed))
                         return ctx.Reply("官方 API 仅支持好友码绑定，请重新使用好友码绑定后重试。");
                     var usercode = parsed.ToString().PadLeft(9, '0');
-                    best30 = ArcaeaBest30.FromAla(
+                    best30 = ArcaeaBest30Factory.FromAla(
                         await _service.AlaClient.User(usercode),
                         await _service.AlaClient.Best30(usercode), usercode);
                 }

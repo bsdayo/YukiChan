@@ -6,8 +6,9 @@ using Flandre.Core.Messaging.Segments;
 using Flandre.Framework.Attributes;
 using Flandre.Framework.Common;
 using Microsoft.Extensions.Logging;
+using YukiChan.Plugins.Arcaea.Factories;
 using YukiChan.Plugins.Arcaea.Images;
-using YukiChan.Plugins.Arcaea.Models;
+using YukiChan.Shared.Database;
 using YukiChan.Shared.Database.Models.Arcaea;
 using YukiChan.Shared.Utils;
 
@@ -31,7 +32,7 @@ public partial class ArcaeaPlugin
 
         try
         {
-            var songId = await ArcaeaSongDatabase.FuzzySearchId(songname);
+            var songId = await ArcaeaSongDatabase.Default.FuzzySearchId(songname);
             if (songId is null) return ctx.Reply().Text("没有找到该曲目哦~");
 
             AuaUserBestContent auaBest;
@@ -71,8 +72,8 @@ public partial class ArcaeaPlugin
             pref.Dark = pref.Dark || args.GetOption<bool>("dark");
             pref.Nya = pref.Nya || args.GetOption<bool>("nya");
 
-            var best = ArcaeaRecord.FromAua(auaBest.Record, auaBest.SongInfo![0]);
-            var user = ArcaeaUser.FromAua(auaBest.AccountInfo);
+            var best = ArcaeaRecordFactory.FromAua(auaBest.Record, auaBest.SongInfo![0]);
+            var user = ArcaeaUserFactory.FromAua(auaBest.AccountInfo);
             var image = await ArcaeaImageGenerator.Single(user, best, _service.AuaClient, pref, _logger);
 
             return ctx.Reply()

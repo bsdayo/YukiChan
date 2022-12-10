@@ -11,6 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="ArcaeaUnlimitedAPI.Lib" Version="2.1.0" />
         <PackageReference Include="Chloe.SQLite" Version="5.3.0" />
         <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.0" />
     </ItemGroup>

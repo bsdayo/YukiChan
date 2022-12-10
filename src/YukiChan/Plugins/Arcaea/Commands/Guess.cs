@@ -6,7 +6,8 @@ using Flandre.Framework.Attributes;
 using Flandre.Framework.Common;
 using Microsoft.Extensions.Logging;
 using YukiChan.Plugins.Arcaea.Images;
-using YukiChan.Plugins.Arcaea.Models;
+using YukiChan.Shared.Database;
+using YukiChan.Shared.Models.Arcaea;
 using YukiChan.Shared.Utils;
 
 namespace YukiChan.Plugins.Arcaea;
@@ -52,7 +53,7 @@ public partial class ArcaeaPlugin
                 if (!session.IsReady)
                     return ctx.Reply("题目正在初始化中，请稍等...");
 
-                var guessSongId = await ArcaeaSongDatabase.FuzzySearchId(guessOrMode);
+                var guessSongId = await ArcaeaSongDatabase.Default.FuzzySearchId(guessOrMode);
                 if (guessSongId is null)
                     return ctx.Reply("没有找到该曲目哦！");
 
@@ -64,7 +65,7 @@ public partial class ArcaeaPlugin
                 return ctx.Reply("猜对啦！")
                     .Image(session.Cover)
                     .Text($"{session.Chart.NameEn} - {session.Chart.Artist}\n")
-                    .Text($"({ArcaeaSongDatabase.GetPackageBySet(session.Chart.Set)!.Name})");
+                    .Text($"({ArcaeaSongDatabase.Default.GetPackageBySet(session.Chart.Set)!.Name})");
             }
 
             var mode = string.IsNullOrWhiteSpace(guessOrMode)
@@ -91,7 +92,7 @@ public partial class ArcaeaPlugin
         GuessSessions.TryAdd(sessionId,
             new ArcaeaGuessSession { Timestamp = timestamp });
 
-        var allCharts = ArcaeaSongDatabase.GetAllCharts()
+        var allCharts = (await ArcaeaSongDatabase.Default.GetAllCharts())
             .Where(chart => chart.RatingClass == (int)ArcaeaDifficulty.Future)
             .ToArray();
         var randomChart = allCharts[new Random().Next(allCharts.Length)];
@@ -117,7 +118,7 @@ public partial class ArcaeaPlugin
                     .Text("时间到！揭晓答案——")
                     .Image(session.Cover)
                     .Text($"{session.Chart.NameEn} - {session.Chart.Artist}\n")
-                    .Text($"({ArcaeaSongDatabase.GetPackageBySet(session.Chart.Set)!.Name})"));
+                    .Text($"({ArcaeaSongDatabase.Default.GetPackageBySet(session.Chart.Set)!.Name})"));
             GuessSessions.Remove(sessionId);
         });
 #pragma warning restore CS4014

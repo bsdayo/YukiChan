@@ -5,6 +5,7 @@ using Flandre.Framework.Attributes;
 using Flandre.Framework.Common;
 using Microsoft.Extensions.Logging;
 using YukiChan.Shared;
+using YukiChan.Shared.Database;
 using YukiChan.Shared.Utils;
 using YukiChan.Utils;
 
@@ -21,7 +22,7 @@ public partial class ArcaeaPlugin
         var (songname, difficulty) = ArcaeaUtils.ParseMixedSongNameAndDifficulty(
             args.GetArgument<string>("songnameAndDifficulty"));
 
-        var songId = await ArcaeaSongDatabase.FuzzySearchId(songname);
+        var songId = await ArcaeaSongDatabase.Default.FuzzySearchId(songname);
         if (songId is null) return ctx.Reply("没有找到该曲目呢...");
 
         try

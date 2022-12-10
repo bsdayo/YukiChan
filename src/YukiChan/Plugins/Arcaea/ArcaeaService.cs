@@ -5,7 +5,7 @@ namespace YukiChan.Plugins.Arcaea;
 public class ArcaeaService
 {
     public AuaClient AuaClient { get; }
-    
+
     public AlaClient AlaClient { get; }
 
     public ArcaeaService(ArcaeaPluginConfig config)

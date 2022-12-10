@@ -1,20 +1,11 @@
 ﻿using ArcaeaUnlimitedAPI.Lib.Models;
+using YukiChan.Shared.Models.Arcaea;
 using YukiChan.Shared.Utils;
 
-#pragma warning disable CS8618
+namespace YukiChan.Plugins.Arcaea.Factories;
 
-namespace YukiChan.Plugins.Arcaea.Models;
-
-public class ArcaeaUser
+public static class ArcaeaUserFactory
 {
-    public string Name { get; private init; }
-
-    public string Id { get; private init; }
-
-    public string Potential { get; private init; }
-
-    public string JoinDate { get; private init; }
-
     public static ArcaeaUser FromAua(AuaAccountInfo info)
     {
         return new ArcaeaUser

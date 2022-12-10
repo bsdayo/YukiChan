@@ -2,7 +2,8 @@
 using Flandre.Core.Messaging;
 using Flandre.Framework.Attributes;
 using Flandre.Framework.Common;
-using YukiChan.Plugins.Arcaea.Models;
+using YukiChan.Shared.Database;
+using YukiChan.Shared.Models.Arcaea;
 using YukiChan.Shared.Utils;
 using YukiChan.Utils;
 
@@ -19,7 +20,7 @@ public partial class ArcaeaPlugin
         var range = args.GetArgument<string>("range")
             .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         int start, end;
-        var allCharts = ArcaeaSongDatabase.GetAllCharts();
+        var allCharts = await ArcaeaSongDatabase.Default.GetAllCharts();
 
         try
         {
@@ -91,7 +92,7 @@ public partial class ArcaeaPlugin
             .Text("随机推荐曲目：\n")
             .Image(songCover)
             .Text($"{chart.NameEn}\n")
-            .Text($"({ArcaeaSongDatabase.GetPackageBySet(chart.Set)!.Name})\n")
+            .Text($"({ArcaeaSongDatabase.Default.GetPackageBySet(chart.Set)!.Name})\n")
             .Text(
                 $"{(ArcaeaDifficulty)chart.RatingClass} {chart.Rating.GetDifficulty()} [{((double)chart.Rating / 10).ToString("0.0")}]");
     }

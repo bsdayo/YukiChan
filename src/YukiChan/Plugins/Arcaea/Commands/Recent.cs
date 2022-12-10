@@ -6,8 +6,8 @@ using Flandre.Core.Messaging.Segments;
 using Flandre.Framework.Attributes;
 using Flandre.Framework.Common;
 using Microsoft.Extensions.Logging;
+using YukiChan.Plugins.Arcaea.Factories;
 using YukiChan.Plugins.Arcaea.Images;
-using YukiChan.Plugins.Arcaea.Models;
 using YukiChan.Shared.Database.Models.Arcaea;
 using YukiChan.Shared.Utils;
 using YukiChan.Utils;
@@ -58,8 +58,8 @@ public partial class ArcaeaPlugin
                 userInfo = await _service.AuaClient.User.Info(userArg, 1, AuaReplyWith.All);
             }
 
-            var info = ArcaeaUser.FromAua(userInfo.AccountInfo);
-            var record = ArcaeaRecord.FromAua(userInfo.RecentScore![0], userInfo.SongInfo![0]);
+            var info = ArcaeaUserFactory.FromAua(userInfo.AccountInfo);
+            var record = ArcaeaRecordFactory.FromAua(userInfo.RecentScore![0], userInfo.SongInfo![0]);
 
             _logger.LogInformation("正在为 {ArcaeaName}({ArcaeaId}) 生成最近成绩图片...", info.Name, info.Id);
 

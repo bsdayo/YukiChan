@@ -1,22 +1,27 @@
 ﻿using Chloe;
 using Chloe.SQLite;
 using Microsoft.Data.Sqlite;
-using YukiChan.Plugins.Arcaea.Models;
-using YukiChan.Shared;
+using YukiChan.Shared.Models.Arcaea;
 using YukiChan.Shared.Utils;
 
-namespace YukiChan.Plugins.Arcaea;
+namespace YukiChan.Shared.Database;
 
-public static class ArcaeaSongDatabase
+public class ArcaeaSongDatabase
 {
-    private static readonly string DbPath = $"{YukiDir.ArcaeaAssets}/arcsong.db";
+    private static readonly string DefaultPath = Path.Combine(YukiDir.ArcaeaAssets, "arcsong.db");
 
-    private static IDbContext GetSongDbContext()
+    public static ArcaeaSongDatabase Default { get; } = new(DefaultPath);
+
+    private readonly string _dbPath;
+
+    public ArcaeaSongDatabase(string dbPath) => _dbPath = dbPath;
+
+    private IDbContext GetSongDbContext()
     {
-        return new SQLiteContext(() => new SqliteConnection($"DataSource={DbPath}"));
+        return new SQLiteContext(() => new SqliteConnection($"DataSource={_dbPath}"));
     }
 
-    public static async Task<List<ArcaeaSongDbAlias>> GetAliasesById(string songId)
+    public async Task<List<ArcaeaSongDbAlias>> GetAliasesById(string songId)
     {
         using var ctx = GetSongDbContext();
         return await ctx.Query<ArcaeaSongDbAlias>()
@@ -24,25 +29,7 @@ public static class ArcaeaSongDatabase
             .ToListAsync();
     }
 
-    public static void AddAlias(string songId, string alias)
-    {
-        using var ctx = GetSongDbContext();
-        ctx.Session.ExecuteNonQuery("PRAGMA foreign_keys = OFF");
-        var dbAlias = new ArcaeaSongDbAlias
-        {
-            Alias = alias,
-            SongId = songId
-        };
-        ctx.Insert(dbAlias);
-    }
-
-    public static List<ArcaeaSongDbChart> GetAllCharts()
-    {
-        using var ctx = GetSongDbContext();
-        return ctx.Query<ArcaeaSongDbChart>().ToList();
-    }
-
-    public static async Task<List<ArcaeaSongDbChart>> GetChartsById(string songId)
+    public async Task<List<ArcaeaSongDbChart>> GetChartsById(string songId)
     {
         using var ctx = GetSongDbContext();
         return await ctx.Query<ArcaeaSongDbChart>()
@@ -50,11 +37,29 @@ public static class ArcaeaSongDatabase
             .ToListAsync();
     }
 
-    public static ArcaeaSongDbPackage? GetPackageBySet(string set)
+    public ArcaeaSongDbPackage? GetPackageBySet(string set)
     {
         using var ctx = GetSongDbContext();
         return ctx.Query<ArcaeaSongDbPackage>()
             .FirstOrDefault(package => package.Set == set);
+    }
+
+    public async Task<List<ArcaeaSongDbChart>> GetAllCharts()
+    {
+        using var ctx = GetSongDbContext();
+        return await ctx.Query<ArcaeaSongDbChart>().ToListAsync();
+    }
+
+    public async Task<List<ArcaeaSongDbPackage>> GetAllPackages()
+    {
+        using var ctx = GetSongDbContext();
+        return await ctx.Query<ArcaeaSongDbPackage>().ToListAsync();
+    }
+
+    public async Task<List<ArcaeaSongDbAlias>> GetAllAliases()
+    {
+        using var ctx = GetSongDbContext();
+        return await ctx.Query<ArcaeaSongDbAlias>().ToListAsync();
     }
 
     /// <summary>
@@ -62,7 +67,7 @@ public static class ArcaeaSongDatabase
     /// </summary>
     /// <param name="source">搜索文本</param>
     /// <returns>搜索到的曲目，若未搜索到返回 null</returns>
-    public static async Task<ArcaeaSong?> FuzzySearchSong(string source)
+    public async Task<ArcaeaSong?> FuzzySearchSong(string source)
     {
         using var ctx = GetSongDbContext();
 
@@ -83,7 +88,7 @@ public static class ArcaeaSongDatabase
     /// <param name="source">搜索文本</param>
     /// <param name="songDbContext"></param>
     /// <returns>搜索到的曲目 ID，若未搜索到返回 null</returns>
-    public static async Task<string?> FuzzySearchId(string source, IDbContext? songDbContext = null)
+    public async Task<string?> FuzzySearchId(string source, IDbContext? songDbContext = null)
     {
         if (string.IsNullOrWhiteSpace(source))
             return null;
@@ -112,5 +117,35 @@ public static class ArcaeaSongDatabase
                 charts.FirstOrDefault(chart => source.Length > 4 &&
                                                chart.NameEn.RemoveString(" ").ToLower().Contains(source)))
             ?.SongId;
+    }
+
+    public async Task InsertOrUpdateChart(ArcaeaSongDbChart chart)
+    {
+        using var ctx = GetSongDbContext();
+        await ctx.Session.ExecuteNonQueryAsync("PRAGMA foreign_keys = OFF");
+        await ctx.InsertOrUpdateAsync(chart);
+    }
+
+    public async Task InsertOrUpdatePackage(ArcaeaSongDbPackage package)
+    {
+        using var ctx = GetSongDbContext();
+        await ctx.Session.ExecuteNonQueryAsync("PRAGMA foreign_keys = OFF");
+        await ctx.InsertOrUpdateAsync(package);
+    }
+
+    public async Task InsertOrUpdateAlias(ArcaeaSongDbAlias alias)
+    {
+        using var ctx = GetSongDbContext();
+        await ctx.Session.ExecuteNonQueryAsync("PRAGMA foreign_keys = OFF");
+        await ctx.InsertOrUpdateAsync(alias);
+    }
+
+    public Task InsertOrUpdateAlias(string songId, string alias)
+    {
+        return InsertOrUpdateAlias(new ArcaeaSongDbAlias
+        {
+            Alias = alias,
+            SongId = songId
+        });
     }
 }

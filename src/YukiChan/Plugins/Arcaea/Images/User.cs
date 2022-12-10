@@ -13,7 +13,7 @@ using LiveChartsCore.SkiaSharpView.SKCharts;
 using Microsoft.Extensions.Logging;
 using SkiaSharp;
 using Websocket.Client;
-using YukiChan.Plugins.Arcaea.Models;
+using YukiChan.Plugins.Arcaea.Factories;
 using YukiChan.Shared;
 using YukiChan.Shared.Database.Models.Arcaea;
 using YukiChan.Shared.Utils;
@@ -121,7 +121,7 @@ public static partial class ArcaeaImageGenerator
             var cover = await auaClient.GetSongCover(user.RecentScore![0].SongId, user.SongInfo![0].JacketOverride,
                 (ArcaeaDifficulty)user.RecentScore[0].Difficulty, pref.Nya, logger);
             canvas.DrawMiniScoreCard(2200, 1480,
-                ArcaeaRecord.FromAua(user.RecentScore[0], user.SongInfo[0]), cover, 0, pref.Dark);
+                ArcaeaRecordFactory.FromAua(user.RecentScore[0], user.SongInfo[0]), cover, 0, pref.Dark);
         }
 
         {
