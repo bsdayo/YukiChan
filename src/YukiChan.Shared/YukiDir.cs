@@ -19,6 +19,9 @@ public static class YukiDir
     // Images
     public static readonly string CatAssets = Path.Combine(Assets, "cats");
     public static readonly string CapooAssets = Path.Combine(Assets, "capoo");
+    
+    // HttpCat
+    public static readonly string HttpCatCache = Path.Combine(Cache, "httpcat");
 
     public static void CreateIfNotExists(string path)
     {
@@ -40,7 +43,10 @@ public static class YukiDir
             $"{ArcaeaCache}/song", $"{ArcaeaCache}/char", $"{ArcaeaCache}/preview",
 
             // Images
-            $"{Assets}/cats", $"{Assets}/capoo"
+            $"{Assets}/cats", $"{Assets}/capoo",
+            
+            // HttpCat
+            HttpCatCache
         };
 
         foreach (var dir in dirs)

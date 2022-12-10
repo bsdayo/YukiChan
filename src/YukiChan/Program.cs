@@ -19,17 +19,13 @@ namespace YukiChan;
 
 public static class Program
 {
-    private static readonly YukiConfig YukiConfig = GetYukiConfig();
+    private static readonly YukiConfig YukiConfig = GetYukiConfig().Customize();
 
     public static void Main(string[] args)
     {
         YukiDir.EnsureExistence();
-        if (args.Contains("--complete-configs"))
-            File.WriteAllText($"{YukiDir.Configs}/yuki.toml", Toml.FromModel(YukiConfig));
 
         var builder = new FlandreAppBuilder(YukiConfig.App);
-
-        YukiConfig.Plugins.WolframAlpha.FontPath = $"{YukiDir.Assets}/fonts/TitilliumWeb-SemiBold.ttf";
 
         builder.ConfigureSerilog().AddYukiServices()
 
@@ -127,4 +123,11 @@ public static class Program
     }
 
     #endregion
+
+    private static YukiConfig Customize(this YukiConfig config)
+    {
+        config.Plugins.WolframAlpha.FontPath = $"{YukiDir.Assets}/fonts/TitilliumWeb-SemiBold.ttf";
+        config.Plugins.HttpCat.CachePath = YukiDir.HttpCatCache;
+        return config;
+    }
 }
