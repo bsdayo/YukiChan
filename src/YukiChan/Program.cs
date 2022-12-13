@@ -34,6 +34,7 @@ public static class Program
             .UseBaiduTranslatePlugin(YukiConfig.Plugins.BaiduTranslate)
             .UseWolframAlphaPlugin(YukiConfig.Plugins.WolframAlpha)
             .UseHttpCatPlugin(YukiConfig.Plugins.HttpCat)
+            .UseSandBoxPlugin(YukiConfig.Plugins.SandBox)
             .UsePlugin<StatusPlugin>()
             .UsePlugin<ImagesPlugin>()
             .UsePlugin<DebugPlugin>()
