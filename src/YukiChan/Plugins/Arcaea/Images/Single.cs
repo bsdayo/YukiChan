@@ -16,7 +16,7 @@ public static partial class ArcaeaImageGenerator
         return await Task.Run(() =>
         {
             var imageInfo = new SKImageInfo(900, 1520);
-            using var surface = SKSurface.Create(imageInfo);
+            var surface = SKSurface.Create(imageInfo);
             var canvas = surface.Canvas;
 
             var cover = client
@@ -26,6 +26,13 @@ public static partial class ArcaeaImageGenerator
             var (colorLight, colorDark, colorBorderLight, colorBorderDark, colorInnerLight, colorInnerDark)
                 = DifficultyColors[(int)record.Difficulty];
 
+            if (pref.SingleDynamicBackground)
+            {
+                using var bgBitmap =
+                    SKBitmap.Decode(GetSingleBackground(record, client, logger).GetAwaiter().GetResult())!;
+                canvas.DrawBitmap(bgBitmap, 0, 0);
+            }
+            else
             {
                 var bgPath = $"{YukiDir.ArcaeaAssets}/images/single-background.jpg";
                 using var background = SKBitmap.Decode(bgPath);
@@ -39,8 +46,8 @@ public static partial class ArcaeaImageGenerator
                 canvas.DrawBitmap(scaledBackground, 0, 0);
             }
 
+            // 背景
             {
-                // 背景
                 using var cardPaint = new SKPaint
                 {
                     Color = pref.Dark
@@ -252,7 +259,44 @@ public static partial class ArcaeaImageGenerator
 
             using var image = surface.Snapshot();
             using var data = image.Encode(SKEncodedImageFormat.Jpeg, 70);
+            canvas.Dispose();
+            surface.Dispose();
             return data.ToArray();
         });
+    }
+
+    public static async Task<byte[]> GetSingleBackground(ArcaeaRecord record, AuaClient client, ILogger? logger)
+    {
+        var path = record.JacketOverride
+            ? $"{YukiDir.ArcaeaCache}/single-dynamic-bg/{record.SongId}-{record.Difficulty.ToString().ToLower()}.jpg"
+            : $"{YukiDir.ArcaeaCache}/single-dynamic-bg/{record.SongId}.jpg";
+
+        if (File.Exists(path))
+            return await File.ReadAllBytesAsync(path);
+
+        var coverBitmap = SKBitmap.Decode(
+            await client.GetSongCover(record.SongId, record.JacketOverride, record.Difficulty, false, logger))!;
+        using var scaledCoverBitmap = new SKBitmap(1520, 1520);
+        coverBitmap.ScalePixels(scaledCoverBitmap, SKFilterQuality.Low);
+        coverBitmap.Dispose();
+
+        var imageInfo = new SKImageInfo(900, 1520);
+        using var surface = SKSurface.Create(imageInfo);
+        using var canvas = surface.Canvas;
+
+        using var paint = new SKPaint
+        {
+            ImageFilter = SKImageFilter.CreateBlur(15, 15)
+        };
+        canvas.DrawBitmap(scaledCoverBitmap, -310, 0, paint);
+
+        using var image = surface.Snapshot();
+        using var data = image.Encode(SKEncodedImageFormat.Jpeg, 70);
+
+        var result = data.ToArray();
+
+        await File.WriteAllBytesAsync(path, result);
+
+        return result;
     }
 }

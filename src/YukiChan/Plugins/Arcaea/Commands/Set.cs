@@ -26,7 +26,7 @@ public partial class ArcaeaPlugin
         foreach (var prefStr in prefStrList)
         {
             var set = prefStr.Split('=');
-            switch (set[0].ToLower())
+            switch (set[0].ToLower().Replace("_", ""))
             {
                 case "dark":
                     pref.Dark = ParseBoolSet(set);
@@ -34,6 +34,10 @@ public partial class ArcaeaPlugin
 
                 case "nya":
                     pref.Nya = ParseBoolSet(set);
+                    break;
+
+                case "singledynamicbg":
+                    pref.SingleDynamicBackground = ParseBoolSet(set);
                     break;
             }
         }

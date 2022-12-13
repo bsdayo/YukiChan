@@ -19,7 +19,7 @@ public static class YukiDir
     // Images
     public static readonly string CatAssets = Path.Combine(Assets, "cats");
     public static readonly string CapooAssets = Path.Combine(Assets, "capoo");
-    
+
     // HttpCat
     public static readonly string HttpCatCache = Path.Combine(Cache, "httpcat");
 
@@ -41,10 +41,11 @@ public static class YukiDir
             // Arcaea
             $"{ArcaeaAssets}/audio-preview", $"{ArcaeaAssets}/aff", $"{ArcaeaAssets}/images",
             $"{ArcaeaCache}/song", $"{ArcaeaCache}/char", $"{ArcaeaCache}/preview",
+            $"{ArcaeaCache}/single-dynamic-bg",
 
             // Images
             $"{Assets}/cats", $"{Assets}/capoo",
-            
+
             // HttpCat
             HttpCatCache
         };

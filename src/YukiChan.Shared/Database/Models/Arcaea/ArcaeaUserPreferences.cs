@@ -16,4 +16,6 @@ public class ArcaeaUserPreferences
     [Column("dark")] public bool Dark { get; set; }
 
     [Column("nya")] public bool Nya { get; set; }
+
+    [Column("single_dynamic_bg")] public bool SingleDynamicBackground { get; set; }
 }
