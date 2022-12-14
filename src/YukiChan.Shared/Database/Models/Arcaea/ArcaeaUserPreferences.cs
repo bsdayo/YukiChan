@@ -17,5 +17,5 @@ public class ArcaeaUserPreferences
 
     [Column("nya")] public bool Nya { get; set; }
 
-    [Column("single_dynamic_bg")] public bool SingleDynamicBackground { get; set; }
+    [Column("single_dynamic_bg")] public bool SingleDynamicBackground { get; set; } = true;
 }
