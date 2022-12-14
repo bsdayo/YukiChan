@@ -2,6 +2,7 @@
 using Flandre.Plugins.BaiduTranslate;
 using Flandre.Plugins.HttpCat;
 using Flandre.Plugins.WolframAlpha;
+using YukiChan.Plugins;
 using YukiChan.Plugins.Arcaea;
 using YukiChan.Plugins.SandBox;
 
@@ -31,4 +32,6 @@ public class YukiPluginsConfig
     public BaiduTranslatePluginConfig BaiduTranslate { get; set; } = new();
 
     public SandBoxPluginConfig SandBox { get; set; } = new();
+
+    public AutoAcceptPluginConfig AutoAccept { get; set; } = new();
 }

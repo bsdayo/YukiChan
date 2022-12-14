@@ -38,6 +38,7 @@ public static class Program
             .UsePlugin<StatusPlugin>()
             .UsePlugin<ImagesPlugin>()
             .UsePlugin<DebugPlugin>()
+            .UsePlugin<AutoAcceptPlugin>(YukiConfig.Plugins.AutoAccept)
             .UsePlugin<MainBotPlugin>()
 
             // Build FlandreApp
