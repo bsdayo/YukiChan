@@ -50,6 +50,7 @@ public sealed class SandBoxService
         "Environment"
     };
 
+    // lang=csharp
     private const string InitCode = """
         static string Dump<T>(this IEnumerable<T> e) =>
             "[" + string.Join(", ", e) + "]";
@@ -57,7 +58,8 @@ public sealed class SandBoxService
         static T Random<T>(this IEnumerable<T> e) =>
             e.ElementAt(new Random().Next(e.Count()));
 
-        var 文档 = "↓↓↓↓↓\nhttps://docs.sorabs.cc/YukiChan/\n↑↑↑↑↑";
+        string 文档 => "https://docs.sorabs.cc/YukiChan/";
+        string 看文档 => 文档;
         """;
 
     public Exception? LastException { get; private set; }
