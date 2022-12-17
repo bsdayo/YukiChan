@@ -50,6 +50,16 @@ public sealed class SandBoxService
         "Environment"
     };
 
+    private const string InitCode = """
+        static string Dump<T>(this IEnumerable<T> e) =>
+            "[" + string.Join(", ", e) + "]";
+
+        static T Random<T>(this IEnumerable<T> e) =>
+            e.ElementAt(new Random().Next(e.Count()));
+
+        var 文档 = "↓↓↓↓↓\nhttps://docs.sorabs.cc/YukiChan/\n↑↑↑↑↑";
+        """;
+
     public Exception? LastException { get; private set; }
 
     public SandBoxService(ILogger<SandBoxPlugin> logger)
@@ -68,7 +78,7 @@ public sealed class SandBoxService
             return _scriptState;
 
         return _scriptState = await CSharpScript
-            .Create<object?>(string.Empty, _scriptOptions)
+            .Create<object?>(InitCode, _scriptOptions)
             .RunAsync(null, _ => true);
     }
 
