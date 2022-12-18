@@ -1,22 +1,23 @@
-﻿using SkiaSharp;
+﻿using ArcaeaUnlimitedAPI.Lib;
+using SkiaSharp;
 using YukiChan.Shared;
 
 // ReSharper disable InconsistentNaming
 
-namespace YukiChan.Plugins.Arcaea.Images;
+namespace YukiChan.ImageGen.Arcaea;
 
-public static partial class ArcaeaImageGenerator
+public partial class ArcaeaImageGenerator
 {
-    private static SKTypeface TitilliumWeb_Regular =>
+    private readonly SKTypeface TitilliumWeb_Regular =
         SKTypeface.FromFile($"{YukiDir.Assets}/fonts/TitilliumWeb-Regular.ttf");
 
-    private static SKTypeface TitilliumWeb_SemiBold =>
+    private readonly SKTypeface TitilliumWeb_SemiBold =
         SKTypeface.FromFile($"{YukiDir.Assets}/fonts/TitilliumWeb-SemiBold.ttf");
 
-    private static SKTypeface GeoSans =>
+    private readonly SKTypeface GeoSans =
         SKTypeface.FromFile($"{YukiDir.Assets}/fonts/GeosansLight.ttf");
 
-    private static readonly List<(
+    private readonly List<(
         string ColorLight, string ColorDark,
         string ColorBorderLight, string ColorBorderDark,
         string ColorInnerLight, string ColorInnerDark)> DifficultyColors = new()

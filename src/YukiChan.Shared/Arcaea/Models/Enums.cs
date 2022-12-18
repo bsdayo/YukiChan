@@ -1,4 +1,4 @@
-﻿namespace YukiChan.Shared.Models.Arcaea;
+﻿namespace YukiChan.Shared.Arcaea.Models;
 
 // ReSharper disable InconsistentNaming
 public enum ArcaeaClearType
@@ -20,4 +20,14 @@ public enum ArcaeaGrade
     AA,
     EX,
     EXP
+}
+
+public enum ArcaeaGuessMode
+{
+    Easy, // 简单
+    Normal, // 正常
+    Hard, // 困难
+    Flash, // 闪照
+    GrayScale, // 灰度
+    Invert // 反色
 }

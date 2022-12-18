@@ -13,18 +13,19 @@ using LiveChartsCore.SkiaSharpView.SKCharts;
 using Microsoft.Extensions.Logging;
 using SkiaSharp;
 using Websocket.Client;
-using YukiChan.Plugins.Arcaea.Factories;
+using YukiChan.ImageGen.Utils;
 using YukiChan.Shared;
+using YukiChan.Shared.Arcaea;
+using YukiChan.Shared.Arcaea.Factories;
 using YukiChan.Shared.Database.Models.Arcaea;
 using YukiChan.Shared.Utils;
-using YukiChan.Utils;
 using Timer = System.Timers.Timer;
 
-namespace YukiChan.Plugins.Arcaea.Images;
+namespace YukiChan.ImageGen.Arcaea;
 
-public static partial class ArcaeaImageGenerator
+public partial class ArcaeaImageGenerator
 {
-    public static async Task<byte[]> User(AuaUserInfoContent user, ArcaeaUserPreferences pref, AuaClient auaClient,
+    public async Task<byte[]> User(AuaUserInfoContent user, ArcaeaUserPreferences pref, AuaClient auaClient,
         int lastDays, bool smooth, ILogger logger)
     {
         var imageInfo = new SKImageInfo(3400, 2000);
@@ -120,7 +121,7 @@ public static partial class ArcaeaImageGenerator
             // 最近游玩
             var cover = await auaClient.GetSongCover(user.RecentScore![0].SongId, user.SongInfo![0].JacketOverride,
                 (ArcaeaDifficulty)user.RecentScore[0].Difficulty, pref.Nya, logger);
-            canvas.DrawMiniScoreCard(2200, 1480,
+            DrawMiniScoreCard(canvas, 2200, 1480,
                 ArcaeaRecordFactory.FromAua(user.RecentScore[0], user.SongInfo[0]), cover, 0, pref.Dark);
         }
 
@@ -142,7 +143,7 @@ public static partial class ArcaeaImageGenerator
         return data.ToArray();
     }
 
-    private static Task<(SKImage, double, double, double, double)> GetRatingRecordsChartImage(string userId,
+    private Task<(SKImage, double, double, double, double)> GetRatingRecordsChartImage(string userId,
         int userPtt, int width,
         int height,
         ArcaeaUserPreferences pref, int lastDays, bool smooth, ILogger logger)

@@ -1,7 +1,7 @@
 ﻿using ArcaeaUnlimitedAPI.Lib.Responses;
-using YukiChan.Shared.Models.Arcaea;
+using YukiChan.Shared.Arcaea.Models;
 
-namespace YukiChan.Plugins.Arcaea.Factories;
+namespace YukiChan.Shared.Arcaea.Factories;
 
 public static class ArcaeaBest30Factory
 {

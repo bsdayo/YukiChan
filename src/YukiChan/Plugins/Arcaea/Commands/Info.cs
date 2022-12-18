@@ -3,6 +3,7 @@ using Flandre.Core.Messaging;
 using Flandre.Core.Messaging.Segments;
 using Flandre.Framework.Attributes;
 using Flandre.Framework.Common;
+using YukiChan.Shared.Arcaea;
 using YukiChan.Shared.Database;
 using YukiChan.Shared.Utils;
 

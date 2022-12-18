@@ -1,6 +1,6 @@
 ﻿using YukiChan.Shared.Database;
 
-namespace YukiChan.Shared.Models.Arcaea;
+namespace YukiChan.Shared.Arcaea.Models;
 
 #pragma warning disable CS8618
 // ReSharper disable UnusedAutoPropertyAccessor.Global

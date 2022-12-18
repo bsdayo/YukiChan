@@ -1,6 +1,6 @@
 ﻿using Chloe.Annotations;
 
-namespace YukiChan.Shared.Models.Arcaea;
+namespace YukiChan.Shared.Arcaea.Models;
 
 #pragma warning disable CS8618
 

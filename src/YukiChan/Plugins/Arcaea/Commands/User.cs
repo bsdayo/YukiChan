@@ -3,7 +3,6 @@ using Flandre.Core.Messaging;
 using Flandre.Framework.Attributes;
 using Flandre.Framework.Common;
 using Microsoft.Extensions.Logging;
-using YukiChan.Plugins.Arcaea.Images;
 using YukiChan.Shared.Database.Models.Arcaea;
 using YukiChan.Shared.Utils;
 
@@ -57,7 +56,8 @@ public partial class ArcaeaPlugin
                        ?? new ArcaeaUserPreferences();
             pref.Dark = pref.Dark || args.GetOption<bool>("dark");
             pref.Nya = pref.Nya || args.GetOption<bool>("nya");
-            var image = await ArcaeaImageGenerator.User(userInfo, pref, _service.AuaClient, lastDays, smooth, _logger);
+            var image = await _service.ImageGenerator.User(userInfo, pref, _service.AuaClient, lastDays, smooth,
+                _logger);
             _logger.LogDebug("Generation done.");
             return ctx.Reply().Image(image);
         }

@@ -2,7 +2,7 @@
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
-namespace YukiChan.Shared.Models.Arcaea;
+namespace YukiChan.Shared.Arcaea.Models;
 
 public sealed class ArcaeaBest30
 {

@@ -5,10 +5,9 @@ using Flandre.Core.Messaging.Segments;
 using Flandre.Framework.Attributes;
 using Flandre.Framework.Common;
 using Microsoft.Extensions.Logging;
-using YukiChan.Plugins.Arcaea.Factories;
-using YukiChan.Plugins.Arcaea.Images;
+using YukiChan.Shared.Arcaea.Factories;
+using YukiChan.Shared.Arcaea.Models;
 using YukiChan.Shared.Database.Models.Arcaea;
-using YukiChan.Shared.Models.Arcaea;
 using YukiChan.Shared.Utils;
 
 // ReSharper disable CheckNamespace
@@ -100,7 +99,7 @@ public partial class ArcaeaPlugin
             pref.Dark = pref.Dark || args.GetOption<bool>("dark");
             pref.Nya = pref.Nya || args.GetOption<bool>("nya");
 
-            var image = await ArcaeaImageGenerator.Best30(best30, _service.AuaClient, pref, _logger);
+            var image = await _service.ImageGenerator.Best30(best30, _service.AuaClient, pref, _logger);
 
             return ctx.Reply().Image(ImageSegment.FromData(image));
         }

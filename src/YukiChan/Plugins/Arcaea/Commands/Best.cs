@@ -6,8 +6,8 @@ using Flandre.Core.Messaging.Segments;
 using Flandre.Framework.Attributes;
 using Flandre.Framework.Common;
 using Microsoft.Extensions.Logging;
-using YukiChan.Plugins.Arcaea.Factories;
-using YukiChan.Plugins.Arcaea.Images;
+using YukiChan.Shared.Arcaea;
+using YukiChan.Shared.Arcaea.Factories;
 using YukiChan.Shared.Database;
 using YukiChan.Shared.Database.Models.Arcaea;
 using YukiChan.Shared.Utils;
@@ -74,7 +74,7 @@ public partial class ArcaeaPlugin
 
             var best = ArcaeaRecordFactory.FromAua(auaBest.Record, auaBest.SongInfo![0]);
             var user = ArcaeaUserFactory.FromAua(auaBest.AccountInfo);
-            var image = await ArcaeaImageGenerator.Single(user, best, _service.AuaClient, pref, _logger);
+            var image = await _service.ImageGenerator.Single(user, best, _service.AuaClient, pref, _logger);
 
             return ctx.Reply()
                 .Text($"{user.Name} ({user.Potential})\n")

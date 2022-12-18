@@ -1,6 +1,6 @@
 ﻿using SkiaSharp;
 
-namespace YukiChan.Utils;
+namespace YukiChan.ImageGen.Utils;
 
 public static class ImageUtils
 {

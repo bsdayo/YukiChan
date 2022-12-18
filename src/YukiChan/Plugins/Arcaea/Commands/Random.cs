@@ -2,10 +2,10 @@
 using Flandre.Core.Messaging;
 using Flandre.Framework.Attributes;
 using Flandre.Framework.Common;
+using YukiChan.Shared.Arcaea;
+using YukiChan.Shared.Arcaea.Models;
 using YukiChan.Shared.Database;
-using YukiChan.Shared.Models.Arcaea;
 using YukiChan.Shared.Utils;
-using YukiChan.Utils;
 
 // ReSharper disable CheckNamespace
 

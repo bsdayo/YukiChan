@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
-namespace YukiChan.Plugins.Arcaea;
+namespace YukiChan.Shared.Arcaea;
 
 public class AlaClient
 {

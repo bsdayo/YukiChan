@@ -1,16 +1,17 @@
 ﻿using ArcaeaUnlimitedAPI.Lib;
 using Microsoft.Extensions.Logging;
 using SkiaSharp;
+using YukiChan.ImageGen.Utils;
 using YukiChan.Shared;
+using YukiChan.Shared.Arcaea;
+using YukiChan.Shared.Arcaea.Models;
 using YukiChan.Shared.Database.Models.Arcaea;
-using YukiChan.Shared.Models.Arcaea;
-using YukiChan.Utils;
 
-namespace YukiChan.Plugins.Arcaea.Images;
+namespace YukiChan.ImageGen.Arcaea;
 
-public static partial class ArcaeaImageGenerator
+public partial class ArcaeaImageGenerator
 {
-    public static async Task<byte[]> Single(ArcaeaUser user, ArcaeaRecord record, AuaClient client,
+    public async Task<byte[]> Single(ArcaeaUser user, ArcaeaRecord record, AuaClient client,
         ArcaeaUserPreferences pref, ILogger? logger = null)
     {
         return await Task.Run(() =>
@@ -265,7 +266,7 @@ public static partial class ArcaeaImageGenerator
         });
     }
 
-    public static async Task<byte[]> GetSingleBackground(ArcaeaRecord record, AuaClient client, ILogger? logger)
+    public async Task<byte[]> GetSingleBackground(ArcaeaRecord record, AuaClient client, ILogger? logger)
     {
         var path = record.JacketOverride
             ? $"{YukiDir.ArcaeaCache}/single-dynamic-bg/{record.SongId}-{record.Difficulty.ToString().ToLower()}.jpg"

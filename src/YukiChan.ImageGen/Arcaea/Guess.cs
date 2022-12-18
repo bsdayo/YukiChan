@@ -1,10 +1,11 @@
 ﻿using SkiaSharp;
+using YukiChan.Shared.Arcaea.Models;
 
-namespace YukiChan.Plugins.Arcaea.Images;
+namespace YukiChan.ImageGen.Arcaea;
 
-public static class ArcaeaGuessImageGenerator
+public partial class ArcaeaImageGenerator
 {
-    public static byte[] Generate(byte[] songCover, ArcaeaGuessMode mode)
+    public byte[] Guess(byte[] songCover, ArcaeaGuessMode mode)
     {
         using var coverBitmap = SKBitmap.Decode(songCover);
 

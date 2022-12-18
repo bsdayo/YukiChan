@@ -5,22 +5,12 @@ using Flandre.Core.Messaging;
 using Flandre.Framework.Attributes;
 using Flandre.Framework.Common;
 using Microsoft.Extensions.Logging;
-using YukiChan.Plugins.Arcaea.Images;
+using YukiChan.Shared.Arcaea;
+using YukiChan.Shared.Arcaea.Models;
 using YukiChan.Shared.Database;
-using YukiChan.Shared.Models.Arcaea;
 using YukiChan.Shared.Utils;
 
 namespace YukiChan.Plugins.Arcaea;
-
-public enum ArcaeaGuessMode
-{
-    Easy, // 简单
-    Normal, // 正常
-    Hard, // 困难
-    Flash, // 闪照
-    GrayScale, // 灰度
-    Invert // 反色
-}
 
 public partial class ArcaeaPlugin
 {
@@ -123,7 +113,7 @@ public partial class ArcaeaPlugin
         });
 #pragma warning restore CS4014
 
-        var image = ArcaeaGuessImageGenerator.Generate(cover, mode);
+        var image = _service.ImageGenerator.Guess(cover, mode);
 
         return new MessageBuilder()
             .Text($"本轮题目 [{mode.GetName()}模式]：")

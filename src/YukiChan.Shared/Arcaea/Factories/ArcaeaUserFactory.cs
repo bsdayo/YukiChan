@@ -1,8 +1,8 @@
 ﻿using ArcaeaUnlimitedAPI.Lib.Models;
-using YukiChan.Shared.Models.Arcaea;
+using YukiChan.Shared.Arcaea.Models;
 using YukiChan.Shared.Utils;
 
-namespace YukiChan.Plugins.Arcaea.Factories;
+namespace YukiChan.Shared.Arcaea.Factories;
 
 public static class ArcaeaUserFactory
 {

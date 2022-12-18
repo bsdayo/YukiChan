@@ -1,11 +1,10 @@
 ﻿using ArcaeaUnlimitedAPI.Lib;
 using ArcaeaUnlimitedAPI.Lib.Models;
 using Microsoft.Extensions.Logging;
-using YukiChan.Shared;
-using YukiChan.Shared.Models.Arcaea;
-using YukiChan.Utils;
+using YukiChan.Shared.Arcaea.Models;
+using YukiChan.Shared.Utils;
 
-namespace YukiChan.Plugins.Arcaea;
+namespace YukiChan.Shared.Arcaea;
 
 public static class ArcaeaUtils
 {

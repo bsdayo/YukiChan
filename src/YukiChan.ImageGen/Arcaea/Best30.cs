@@ -1,16 +1,17 @@
 ﻿using ArcaeaUnlimitedAPI.Lib;
 using Microsoft.Extensions.Logging;
 using SkiaSharp;
+using YukiChan.ImageGen.Utils;
 using YukiChan.Shared;
+using YukiChan.Shared.Arcaea;
+using YukiChan.Shared.Arcaea.Models;
 using YukiChan.Shared.Database.Models.Arcaea;
-using YukiChan.Shared.Models.Arcaea;
-using YukiChan.Utils;
 
-namespace YukiChan.Plugins.Arcaea.Images;
+namespace YukiChan.ImageGen.Arcaea;
 
-public static partial class ArcaeaImageGenerator
+public partial class ArcaeaImageGenerator
 {
-    public static async Task<byte[]> Best30(ArcaeaBest30 best30, AuaClient client,
+    public async Task<byte[]> Best30(ArcaeaBest30 best30, AuaClient client,
         ArcaeaUserPreferences pref, ILogger? logger = null)
     {
         return await Task.Run(() =>
@@ -126,7 +127,7 @@ public static partial class ArcaeaImageGenerator
                     .GetSongCover(record.SongId, record.JacketOverride, record.Difficulty, pref.Nya, logger)
                     .Result;
 
-                canvas.DrawMiniScoreCard(
+                DrawMiniScoreCard(canvas,
                     100 + col * 1100, 635 + row * 400, record, songCover, index + 1, pref.Dark);
             }
 
@@ -146,7 +147,7 @@ public static partial class ArcaeaImageGenerator
                         .GetSongCover(record.SongId, record.JacketOverride, record.Difficulty, pref.Nya, logger)
                         .Result;
 
-                    canvas.DrawMiniScoreCard(
+                    DrawMiniScoreCard(canvas,
                         100 + col * 1100, 4840 + row * 400, record, songCover, index + 31, pref.Dark);
                 }
 
@@ -156,7 +157,7 @@ public static partial class ArcaeaImageGenerator
         });
     }
 
-    public static void DrawMiniScoreCard(this SKCanvas canvas, int x, int y,
+    public void DrawMiniScoreCard(SKCanvas canvas, int x, int y,
         ArcaeaRecord record, byte[] songCover, int rank = 0, bool dark = false)
     {
         var (colorLight, colorDark, colorBorderLight, colorBorderDark, colorInnerLight, colorInnerDark)
@@ -295,8 +296,7 @@ public static partial class ArcaeaImageGenerator
             // 得分
             // 若理论值则绘制蓝色阴影
             if (record.ShinyPureCount == record.PureCount &&
-                record.FarCount == 0 &&
-                record.LostCount == 0)
+                record is { FarCount: 0, LostCount: 0 })
             {
                 using var maxPaint = new SKPaint
                 {

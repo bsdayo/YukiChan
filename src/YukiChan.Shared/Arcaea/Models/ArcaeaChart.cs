@@ -2,7 +2,7 @@
 
 #pragma warning disable CS8618
 
-namespace YukiChan.Shared.Models.Arcaea;
+namespace YukiChan.Shared.Arcaea.Models;
 
 public class ArcaeaChart
 {

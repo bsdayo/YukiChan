@@ -1,7 +1,7 @@
 ﻿using Chloe;
 using Chloe.SQLite;
 using Microsoft.Data.Sqlite;
-using YukiChan.Shared.Models.Arcaea;
+using YukiChan.Shared.Arcaea.Models;
 using YukiChan.Shared.Utils;
 
 namespace YukiChan.Shared.Database;
