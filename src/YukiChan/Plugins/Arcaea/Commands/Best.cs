@@ -80,10 +80,14 @@ public partial class ArcaeaPlugin
                 .Text($"{user.Name} ({user.Potential})\n")
                 .Image(ImageSegment.FromData(image));
         }
+        catch (AuaException e)
+        {
+            var errMsg = AuaErrorStatus.GetMessage(e.Status, e.Message);
+            return ctx.Reply(errMsg);
+        }
         catch (Exception e)
         {
-            if (e is not AuaException)
-                _logger.LogError(e, "Error occurred in a.best");
+            _logger.LogError(e, "Error occurred in a.best");
             return ctx.Reply($"发生了奇怪的错误！({e.Message})");
         }
     }

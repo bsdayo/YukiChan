@@ -1,4 +1,5 @@
 ﻿using ArcaeaUnlimitedAPI.Lib.Models;
+using ArcaeaUnlimitedAPI.Lib.Utils;
 using Flandre.Core.Messaging;
 using Flandre.Framework.Attributes;
 using Flandre.Framework.Common;
@@ -60,6 +61,11 @@ public partial class ArcaeaPlugin
                 _logger);
             _logger.LogDebug("Generation done.");
             return ctx.Reply().Image(image);
+        }
+        catch (AuaException e)
+        {
+            var errMsg = AuaErrorStatus.GetMessage(e.Status, e.Message);
+            return ctx.Reply(errMsg);
         }
         catch (Exception e)
         {

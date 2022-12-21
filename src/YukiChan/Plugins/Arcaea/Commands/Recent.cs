@@ -72,6 +72,11 @@ public partial class ArcaeaPlugin
                 .Text($"{info.Name} ({info.Potential})\n")
                 .Image(ImageSegment.FromData(image));
         }
+        catch (AuaException e)
+        {
+            var errMsg = AuaErrorStatus.GetMessage(e.Status, e.Message);
+            return ctx.Reply(errMsg);
+        }
         catch (Exception e)
         {
             if (e is not AuaException)

@@ -39,9 +39,10 @@ public partial class ArcaeaPlugin
 
             return ctx.Reply(reply);
         }
-        catch (AuaException ae)
+        catch (AuaException e)
         {
-            return ctx.Reply($"发生了奇怪的错误！({ae.Message})");
+            var errMsg = AuaErrorStatus.GetMessage(e.Status, e.Message);
+            return ctx.Reply(errMsg);
         }
         catch (Exception e)
         {
