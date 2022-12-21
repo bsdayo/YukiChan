@@ -63,7 +63,7 @@ public partial class ArcaeaImageGenerator
 
         {
             // 立绘
-            var charImage = await auaClient.GetCharImage(
+            var charImage = await ArcaeaUtils.GetCharImage(auaClient,
                 user.AccountInfo.Character, user.AccountInfo.IsCharUncapped, logger);
             using var charBitmap = SKBitmap.Decode(charImage);
             using var resized = new SKBitmap(1550, 1550);
@@ -119,7 +119,8 @@ public partial class ArcaeaImageGenerator
 
         {
             // 最近游玩
-            var cover = await auaClient.GetSongCover(user.RecentScore![0].SongId, user.SongInfo![0].JacketOverride,
+            var cover = await ArcaeaUtils.GetSongCover(auaClient,
+                user.RecentScore![0].SongId, user.SongInfo![0].JacketOverride,
                 (ArcaeaDifficulty)user.RecentScore[0].Difficulty, pref.Nya, logger);
             DrawMiniScoreCard(canvas, 2200, 1480,
                 ArcaeaRecordFactory.FromAua(user.RecentScore[0], user.SongInfo[0]), cover, 0, pref.Dark);

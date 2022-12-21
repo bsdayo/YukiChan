@@ -12,6 +12,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\YukiChan.ImageGen\YukiChan.ImageGen.csproj" />
       <ProjectReference Include="..\YukiChan.Shared\YukiChan.Shared.csproj" />
     </ItemGroup>
 

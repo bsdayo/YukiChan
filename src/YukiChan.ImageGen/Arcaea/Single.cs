@@ -20,9 +20,9 @@ public partial class ArcaeaImageGenerator
             var surface = SKSurface.Create(imageInfo);
             var canvas = surface.Canvas;
 
-            var cover = client
-                .GetSongCover(record.SongId, record.JacketOverride, record.Difficulty, pref.Nya, logger)
-                .Result;
+            var cover = ArcaeaUtils
+                .GetSongCover(client, record.SongId, record.JacketOverride, record.Difficulty, pref.Nya, logger)
+                .GetAwaiter().GetResult();
 
             var (colorLight, colorDark, colorBorderLight, colorBorderDark, colorInnerLight, colorInnerDark)
                 = DifficultyColors[(int)record.Difficulty];
@@ -276,7 +276,8 @@ public partial class ArcaeaImageGenerator
             return await File.ReadAllBytesAsync(path);
 
         var coverBitmap = SKBitmap.Decode(
-            await client.GetSongCover(record.SongId, record.JacketOverride, record.Difficulty, false, logger))!;
+            await ArcaeaUtils.GetSongCover(client, record.SongId, record.JacketOverride, record.Difficulty, false,
+                logger))!;
         using var scaledCoverBitmap = new SKBitmap(1520, 1520);
         coverBitmap.ScalePixels(scaledCoverBitmap, SKFilterQuality.Low);
         coverBitmap.Dispose();

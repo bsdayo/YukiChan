@@ -7,7 +7,6 @@ using Flandre.Framework.Common;
 using Microsoft.Extensions.Logging;
 using YukiChan.Shared.Arcaea;
 using YukiChan.Shared.Arcaea.Models;
-using YukiChan.Shared.Database;
 using YukiChan.Shared.Utils;
 
 namespace YukiChan.Plugins.Arcaea;
@@ -86,7 +85,8 @@ public partial class ArcaeaPlugin
             .Where(chart => chart.RatingClass == (int)ArcaeaDifficulty.Future)
             .ToArray();
         var randomChart = allCharts[new Random().Next(allCharts.Length)];
-        var cover = await _service.AuaClient.GetSongCover(randomChart.SongId, randomChart.JacketOverride,
+        var cover = await ArcaeaUtils.GetSongCover(_service.AuaClient,
+            randomChart.SongId, randomChart.JacketOverride,
             (ArcaeaDifficulty)randomChart.RatingClass);
 
         GuessSessions[sessionId].Chart = randomChart;

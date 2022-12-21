@@ -4,7 +4,6 @@ using Flandre.Framework.Attributes;
 using Flandre.Framework.Common;
 using YukiChan.Shared.Arcaea;
 using YukiChan.Shared.Arcaea.Models;
-using YukiChan.Shared.Database;
 using YukiChan.Shared.Utils;
 
 // ReSharper disable CheckNamespace
@@ -85,7 +84,7 @@ public partial class ArcaeaPlugin
 
         var chart = allCharts[new Random().Next(allCharts.Length)];
 
-        var songCover = await _service.AuaClient.GetSongCover(
+        var songCover = await ArcaeaUtils.GetSongCover(_service.AuaClient,
             chart.SongId, chart.JacketOverride, (ArcaeaDifficulty)chart.RatingClass);
 
         return ctx.Reply()
@@ -94,6 +93,6 @@ public partial class ArcaeaPlugin
             .Text($"{chart.NameEn}\n")
             .Text($"({ArcaeaSongDatabase.Default.GetPackageBySet(chart.Set)!.Name})\n")
             .Text(
-                $"{(ArcaeaDifficulty)chart.RatingClass} {chart.Rating.GetDifficulty()} [{((double)chart.Rating / 10).ToString("0.0")}]");
+                $"{(ArcaeaDifficulty)chart.RatingClass} {chart.Rating.GetRatingText()} [{((double)chart.Rating / 10).ToString("0.0")}]");
     }
 }

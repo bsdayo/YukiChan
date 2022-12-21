@@ -9,7 +9,11 @@ var app = new CommandApp(new TypeRegistrar(services));
 
 app.Configure(config =>
 {
-    config.AddBranch("arcaea", arcaea => { arcaea.AddCommand<UpdateSongDbCommand>("update-songdb"); });
+    config.AddBranch("arcaea", arcaea =>
+    {
+        arcaea.AddCommand<UpdateSongDbCommand>("update-songdb");
+        arcaea.AddCommand<GenFakeB30Command>("gen-fake-b30");
+    });
 });
 
 return app.Run(args);

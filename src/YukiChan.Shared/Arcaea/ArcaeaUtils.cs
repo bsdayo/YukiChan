@@ -13,7 +13,7 @@ public static class ArcaeaUtils
     /// </summary>
     /// <param name="rating">曲目 rating (定数*10)</param>
     /// <returns>难度文本</returns>
-    public static string GetDifficulty(this int rating)
+    public static string GetRatingText(this int rating)
     {
         var i = rating;
 
@@ -56,6 +56,9 @@ public static class ArcaeaUtils
         };
     }
 
+    public static Task<byte[]> GetDefaultCover() => File.ReadAllBytesAsync(
+        $"{YukiDir.ArcaeaAssets}/images/song-cover-placeholder.png");
+
     /// <summary>
     /// 获取曲绘，首选从缓存获取，若缓存不存在则向 AUA 请求
     /// </summary>
@@ -65,8 +68,8 @@ public static class ArcaeaUtils
     /// <param name="difficulty">谱面难度</param>
     /// <param name="nya">使用 arcanya 曲绘</param>
     /// <param name="logger">日志记录</param>
-    public static async Task<byte[]> GetSongCover(this AuaClient client, string songId,
-        bool jacketOverride = false, ArcaeaDifficulty difficulty = ArcaeaDifficulty.Future, bool nya = false,
+    public static async Task<byte[]> GetSongCover(AuaClient? client, string songId, bool jacketOverride = false,
+        ArcaeaDifficulty difficulty = ArcaeaDifficulty.Future, bool nya = false,
         ILogger? logger = null)
     {
         byte[] songCover;
@@ -89,6 +92,8 @@ public static class ArcaeaUtils
                 if (File.Exists(path))
                     return await File.ReadAllBytesAsync(path);
 
+                if (client is null) return await GetDefaultCover();
+
                 songCover = await client.Assets.Song(songId, AuaSongQueryType.SongId, difficulty);
                 await File.WriteAllBytesAsync(path, songCover);
                 logger?.SaveCache(path);
@@ -99,6 +104,8 @@ public static class ArcaeaUtils
                 if (File.Exists(path))
                     return await File.ReadAllBytesAsync(path);
 
+                if (client is null) return await GetDefaultCover();
+
                 songCover = await client.Assets.Song(songId, AuaSongQueryType.SongId);
                 await File.WriteAllBytesAsync(path, songCover);
                 logger?.SaveCache(path);
@@ -106,14 +113,13 @@ public static class ArcaeaUtils
         }
         catch
         {
-            songCover = await File.ReadAllBytesAsync(
-                $"{YukiDir.ArcaeaAssets}/images/song-cover-placeholder.png");
+            return await GetDefaultCover();
         }
 
         return songCover;
     }
 
-    public static async Task<byte[]> GetCharImage(this AuaClient client, int charId,
+    public static async Task<byte[]> GetCharImage(AuaClient? client, int charId,
         bool awakened = false, ILogger? logger = null)
     {
         byte[] charImage;
@@ -124,14 +130,15 @@ public static class ArcaeaUtils
             if (File.Exists(path))
                 return await File.ReadAllBytesAsync(path);
 
+            if (client is null) return await GetDefaultCover();
+
             charImage = await client.Assets.Char(charId, awakened);
             await File.WriteAllBytesAsync(path, charImage);
             logger?.SaveCache(path);
         }
         catch
         {
-            charImage = await File.ReadAllBytesAsync(
-                $"{YukiDir.ArcaeaAssets}/images/song-cover-placeholder.png");
+            return await GetDefaultCover();
         }
 
         return charImage;

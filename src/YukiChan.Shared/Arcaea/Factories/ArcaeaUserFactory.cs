@@ -32,8 +32,14 @@ public static class ArcaeaUserFactory
         };
     }
 
-    public static ArcaeaUser FromAla(AlaUser info, int usercode)
+    public static ArcaeaUser GenerateFake()
     {
-        return FromAla(info, usercode.ToString().PadLeft(9, '0'));
+        return new ArcaeaUser
+        {
+            Name = "yyw",
+            Id = "007355608",
+            Potential = "99.99",
+            JoinDate = DateTime.UnixEpoch.ToString("yyyy.MM.dd HH:mm:ss")
+        };
     }
 }

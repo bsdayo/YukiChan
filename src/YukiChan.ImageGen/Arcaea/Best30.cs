@@ -11,8 +11,9 @@ namespace YukiChan.ImageGen.Arcaea;
 
 public partial class ArcaeaImageGenerator
 {
-    public async Task<byte[]> Best30(ArcaeaBest30 best30, AuaClient client,
-        ArcaeaUserPreferences pref, ILogger? logger = null)
+    public async Task<byte[]> Best30(ArcaeaBest30 best30,
+        ArcaeaUserPreferences pref, AuaClient? client = null,
+        ILogger? logger = null)
     {
         return await Task.Run(() =>
         {
@@ -123,9 +124,9 @@ public partial class ArcaeaImageGenerator
 
                 var record = best30.Records[index];
 
-                var songCover = client
-                    .GetSongCover(record.SongId, record.JacketOverride, record.Difficulty, pref.Nya, logger)
-                    .Result;
+                var songCover = ArcaeaUtils
+                    .GetSongCover(client, record.SongId, record.JacketOverride, record.Difficulty, pref.Nya, logger)
+                    .GetAwaiter().GetResult();
 
                 DrawMiniScoreCard(canvas,
                     100 + col * 1100, 635 + row * 400, record, songCover, index + 1, pref.Dark);
@@ -143,9 +144,9 @@ public partial class ArcaeaImageGenerator
 
                     var record = best30.OverflowRecords![index];
 
-                    var songCover = client
-                        .GetSongCover(record.SongId, record.JacketOverride, record.Difficulty, pref.Nya, logger)
-                        .Result;
+                    var songCover = ArcaeaUtils
+                        .GetSongCover(client, record.SongId, record.JacketOverride, record.Difficulty, pref.Nya, logger)
+                        .GetAwaiter().GetResult();
 
                     DrawMiniScoreCard(canvas,
                         100 + col * 1100, 4840 + row * 400, record, songCover, index + 31, pref.Dark);

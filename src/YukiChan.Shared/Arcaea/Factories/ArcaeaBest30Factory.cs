@@ -48,4 +48,23 @@ public static class ArcaeaBest30Factory
 
         return best30;
     }
+
+    public static ArcaeaBest30 GenerateFake()
+    {
+        var allRecords = ArcaeaSongDatabase.Default
+            .GetAllCharts().GetAwaiter().GetResult()
+            .OrderByDescending(chart => chart.Rating)
+            .Take(40)
+            .Select(ArcaeaRecordFactory.GenerateFake)
+            .ToArray();
+
+        return new ArcaeaBest30
+        {
+            User = ArcaeaUserFactory.GenerateFake(),
+            Recent10Avg = 11.4514,
+            Best30Avg = 19.1981,
+            Records = allRecords[..30],
+            OverflowRecords = allRecords[30..]
+        };
+    }
 }
