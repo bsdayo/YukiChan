@@ -4,7 +4,7 @@ using Microsoft.Data.Sqlite;
 using YukiChan.Shared.Arcaea.Models;
 using YukiChan.Shared.Utils;
 
-namespace YukiChan.Shared.Database;
+namespace YukiChan.Shared.Arcaea;
 
 public class ArcaeaSongDatabase
 {
