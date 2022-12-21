@@ -1,5 +1,4 @@
-﻿using ArcaeaUnlimitedAPI.Lib;
-using SkiaSharp;
+﻿using SkiaSharp;
 using YukiChan.Shared;
 
 // ReSharper disable InconsistentNaming

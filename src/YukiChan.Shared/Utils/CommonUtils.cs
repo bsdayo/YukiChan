@@ -55,6 +55,13 @@ public static class CommonUtils
             ? dto.ToUnixTimeMilliseconds()
             : dto.ToUnixTimeSeconds();
     }
+
+    public static string GetPastDays(this long timestamp, bool inMilliseconds = false)
+    {
+        return inMilliseconds
+        ? $"{(int)TimeSpan.FromMilliseconds(DateTime.Now.GetTimestamp(true) - timestamp).TotalDays}d"
+        : $"{(int)TimeSpan.FromSeconds(DateTime.Now.GetTimestamp() - timestamp).TotalDays}d";
+    }
 }
 
 public class YukiException : Exception

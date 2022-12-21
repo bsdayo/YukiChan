@@ -6,6 +6,7 @@ using YukiChan.Shared;
 using YukiChan.Shared.Arcaea;
 using YukiChan.Shared.Arcaea.Models;
 using YukiChan.Shared.Database.Models.Arcaea;
+using YukiChan.Shared.Utils;
 
 namespace YukiChan.ImageGen.Arcaea;
 
@@ -329,33 +330,27 @@ public partial class ArcaeaImageGenerator
                 Typeface = TitilliumWeb_Regular
             };
 
-            if (dark)
-            {
-                // 白色字体
-                canvas.DrawLimitedText(
-                    $"Pure / {record.PureCount} (+{record.ShinyPureCount})   " +
-                    $"Far / {record.FarCount}   " +
-                    $"Lost / {record.LostCount}",
-                    x + 335, y + 296, textPaint, 635);
-            }
-            else
-            {
-                // 彩色字体
-                // Pure
-                textPaint.Color = SKColor.Parse("#6f3a5f");
-                canvas.DrawLimitedText($"Pure / {record.PureCount} (+{record.ShinyPureCount})",
-                    x + 335, y + 296, textPaint, 300);
+            // 彩色字体
+            // Pure
+            if (!dark) textPaint.Color = SKColor.Parse("#6f3a5f");
+            canvas.DrawLimitedText($"Pure / {record.PureCount} (+{record.ShinyPureCount})",
+                x + 335, y + 296, textPaint, 260);
 
-                // Far
-                textPaint.Color = SKColor.Parse("#c19c00");
-                canvas.DrawLimitedText($"Far / {record.FarCount}",
-                    x + 660, y + 296, textPaint, 150);
+            // Far
+            if (!dark) textPaint.Color = SKColor.Parse("#c19c00");
+            canvas.DrawLimitedText($"Far / {record.FarCount}",
+                x + 616, y + 296, textPaint, 98);
 
-                // Lost
-                textPaint.Color = SKColor.Parse("#bb2b43");
-                canvas.DrawLimitedText($"Lost / {record.LostCount}",
-                    x + 815, y + 296, textPaint, 150);
-            }
+            // Lost
+            if (!dark) textPaint.Color = SKColor.Parse("#bb2b43");
+            canvas.DrawLimitedText($"Lost / {record.LostCount}",
+                x + 765, y + 296, textPaint, 110);
+
+            // Past Days
+            if (!dark) textPaint.Color = SKColors.Gray;
+            textPaint.TextAlign = SKTextAlign.Right;
+            canvas.DrawLimitedText(record.TimePlayed.GetPastDays(true),
+                x + 980, y + 296, textPaint, record.LostCount < 100 ? 60 : 52);
         }
     }
 }

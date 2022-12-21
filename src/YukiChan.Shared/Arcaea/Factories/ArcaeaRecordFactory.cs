@@ -76,7 +76,7 @@ public static class ArcaeaRecordFactory
             Grade = ArcaeaGrade.EXP,
             RecollectionRate = 100,
             JacketOverride = chart.JacketOverride,
-            TimePlayed = DateTime.Now.GetTimestamp()
+            TimePlayed = chart.Date * 1000
         };
     }
 }
