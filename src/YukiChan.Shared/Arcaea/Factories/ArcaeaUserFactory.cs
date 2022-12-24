@@ -15,7 +15,7 @@ public static class ArcaeaUserFactory
             Potential = info.Rating >= 0
                 ? ((double)info.Rating / 100).ToString("0.00")
                 : "?",
-            JoinDate = info.JoinDate.FormatTimestamp(true)
+            JoinDate = DateTimeUtils.FormatUtc8Text(info.JoinDate, true)
         };
     }
 

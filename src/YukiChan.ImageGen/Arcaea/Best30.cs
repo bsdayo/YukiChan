@@ -349,7 +349,7 @@ public partial class ArcaeaImageGenerator
             // Past Days
             if (!dark) textPaint.Color = SKColors.Gray;
             textPaint.TextAlign = SKTextAlign.Right;
-            canvas.DrawLimitedText(record.TimePlayed.GetPastDays(true),
+            canvas.DrawLimitedText(DateTime.Now.GetPastDays(record.TimePlayed, true),
                 x + 980, y + 296, textPaint, record.LostCount < 100 ? 60 : 52);
         }
     }

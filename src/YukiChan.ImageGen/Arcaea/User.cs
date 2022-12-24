@@ -110,7 +110,7 @@ public partial class ArcaeaImageGenerator
             textPaint.TextSize = 45;
 
             var descSb = new StringBuilder()
-                .Append($"JoinDate / {user.AccountInfo.JoinDate.FormatTimestamp(true)}")
+                .Append($"JoinDate / {DateTimeUtils.FormatUtc8Text(user.AccountInfo.JoinDate, true)}")
                 .Append($"    Max / {scopedMax:F2}")
                 .Append($"    Min / {scopedMin:F2}")
                 .Append($"    {startPtt:F2} -> {endPtt:F2}");

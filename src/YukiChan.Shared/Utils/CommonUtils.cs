@@ -38,33 +38,9 @@ public static class CommonUtils
 
         return metaDict;
     }
-
-    public static string FormatTimestamp(this long timestamp, bool inMilliseconds = false)
-    {
-        return (inMilliseconds
-                ? DateTimeOffset.FromUnixTimeMilliseconds(timestamp)
-                : DateTimeOffset.FromUnixTimeSeconds(timestamp))
-            .LocalDateTime
-            .ToString("yyyy.MM.dd HH:mm:ss");
-    }
-
-    public static long GetTimestamp(this DateTime datetime, bool inMilliseconds = false)
-    {
-        var dto = new DateTimeOffset(datetime);
-        return inMilliseconds
-            ? dto.ToUnixTimeMilliseconds()
-            : dto.ToUnixTimeSeconds();
-    }
-
-    public static string GetPastDays(this long timestamp, bool inMilliseconds = false)
-    {
-        return inMilliseconds
-        ? $"{(int)TimeSpan.FromMilliseconds(DateTime.Now.GetTimestamp(true) - timestamp).TotalDays}d"
-        : $"{(int)TimeSpan.FromSeconds(DateTime.Now.GetTimestamp() - timestamp).TotalDays}d";
-    }
 }
 
-public class YukiException : Exception
+public sealed class YukiException : Exception
 {
     public YukiException(string message) : base(message)
     {
