@@ -45,9 +45,9 @@ public static class Program
             .Build()
 
             // Middlewares
-            .UseMiddleware(Middlewares.HandleGuildAssignee)
-            .UseMiddleware(Middlewares.QqGuildFilter)
             .UseMiddleware(Middlewares.QqGroupWarnFilter)
+            .UseMiddleware(Middlewares.QqGuildFilter)
+            .UseMiddleware(Middlewares.HandleGuildAssignee)
 
             // Load
             .LoadGuildAssignees()
