@@ -12,13 +12,6 @@ public static class DateTimeUtils
             .ToString("yyyy.MM.dd HH:mm:ss");
     }
 
-    /// <summary>
-    /// 获取时间戳
-    /// </summary>
-    /// <param name="dateTime"></param>
-    /// <param name="inMilliseconds"></param>
-    /// <param name="inUtc8"></param>
-    /// <returns></returns>
     public static long GetTimestamp(this DateTime dateTime, bool inMilliseconds = false, bool inUtc8 = false)
     {
         var ts = (inUtc8 ? dateTime.AddHours(-8) : dateTime) - DateTime.UnixEpoch;
