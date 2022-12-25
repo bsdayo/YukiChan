@@ -198,7 +198,7 @@ public partial class ArcaeaImageGenerator
                 Typeface = TitilliumWeb_SemiBold
             };
             using var rectPaint = new SKPaint();
-            textPaint.Color = SKColor.Parse(rank == 3 ? "#ffffff" : "#333333");
+            textPaint.Color = SKColor.Parse(rank == 3 ? "#ffffff" : (dark ? "#ffffff" : "#333333"));
             rectPaint.Color = SKColor.Parse(rank switch
             {
                 1 => "#ffcc00",
