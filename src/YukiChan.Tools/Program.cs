@@ -12,7 +12,7 @@ app.Configure(config =>
     config.AddBranch("arcaea", arcaea =>
     {
         arcaea.AddCommand<UpdateSongDbCommand>("update-songdb");
-        arcaea.AddCommand<GenFakeB30Command>("gen-fake-b30");
+        arcaea.AddCommand<GenFakeCommand>("gen-fake");
     });
 });
 

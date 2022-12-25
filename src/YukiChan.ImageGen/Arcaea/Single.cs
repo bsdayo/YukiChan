@@ -11,7 +11,7 @@ namespace YukiChan.ImageGen.Arcaea;
 
 public partial class ArcaeaImageGenerator
 {
-    public async Task<byte[]> Single(ArcaeaUser user, ArcaeaRecord record, AuaClient client,
+    public async Task<byte[]> Single(ArcaeaUser user, ArcaeaRecord record, AuaClient? client,
         ArcaeaUserPreferences pref, ILogger? logger = null)
     {
         return await Task.Run(() =>
@@ -39,7 +39,7 @@ public partial class ArcaeaImageGenerator
                 using var background = SKBitmap.Decode(bgPath);
 
                 if (background is null)
-                    logger?.LogWarning($"资源文件缺失: {bgPath}");
+                    logger?.LogWarning("资源文件缺失: {BgPath}", bgPath);
 
                 using var scaledBackground = new SKBitmap(900, 1520);
                 background?.ScalePixels(scaledBackground, SKFilterQuality.Medium);
@@ -52,7 +52,7 @@ public partial class ArcaeaImageGenerator
                 using var cardPaint = new SKPaint
                 {
                     Color = pref.Dark
-                        ? new SKColor(40, 40, 40, 200)
+                        ? new SKColor(40, 40, 40, 240)
                         : new SKColor(255, 255, 255, 200),
                     IsAntialias = true,
                     ImageFilter = SKImageFilter.CreateDropShadow(
@@ -266,7 +266,7 @@ public partial class ArcaeaImageGenerator
         });
     }
 
-    public async Task<byte[]> GetSingleBackground(ArcaeaRecord record, AuaClient client, ILogger? logger)
+    public async Task<byte[]> GetSingleBackground(ArcaeaRecord record, AuaClient? client, ILogger? logger)
     {
         var path = record.JacketOverride
             ? $"{YukiDir.ArcaeaCache}/single-dynamic-bg/{record.SongId}-{record.Difficulty.ToString().ToLower()}.jpg"

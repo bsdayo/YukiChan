@@ -1,4 +1,5 @@
-﻿using ArcaeaUnlimitedAPI.Lib;
+﻿using System.Text;
+using ArcaeaUnlimitedAPI.Lib;
 using ArcaeaUnlimitedAPI.Lib.Models;
 using Microsoft.Extensions.Logging;
 using YukiChan.Shared.Arcaea.Models;
@@ -146,10 +147,10 @@ public static class ArcaeaUtils
 
     public static string FormatScore(this int score)
     {
-        return score
-            .ToString("N0")
-            .PadLeft(10, '0')
-            .Replace(',', '\'');
+        var span = score.ToString("00000000").AsSpan();
+        var sb = new StringBuilder();
+        sb.Append(span[..2]).Append('\'').Append(span[2..5]).Append('\'').Append(span[5..]);
+        return sb.ToString();
     }
 
     public static ArcaeaDifficulty? GetRatingClass(string difficultyText)
