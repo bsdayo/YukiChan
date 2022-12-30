@@ -8,13 +8,13 @@ namespace YukiChan.ImageGen.Arcaea;
 public partial class ArcaeaImageGenerator
 {
     private readonly SKTypeface TitilliumWeb_Regular =
-        SKTypeface.FromFile($"{YukiDir.Assets}/fonts/TitilliumWeb-Regular.ttf");
+        SKTypeface.FromFile($"{YukiDir.Fonts}/TitilliumWeb-Regular.ttf");
 
     private readonly SKTypeface TitilliumWeb_SemiBold =
-        SKTypeface.FromFile($"{YukiDir.Assets}/fonts/TitilliumWeb-SemiBold.ttf");
+        SKTypeface.FromFile($"{YukiDir.Fonts}/TitilliumWeb-SemiBold.ttf");
 
     private readonly SKTypeface GeoSans =
-        SKTypeface.FromFile($"{YukiDir.Assets}/fonts/GeosansLight.ttf");
+        SKTypeface.FromFile($"{YukiDir.Fonts}/GeosansLight.ttf");
 
     private readonly List<(
         string ColorLight, string ColorDark,

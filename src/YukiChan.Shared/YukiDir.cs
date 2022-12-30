@@ -3,13 +3,14 @@
 public static class YukiDir
 {
     // Global
-
     public static readonly string Root = AppDomain.CurrentDomain.BaseDirectory;
     public static readonly string Configs = Path.Combine(Root, "configs");
     public static readonly string Logs = Path.Combine(Root, "logs");
     public static readonly string Cache = Path.Combine(Root, "cache");
     public static readonly string Assets = Path.Combine(Root, "assets");
     public static readonly string Databases = Path.Combine(Root, "databases");
+
+    public static readonly string Fonts = Path.Combine(Assets, "fonts");
 
     // Plugin Specific
     // Arcaea
