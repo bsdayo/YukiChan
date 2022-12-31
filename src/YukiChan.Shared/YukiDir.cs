@@ -42,7 +42,7 @@ public static class YukiDir
             // Arcaea
             $"{ArcaeaAssets}/audio-preview", $"{ArcaeaAssets}/aff", $"{ArcaeaAssets}/images",
             $"{ArcaeaCache}/song", $"{ArcaeaCache}/char", $"{ArcaeaCache}/preview",
-            $"{ArcaeaCache}/single-dynamic-bg",
+            $"{ArcaeaCache}/single-dynamic-bg-v1", // $"{ArcaeaCache}/single-dynamic-bg-v2",
 
             // Images
             $"{Assets}/cats", $"{Assets}/capoo",

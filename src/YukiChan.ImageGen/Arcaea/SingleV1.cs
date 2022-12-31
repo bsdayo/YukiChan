@@ -11,16 +11,15 @@ namespace YukiChan.ImageGen.Arcaea;
 
 public partial class ArcaeaImageGenerator
 {
-    public byte[] SingleV1(ArcaeaUser user, ArcaeaRecord record, AuaClient? client,
+    public async Task<byte[]> SingleV1(ArcaeaUser user, ArcaeaRecord record, AuaClient? client,
         ArcaeaUserPreferences pref, ILogger? logger = null)
     {
         var imageInfo = new SKImageInfo(900, 1520);
         using var surface = SKSurface.Create(imageInfo);
         using var canvas = surface.Canvas;
 
-        var cover = ArcaeaUtils
-            .GetSongCover(client, record.SongId, record.JacketOverride, record.Difficulty, pref.Nya, logger)
-            .GetAwaiter().GetResult();
+        var cover = await ArcaeaUtils.GetSongCover(
+            client, record.SongId, record.JacketOverride, record.Difficulty, pref.Nya, logger);
 
         var (colorLight, colorDark, colorBorderLight, colorBorderDark, colorInnerLight, colorInnerDark)
             = DifficultyColors[(int)record.Difficulty];
@@ -28,7 +27,7 @@ public partial class ArcaeaImageGenerator
         if (pref.SingleDynamicBackground)
         {
             using var bgBitmap =
-                SKBitmap.Decode(GetSingleBackground(record, client, logger).GetAwaiter().GetResult())!;
+                SKBitmap.Decode(await GetSingleV1Background(record, client, logger))!;
             canvas.DrawBitmap(bgBitmap, 0, 0);
         }
         else
@@ -81,18 +80,7 @@ public partial class ArcaeaImageGenerator
         }
 
         {
-            var clearImgPath = $"{YukiDir.ArcaeaAssets}/images/" + record.ClearType switch
-            {
-                ArcaeaClearType.NormalClear => "clear-tc.png",
-                ArcaeaClearType.EasyClear => "clear-tc.png",
-                ArcaeaClearType.HardClear => "clear-tc.png",
-
-                ArcaeaClearType.TrackLost => "clear-tl.png",
-                ArcaeaClearType.FullRecall => "clear-fr.png",
-                ArcaeaClearType.PureMemory => "clear-pm.png",
-
-                _ => "clear-tc.png"
-            };
+            var clearImgPath = ArcaeaUtils.GetClearTypeImagePath(record.ClearType);
             using var originalClearImg = SKBitmap.Decode(clearImgPath);
 
             if (originalClearImg.Height > 77)
@@ -261,11 +249,11 @@ public partial class ArcaeaImageGenerator
         return data.ToArray();
     }
 
-    public async Task<byte[]> GetSingleBackground(ArcaeaRecord record, AuaClient? client, ILogger? logger)
+    public async Task<byte[]> GetSingleV1Background(ArcaeaRecord record, AuaClient? client, ILogger? logger)
     {
         var path = record.JacketOverride
-            ? $"{YukiDir.ArcaeaCache}/single-dynamic-bg/{record.SongId}-{record.Difficulty.ToString().ToLower()}.jpg"
-            : $"{YukiDir.ArcaeaCache}/single-dynamic-bg/{record.SongId}.jpg";
+            ? $"{YukiDir.ArcaeaCache}/single-dynamic-bg-v1/{record.SongId}-{record.Difficulty.ToString().ToLower()}.jpg"
+            : $"{YukiDir.ArcaeaCache}/single-dynamic-bg-v1/{record.SongId}.jpg";
 
         if (File.Exists(path))
             return await File.ReadAllBytesAsync(path);

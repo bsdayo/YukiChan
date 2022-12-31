@@ -30,7 +30,7 @@ public partial class ArcaeaImageGenerator
     {
         var imageInfo = new SKImageInfo(3400, 2000);
         using var surface = SKSurface.Create(imageInfo);
-        var canvas = surface.Canvas;
+        using var canvas = surface.Canvas;
 
         {
             // 背景
@@ -38,7 +38,7 @@ public partial class ArcaeaImageGenerator
             using var background = SKBitmap.Decode(bgPath);
 
             if (background is null)
-                logger.LogWarning($"资源文件缺失: {bgPath}");
+                logger.LogWarning("资源文件缺失: {BgPath}", bgPath);
 
             using var scaledBackground = new SKBitmap(
                 3400, (background?.Height ?? 6200) * (3400 / (background?.Width ?? 3400)));

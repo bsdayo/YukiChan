@@ -220,6 +220,22 @@ public static class ArcaeaUtils
         return (songname, difficulty ?? ArcaeaDifficulty.Future);
     }
 
+    public static string GetClearTypeImagePath(ArcaeaClearType clearType)
+    {
+        return $"{YukiDir.ArcaeaAssets}/images/" + clearType switch
+        {
+            ArcaeaClearType.NormalClear => "clear-tc.png",
+            ArcaeaClearType.EasyClear => "clear-tc.png",
+            ArcaeaClearType.HardClear => "clear-tc.png",
+
+            ArcaeaClearType.TrackLost => "clear-tl.png",
+            ArcaeaClearType.FullRecall => "clear-fr.png",
+            ArcaeaClearType.PureMemory => "clear-pm.png",
+
+            _ => "clear-tc.png"
+        };
+    }
+
     public static ArcaeaGuessMode? GetGuessMode(string text)
     {
         return text.ToLower() switch

@@ -40,7 +40,7 @@ public sealed class GenFakeCommand : AsyncCommand<GenFakeCommand.Settings>
                 break;
 
             case "single":
-                image = generator.SingleV1(
+                image = await generator.SingleV1(
                     ArcaeaUserFactory.GenerateFake(),
                     ArcaeaRecordFactory.GenerateFake(
                         (await ArcaeaSongDatabase.Default.GetChartsById("equilibrium"))[2]),
