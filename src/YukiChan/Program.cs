@@ -52,8 +52,8 @@ public static class Program
             // Load
             .LoadGuildAssignees()
 
-            // Run
-            .Run();
+            // Start
+            .Start();
     }
 
     private static FlandreAppBuilder AddYukiServices(this FlandreAppBuilder builder)
