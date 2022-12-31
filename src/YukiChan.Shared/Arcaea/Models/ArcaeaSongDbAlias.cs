@@ -7,7 +7,9 @@ namespace YukiChan.Shared.Arcaea.Models;
 [Table("alias")]
 public sealed class ArcaeaSongDbAlias
 {
-    [Column("sid")] public string SongId { get; set; }
+    [Column("sid")]
+    public string SongId { get; set; }
 
-    [Column("alias", IsPrimaryKey = true)] public string Alias { get; set; }
+    [Column("alias", IsPrimaryKey = true)]
+    public string Alias { get; set; }
 }

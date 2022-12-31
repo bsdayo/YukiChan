@@ -7,7 +7,9 @@ namespace YukiChan.Shared.Arcaea.Models;
 [Table("packages")]
 public sealed class ArcaeaSongDbPackage
 {
-    [Column("id", IsPrimaryKey = true)] public string Set { get; set; }
+    [Column("id", IsPrimaryKey = true)]
+    public string Set { get; set; }
 
-    [Column("name")] public string Name { get; set; }
+    [Column("name")]
+    public string Name { get; set; }
 }

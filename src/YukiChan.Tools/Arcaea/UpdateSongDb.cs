@@ -2,7 +2,6 @@
 using Spectre.Console;
 using Spectre.Console.Cli;
 using YukiChan.Shared.Arcaea;
-using YukiChan.Shared.Database;
 using YukiChan.Tools.Utils;
 
 namespace YukiChan.Tools.Arcaea;

@@ -11,11 +11,18 @@ public class ArcaeaDatabaseUser
     [NotNull]
     public int Id { get; set; }
 
-    [Column("platform")] [NotNull] public string Platform { get; set; }
+    [Column("platform")]
+    [NotNull]
+    public string Platform { get; set; }
 
-    [Column("user_id")] [NotNull] public string UserId { get; set; }
+    [Column("user_id")]
+    [NotNull]
+    public string UserId { get; set; }
 
-    [Column("arcaea_id")] [NotNull] public string ArcaeaId { get; set; }
+    [Column("arcaea_id")]
+    [NotNull]
+    public string ArcaeaId { get; set; }
 
-    [Column("arcaea_name")] public string ArcaeaName { get; set; } = "";
+    [Column("arcaea_name")]
+    public string ArcaeaName { get; set; } = "";
 }

@@ -9,9 +9,12 @@ public class GuildData
     [AutoIncrement]
     public int Id { get; set; }
 
-    [Column("platform")] public required string Platform { get; set; }
+    [Column("platform")]
+    public required string Platform { get; set; }
 
-    [Column("guild_id")] public required string GuildId { get; set; }
+    [Column("guild_id")]
+    public required string GuildId { get; set; }
 
-    [Column("assignee")] public required string Assignee { get; set; }
+    [Column("assignee")]
+    public required string Assignee { get; set; }
 }

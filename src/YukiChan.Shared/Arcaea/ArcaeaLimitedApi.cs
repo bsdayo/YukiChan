@@ -62,47 +62,68 @@ public class AlaClient
 
 public class AlaRecord
 {
-    [JsonPropertyName("song_id")] public string SongId { get; set; }
+    [JsonPropertyName("song_id")]
+    public string SongId { get; set; }
 
-    [JsonPropertyName("difficulty")] public int Difficulty { get; set; }
+    [JsonPropertyName("difficulty")]
+    public int Difficulty { get; set; }
 
-    [JsonPropertyName("score")] public int Score { get; set; }
+    [JsonPropertyName("score")]
+    public int Score { get; set; }
 
-    [JsonPropertyName("shiny_pure_count")] public int ShinyPureCount { get; set; }
+    [JsonPropertyName("shiny_pure_count")]
+    public int ShinyPureCount { get; set; }
 
-    [JsonPropertyName("pure_count")] public int PureCount { get; set; }
+    [JsonPropertyName("pure_count")]
+    public int PureCount { get; set; }
 
-    [JsonPropertyName("far_count")] public int FarCount { get; set; }
+    [JsonPropertyName("far_count")]
+    public int FarCount { get; set; }
 
-    [JsonPropertyName("lost_count")] public int LostCount { get; set; }
+    [JsonPropertyName("lost_count")]
+    public int LostCount { get; set; }
 
     [JsonPropertyName("recollection_rate")]
     public int RecollectionRate { get; set; }
 
-    [JsonPropertyName("time_played")] public long TimePlayed { get; set; }
+    [JsonPropertyName("time_played")]
+    public long TimePlayed { get; set; }
 
-    [JsonPropertyName("gauge_type")] public int GaugeType { get; set; }
+    [JsonPropertyName("gauge_type")]
+    public int GaugeType { get; set; }
 }
 
 public class AlaUser
 {
-    [JsonPropertyName("display_name")] public string DisplayName { get; set; }
-    [JsonPropertyName("potential")] public double? Potential { get; set; }
-    [JsonPropertyName("partner")] public PartnerInfo Partner { get; set; }
-    [JsonPropertyName("last_played_song")] public AlaRecord LastPlayedSong { get; set; }
+    [JsonPropertyName("display_name")]
+    public string DisplayName { get; set; }
+
+    [JsonPropertyName("potential")]
+    public double? Potential { get; set; }
+
+    [JsonPropertyName("partner")]
+    public PartnerInfo Partner { get; set; }
+
+    [JsonPropertyName("last_played_song")]
+    public AlaRecord LastPlayedSong { get; set; }
 
     public class PartnerInfo
     {
-        [JsonPropertyName("partner_id")] public int PartnerId { get; set; }
-        [JsonPropertyName("is_awakened")] public bool IsAwakened { get; set; }
+        [JsonPropertyName("partner_id")]
+        public int PartnerId { get; set; }
+
+        [JsonPropertyName("is_awakened")]
+        public bool IsAwakened { get; set; }
     }
 }
 
 public class AlaResponse<T>
 {
-    [JsonPropertyName("data")] public T Data { get; set; }
+    [JsonPropertyName("data")]
+    public T Data { get; set; }
 
-    [JsonPropertyName("message")] public string? Message { get; set; }
+    [JsonPropertyName("message")]
+    public string? Message { get; set; }
 }
 
 public class AlaException : Exception

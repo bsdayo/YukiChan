@@ -6,7 +6,6 @@ using Flandre.Framework.Common;
 using Microsoft.Extensions.Logging;
 using YukiChan.Shared;
 using YukiChan.Shared.Arcaea;
-using YukiChan.Shared.Database;
 using YukiChan.Shared.Utils;
 
 // ReSharper disable CheckNamespace

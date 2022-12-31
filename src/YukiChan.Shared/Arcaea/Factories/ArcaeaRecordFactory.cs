@@ -1,6 +1,5 @@
 ﻿using ArcaeaUnlimitedAPI.Lib.Models;
 using YukiChan.Shared.Arcaea.Models;
-using YukiChan.Shared.Utils;
 
 namespace YukiChan.Shared.Arcaea.Factories;
 
