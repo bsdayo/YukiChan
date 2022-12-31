@@ -99,7 +99,7 @@ public partial class ArcaeaPlugin
             pref.Dark = pref.Dark || args.GetOption<bool>("dark");
             pref.Nya = pref.Nya || args.GetOption<bool>("nya");
 
-            var image = _service.ImageGenerator.Best30(best30, pref, _service.AuaClient, _logger);
+            var image = await _service.ImageGenerator.Best30(best30, pref, _service.AuaClient, _logger);
 
             return ctx.Reply().Image(ImageSegment.FromData(image));
         }

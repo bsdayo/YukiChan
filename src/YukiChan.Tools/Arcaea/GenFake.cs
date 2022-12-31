@@ -36,7 +36,7 @@ public sealed class GenFakeCommand : AsyncCommand<GenFakeCommand.Settings>
         {
             case "b30":
             case "best30":
-                image = generator.Best30(ArcaeaBest30Factory.GenerateFake(), pref);
+                image = await generator.Best30(ArcaeaBest30Factory.GenerateFake(), pref);
                 break;
 
             case "single":

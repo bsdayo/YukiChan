@@ -66,7 +66,7 @@ public partial class ArcaeaPlugin
             pref.Dark = pref.Dark || args.GetOption<bool>("dark");
             pref.Nya = pref.Nya || args.GetOption<bool>("nya");
 
-            var image = _service.ImageGenerator.SingleV1(info, record, _service.AuaClient, pref, _logger);
+            var image = await _service.ImageGenerator.SingleV1(info, record, _service.AuaClient, pref, _logger);
 
             return ctx.Reply()
                 .Text($"{info.Name} ({info.Potential})\n")
