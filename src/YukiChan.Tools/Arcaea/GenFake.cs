@@ -11,11 +11,14 @@ public sealed class GenFakeCommand : AsyncCommand<GenFakeCommand.Settings>
 {
     public sealed class Settings : CommandSettings
     {
-        [CommandArgument(0, "<ImageType>")] public string ImageType { get; init; } = string.Empty;
+        [CommandArgument(0, "<ImageType>")]
+        public string ImageType { get; init; } = string.Empty;
 
-        [CommandOption("-n|--nya")] public bool Nya { get; init; } = false;
+        [CommandOption("-n|--nya")]
+        public bool Nya { get; init; } = false;
 
-        [CommandOption("-d|--dark")] public bool Dark { get; init; } = false;
+        [CommandOption("-d|--dark")]
+        public bool Dark { get; init; } = false;
     }
 
     public override async Task<int> ExecuteAsync(CommandContext ctx, Settings settings)
@@ -33,11 +36,11 @@ public sealed class GenFakeCommand : AsyncCommand<GenFakeCommand.Settings>
         {
             case "b30":
             case "best30":
-                image = await generator.Best30(ArcaeaBest30Factory.GenerateFake(), pref);
+                image = generator.Best30(ArcaeaBest30Factory.GenerateFake(), pref);
                 break;
 
             case "single":
-                image = await generator.Single(
+                image = generator.SingleV1(
                     ArcaeaUserFactory.GenerateFake(),
                     ArcaeaRecordFactory.GenerateFake(
                         (await ArcaeaSongDatabase.Default.GetChartsById("equilibrium"))[2]),

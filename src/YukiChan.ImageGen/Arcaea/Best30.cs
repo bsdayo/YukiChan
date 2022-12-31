@@ -12,151 +12,148 @@ namespace YukiChan.ImageGen.Arcaea;
 
 public partial class ArcaeaImageGenerator
 {
-    public async Task<byte[]> Best30(ArcaeaBest30 best30,
+    public byte[] Best30(ArcaeaBest30 best30,
         ArcaeaUserPreferences pref, AuaClient? client = null,
         ILogger? logger = null)
     {
-        return await Task.Run(() =>
+        var imageInfo = new SKImageInfo(3400, 6200);
+        using var surface = SKSurface.Create(imageInfo);
+        var canvas = surface.Canvas;
+
         {
-            var imageInfo = new SKImageInfo(3400, 6200);
-            using var surface = SKSurface.Create(imageInfo);
-            var canvas = surface.Canvas;
+            var bgPath = $"{YukiDir.ArcaeaAssets}/images/best30-background-{(pref.Dark ? "dark" : "light")}.jpg";
+            using var background = SKBitmap.Decode(bgPath);
 
+            if (background is null)
+                logger?.LogWarning($"资源文件缺失: {bgPath}");
+
+            using var scaledBackground = new SKBitmap(
+                3400, (background?.Height ?? 6200) * (3400 / (background?.Width ?? 3400)));
+            background?.ScalePixels(scaledBackground, SKFilterQuality.Medium);
+
+            canvas.DrawBitmap(scaledBackground, 0, 0);
+        }
+
+        {
+            // 名称 / ptt
+            using var paint = new SKPaint
             {
-                var bgPath = $"{YukiDir.ArcaeaAssets}/images/best30-background-{(pref.Dark ? "dark" : "light")}.jpg";
-                using var background = SKBitmap.Decode(bgPath);
+                Color = pref.Dark ? SKColors.White : SKColors.Black,
+                TextSize = 128,
+                IsAntialias = true,
+                Typeface = TitilliumWeb_SemiBold
+            };
+            canvas.DrawText($"{best30.User.Name} ({best30.User.Potential})",
+                295, 255, paint);
+        }
 
-                if (background is null)
-                    logger?.LogWarning($"资源文件缺失: {bgPath}");
-
-                using var scaledBackground = new SKBitmap(
-                    3400, (background?.Height ?? 6200) * (3400 / (background?.Width ?? 3400)));
-                background?.ScalePixels(scaledBackground, SKFilterQuality.Medium);
-
-                canvas.DrawBitmap(scaledBackground, 0, 0);
-            }
-
+        {
+            // 账号信息
+            using var paint = new SKPaint
             {
-                // 名称 / ptt
-                using var paint = new SKPaint
-                {
-                    Color = pref.Dark ? SKColors.White : SKColors.Black,
-                    TextSize = 128,
-                    IsAntialias = true,
-                    Typeface = TitilliumWeb_SemiBold
-                };
-                canvas.DrawText($"{best30.User.Name} ({best30.User.Potential})",
-                    295, 255, paint);
-            }
+                Color = pref.Dark ? SKColors.White : SKColors.Black,
+                TextSize = 62,
+                IsAntialias = true,
+                Typeface = TitilliumWeb_SemiBold
+            };
 
+            double best10Total = 0;
+
+            for (var i = 0; i < 10; i++)
             {
-                // 账号信息
-                using var paint = new SKPaint
-                {
-                    Color = pref.Dark ? SKColors.White : SKColors.Black,
-                    TextSize = 62,
-                    IsAntialias = true,
-                    Typeface = TitilliumWeb_SemiBold
-                };
-
-                double best10Total = 0;
-
-                for (var i = 0; i < 10; i++)
-                {
-                    if (i > best30.Records.Length - 1)
-                        break;
-
-                    best10Total += best30.Records[i].Potential;
-                }
-
-                canvas.DrawText(
-                    $"B30Avg / {best30.Best30Avg:0.0000}   " +
-                    $"R10Avg / {best30.Recent10Avg:0.0000}   " +
-                    $"MaxPtt / {(best10Total + 30 * best30.Best30Avg) / 40:0.0000}",
-                    295, 365, paint);
-            }
-
-            {
-                // Player Best30
-                using var paint = new SKPaint
-                {
-                    Color = pref.Dark ? SKColors.White : SKColors.Black,
-                    TextSize = 130,
-                    IsAntialias = true,
-                    Typeface = TitilliumWeb_SemiBold
-                };
-                canvas.DrawText("Player Best30", 2300, 290, paint);
-            }
-
-            {
-                // 分割线
-                using var linePaint = new SKPaint
-                {
-                    Color = pref.Dark
-                        ? new SKColor(255, 255, 255, 128)
-                        : new SKColor(0, 0, 0, 128)
-                };
-                canvas.DrawRect(120, 500, 3160, 10, linePaint);
-                canvas.DrawRect(120, 4698, 3160, 10, linePaint);
-            }
-
-            {
-                // 时间
-                using var paint = new SKPaint
-                {
-                    Color = pref.Dark ? SKColors.White : SKColors.Black,
-                    IsAntialias = true,
-                    TextSize = 80,
-                    Typeface = TitilliumWeb_Regular
-                };
-                var time = DateTime.Now.ToString("yyyy.MM.dd HH:mm:ss");
-
-                canvas.DrawText($"Generated by YukiChan @ {time}",
-                    897, 6100, paint);
-            }
-
-            for (var col = 0; col < 3; col++)
-            for (var row = 0; row < 10; row++)
-            {
-                var index = col * 10 + row;
-
-                if (index > best30.Records.Length - 1)
+                if (i > best30.Records.Length - 1)
                     break;
 
-                var record = best30.Records[index];
+                best10Total += best30.Records[i].Potential;
+            }
+
+            canvas.DrawText(
+                $"B30Avg / {best30.Best30Avg:0.0000}   " +
+                $"R10Avg / {best30.Recent10Avg:0.0000}   " +
+                $"MaxPtt / {(best10Total + 30 * best30.Best30Avg) / 40:0.0000}",
+                295, 365, paint);
+        }
+
+        {
+            // Player Best30
+            using var paint = new SKPaint
+            {
+                Color = pref.Dark ? SKColors.White : SKColors.Black,
+                TextSize = 130,
+                IsAntialias = true,
+                Typeface = TitilliumWeb_SemiBold
+            };
+            canvas.DrawText("Player Best30", 2300, 290, paint);
+        }
+
+        {
+            // 分割线
+            using var linePaint = new SKPaint
+            {
+                Color = pref.Dark
+                    ? new SKColor(255, 255, 255, 128)
+                    : new SKColor(0, 0, 0, 128)
+            };
+            canvas.DrawRect(120, 500, 3160, 10, linePaint);
+            canvas.DrawRect(120, 4698, 3160, 10, linePaint);
+        }
+
+        {
+            // 时间
+            using var paint = new SKPaint
+            {
+                Color = pref.Dark ? SKColors.White : SKColors.Black,
+                IsAntialias = true,
+                TextSize = 80,
+                Typeface = TitilliumWeb_Regular
+            };
+            var time = DateTime.Now.ToString("yyyy.MM.dd HH:mm:ss");
+
+            canvas.DrawText($"Generated by YukiChan @ {time}",
+                897, 6100, paint);
+        }
+
+        for (var col = 0; col < 3; col++)
+        for (var row = 0; row < 10; row++)
+        {
+            var index = col * 10 + row;
+
+            if (index > best30.Records.Length - 1)
+                break;
+
+            var record = best30.Records[index];
+
+            var songCover = ArcaeaUtils
+                .GetSongCover(client, record.SongId, record.JacketOverride, record.Difficulty, pref.Nya, logger)
+                .GetAwaiter().GetResult();
+
+            DrawMiniScoreCard(canvas,
+                100 + col * 1100, 635 + row * 400, record, songCover, index + 1, pref.Dark);
+        }
+
+        // Overflow
+        if (best30.HasOverflow)
+            for (var col = 0; col < 3; col++)
+            for (var row = 0; row < 3; row++)
+            {
+                var index = col * 3 + row;
+
+                if (index > best30.OverflowRecords!.Length - 1)
+                    break;
+
+                var record = best30.OverflowRecords![index];
 
                 var songCover = ArcaeaUtils
                     .GetSongCover(client, record.SongId, record.JacketOverride, record.Difficulty, pref.Nya, logger)
                     .GetAwaiter().GetResult();
 
                 DrawMiniScoreCard(canvas,
-                    100 + col * 1100, 635 + row * 400, record, songCover, index + 1, pref.Dark);
+                    100 + col * 1100, 4840 + row * 400, record, songCover, index + 31, pref.Dark);
             }
 
-            // Overflow
-            if (best30.HasOverflow)
-                for (var col = 0; col < 3; col++)
-                for (var row = 0; row < 3; row++)
-                {
-                    var index = col * 3 + row;
-
-                    if (index > best30.OverflowRecords!.Length - 1)
-                        break;
-
-                    var record = best30.OverflowRecords![index];
-
-                    var songCover = ArcaeaUtils
-                        .GetSongCover(client, record.SongId, record.JacketOverride, record.Difficulty, pref.Nya, logger)
-                        .GetAwaiter().GetResult();
-
-                    DrawMiniScoreCard(canvas,
-                        100 + col * 1100, 4840 + row * 400, record, songCover, index + 31, pref.Dark);
-                }
-
-            using var image = surface.Snapshot();
-            using var data = image.Encode(SKEncodedImageFormat.Jpeg, 70);
-            return data.ToArray();
-        });
+        using var image = surface.Snapshot();
+        using var data = image.Encode(SKEncodedImageFormat.Jpeg, 70);
+        return data.ToArray();
     }
 
     public void DrawMiniScoreCard(SKCanvas canvas, int x, int y,
