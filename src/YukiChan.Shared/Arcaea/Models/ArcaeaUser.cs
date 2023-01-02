@@ -4,11 +4,11 @@ namespace YukiChan.Shared.Arcaea.Models;
 
 public sealed class ArcaeaUser
 {
-    public string Name { get; init; }
+    public string Name { get; set; }
 
-    public string Id { get; init; }
+    public string Code { get; set; }
 
-    public string Potential { get; init; }
+    public string Potential { get; set; }
 
-    public string JoinDate { get; init; }
+    public string JoinDate { get; set; }
 }

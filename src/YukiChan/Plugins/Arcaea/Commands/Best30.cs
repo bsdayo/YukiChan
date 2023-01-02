@@ -92,7 +92,20 @@ public partial class ArcaeaPlugin
                 }
             }
 
-            _logger.LogInformation("正在为 {ArcaeaName}({ArcaeaId}) 生成 Best30 图片...", best30.User.Name, best30.User.Id);
+            try
+            {
+                await _service.ReportManager.SaveUserBest30(best30);
+                _logger.LogInformation("已保存用户 {ArcaeaName}({ArcaeaId}) 的 Best30 数据",
+                    best30.User.Name, best30.User.Code);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "保存用户 {ArcaeaName}({ArcaeaId}) Best30 数据时发生错误",
+                    best30.User.Name, best30.User.Code);
+            }
+
+            _logger.LogInformation("正在为 {ArcaeaName}({ArcaeaId}) 生成 Best30 图片...",
+                best30.User.Name, best30.User.Code);
 
             var pref = await _database.GetArcaeaUserPreferences(ctx.Bot.Platform, ctx.Message.Sender.UserId)
                        ?? new ArcaeaUserPreferences();

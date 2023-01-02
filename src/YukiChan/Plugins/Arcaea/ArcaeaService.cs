@@ -12,6 +12,8 @@ public class ArcaeaService
 
     public ArcaeaImageGenerator ImageGenerator { get; }
 
+    public ArcaeaReportManager ReportManager { get; }
+
     public ArcaeaService(ArcaeaPluginConfig config)
     {
         AuaClient = new AuaClient
@@ -29,5 +31,6 @@ public class ArcaeaService
         }.Initialize();
 
         ImageGenerator = new ArcaeaImageGenerator();
+        ReportManager = new ArcaeaReportManager();
     }
 }

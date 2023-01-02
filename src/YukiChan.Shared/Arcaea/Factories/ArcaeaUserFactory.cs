@@ -11,7 +11,7 @@ public static class ArcaeaUserFactory
         return new ArcaeaUser
         {
             Name = info.Name,
-            Id = info.Code,
+            Code = info.Code,
             Potential = info.Rating >= 0
                 ? ((double)info.Rating / 100).ToString("0.00")
                 : "?",
@@ -24,7 +24,7 @@ public static class ArcaeaUserFactory
         return new ArcaeaUser
         {
             Name = info.DisplayName,
-            Id = usercode,
+            Code = usercode,
             Potential = info.Potential >= 0
                 ? ((double)info.Potential / 100).ToString("0.00")
                 : "?",
@@ -37,7 +37,7 @@ public static class ArcaeaUserFactory
         return new ArcaeaUser
         {
             Name = "yyw",
-            Id = "007355608",
+            Code = "007355608",
             Potential = "99.99",
             JoinDate = DateTime.UnixEpoch.ToString("yyyy.MM.dd HH:mm:ss")
         };

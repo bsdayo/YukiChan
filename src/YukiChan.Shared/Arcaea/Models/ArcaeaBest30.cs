@@ -1,4 +1,6 @@
-﻿#pragma warning disable CS8618
+﻿using System.Text.Json.Serialization;
+
+#pragma warning disable CS8618
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
@@ -16,5 +18,6 @@ public sealed class ArcaeaBest30
 
     public ArcaeaRecord[]? OverflowRecords { get; set; }
 
+    [JsonIgnore]
     public bool HasOverflow => OverflowRecords is not null;
 }

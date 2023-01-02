@@ -59,7 +59,7 @@ public partial class ArcaeaPlugin
             var info = ArcaeaUserFactory.FromAua(userInfo.AccountInfo);
             var record = ArcaeaRecordFactory.FromAua(userInfo.RecentScore![0], userInfo.SongInfo![0]);
 
-            _logger.LogInformation("正在为 {ArcaeaName}({ArcaeaId}) 生成最近成绩图片...", info.Name, info.Id);
+            _logger.LogInformation("正在为 {ArcaeaName}({ArcaeaId}) 生成最近成绩图片...", info.Name, info.Code);
 
             var pref = await _database.GetArcaeaUserPreferences(ctx.Bot.Platform, ctx.Message.Sender.UserId)
                        ?? new ArcaeaUserPreferences();
