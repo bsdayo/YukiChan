@@ -236,6 +236,19 @@ public static class ArcaeaUtils
         };
     }
 
+    public static string GetSpacedUserCode(string usercode)
+    {
+        var span = usercode.AsSpan();
+        var sb = new StringBuilder();
+        return sb
+            .Append(span[..3])
+            .Append(' ')
+            .Append(span[3..6])
+            .Append(' ')
+            .Append(span[6..])
+            .ToString();
+    }
+
     public static ArcaeaGuessMode? GetGuessMode(string text)
     {
         return text.ToLower() switch

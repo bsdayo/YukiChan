@@ -44,6 +44,9 @@ public partial class ArcaeaImageGenerator
             };
             canvas.DrawText($"{best30.User.Name} ({best30.User.Potential})",
                 295, 255, paint);
+
+            paint.TextAlign = SKTextAlign.Right;
+            canvas.DrawText("Player Best30", 3105, 255, paint);
         }
 
         {
@@ -71,18 +74,12 @@ public partial class ArcaeaImageGenerator
                 $"R10Avg / {best30.Recent10Avg:0.0000}   " +
                 $"MaxPtt / {(best10Total + 30 * best30.Best30Avg) / 40:0.0000}",
                 295, 365, paint);
-        }
 
-        {
-            // Player Best30
-            using var paint = new SKPaint
-            {
-                Color = pref.Dark ? SKColors.White : SKColors.Black,
-                TextSize = 130,
-                IsAntialias = true,
-                Typeface = TitilliumWeb_SemiBold
-            };
-            canvas.DrawText("Player Best30", 2300, 290, paint);
+            paint.TextAlign = SKTextAlign.Right;
+
+            canvas.DrawText(
+                $"ArcID / {ArcaeaUtils.GetSpacedUserCode(best30.User.Code)}",
+                3105, 365, paint);
         }
 
         {
