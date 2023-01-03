@@ -2,20 +2,23 @@
 using Chloe.Annotations;
 using Chloe.SQLite;
 using Chloe.SQLite.DDL;
+using Flandre.Core.Messaging;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
 using YukiChan.Shared.Database.Models;
 
 namespace YukiChan.Shared.Database;
 
-// [YukiDatabase(CommandHistoryDbName, typeof(CommandHistory))]
 [YukiDatabase(GuildDataDbName, typeof(GuildData))]
+[YukiDatabase(UserDataDbName, typeof(UserData))]
+[YukiDatabase(CommandHistoryDbName, typeof(CommandHistory))]
 public partial class YukiDbManager
 {
     private readonly ILogger<YukiDbManager> _logger;
 
     private const string CommandHistoryDbName = "command-history";
     private const string GuildDataDbName = "guilds";
+    private const string UserDataDbName = "users";
 
     public YukiDbManager(ILogger<YukiDbManager> logger)
     {
@@ -88,6 +91,42 @@ public partial class YukiDbManager
         user.Assignee = assignee;
 
         await ctx.UpdateAsync(user);
+    }
+
+    public async Task<UserData?> GetUserDataOrDefault(string platform, string userId)
+    {
+        using var ctx = GetDbContext(UserDataDbName);
+        return await ctx.Query<UserData>()
+            .Where(user => user.Platform == platform)
+            .Where(user => user.UserId == userId)
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task SaveUserData(UserData userData)
+    {
+        using var dbCtx = GetDbContext(UserDataDbName);
+        await dbCtx.InsertAsync(userData);
+    }
+
+    public async Task SaveCommandHistory(CommandHistory history)
+    {
+        using var dbCtx = GetDbContext(CommandHistoryDbName);
+        await dbCtx.InsertAsync(history);
+    }
+
+    public async Task UpdateCommandHistory(Message message, string? response, bool isSucceeded)
+    {
+        using var ctx = GetDbContext(CommandHistoryDbName);
+        var dt = message.Time.ToLocalTime();
+        var history = await ctx.Query<CommandHistory>()
+            .Where(history => history.CallTime == dt)
+            .Where(history => history.UserId == message.Sender.UserId)
+            .FirstAsync();
+
+        history.RespondTime = DateTime.Now;
+        history.Response = response;
+        history.IsSucceeded = isSucceeded;
+        await ctx.UpdateAsync(history);
     }
 }
 

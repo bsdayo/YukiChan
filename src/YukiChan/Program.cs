@@ -24,7 +24,7 @@ public static class Program
 
         var builder = new FlandreAppBuilder(YukiConfig.App);
 
-        builder.ConfigureSerilog().AddYukiServices()
+        var app = builder.ConfigureSerilog().AddYukiServices()
 
             // Adapters
             .UseAdapter(new OneBotAdapter(GetOneBotAdapterConfig()))
@@ -50,10 +50,12 @@ public static class Program
             .UseMiddleware(Middlewares.HandleGuildAssignee)
 
             // Load
-            .LoadGuildAssignees()
+            .LoadGuildAssignees();
 
-            // Start
-            .Start();
+        app.OnCommandInvoking += YukiEventHandlers.OnCommandInvoking;
+        app.OnCommandInvoked += YukiEventHandlers.OnCommandInvoked;
+
+        app.Start();
     }
 
     private static FlandreAppBuilder AddYukiServices(this FlandreAppBuilder builder)
