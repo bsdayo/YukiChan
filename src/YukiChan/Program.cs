@@ -39,6 +39,7 @@ public static class Program
             .UsePlugin<ImagesPlugin>()
             .UsePlugin<DebugPlugin>()
             .UsePlugin<AutoAcceptPlugin>(YukiConfig.Plugins.AutoAccept)
+            .UsePlugin<GosenPlugin>(YukiConfig.Plugins.Gosen)
             .UsePlugin<MainBotPlugin>()
 
             // Build FlandreApp

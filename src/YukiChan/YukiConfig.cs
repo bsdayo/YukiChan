@@ -34,4 +34,6 @@ public class YukiPluginsConfig
     public SandBoxPluginConfig SandBox { get; set; } = new();
 
     public AutoAcceptPluginConfig AutoAccept { get; set; } = new();
+
+    public GosenPluginConfig Gosen { get; set; } = new();
 }
