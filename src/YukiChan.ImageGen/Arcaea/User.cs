@@ -175,7 +175,7 @@ public partial class ArcaeaImageGenerator
         {
             if (message.MessageType == WebSocketMessageType.Text)
             {
-                logger.LogDebug($"Received text message: {message.Text}");
+                logger.LogDebug("Received text message: {Message}", message.Text);
                 var err = message.Text switch
                 {
                     "invalid id" => "用户不存在",
@@ -215,6 +215,30 @@ public partial class ArcaeaImageGenerator
             dtpsList = dtpsList
                 .Where(dtp => (now - dtp.DateTime).TotalDays <= lastDays)
                 .ToList();
+
+            if (dtpsList.Count <= 1)
+            {
+                StopEverything();
+                SKImage image;
+                {
+                    var imageInfo = new SKImageInfo(width, height);
+                    using var surface = SKSurface.Create(imageInfo);
+                    using var canvas = surface.Canvas;
+                    using var paint = new SKPaint
+                    {
+                        Color = pref.Dark ? SKColors.White : SKColor.Parse("#333333"),
+                        TextSize = 72,
+                        TextAlign = SKTextAlign.Center,
+                        Typeface = TitilliumWeb_SemiBold
+                    };
+                    canvas.DrawText("No enough data during this period.",
+                        width / 2f, height / 2f - 36, paint);
+                    image = surface.Snapshot();
+                }
+
+                tcs.SetResult((image, 0, 0, 0, 0));
+                return;
+            }
 
             var xAxes = new[]
             {
