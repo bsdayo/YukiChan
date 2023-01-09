@@ -1,0 +1,11 @@
+# OneBot (QQ) 平台机器人配置
+
+[[Adapters.OneBot.Bots]]
+# Bot 的 QQ 号
+SelfId = ""
+# 连接 OneBot 服务器使用的协议
+Protocol = "websocket"
+# OneBot 服务器地址
+Endpoint = ""
+# WebSocket 服务器重连超时秒数
+WebSocketReconnectTimeout = 10

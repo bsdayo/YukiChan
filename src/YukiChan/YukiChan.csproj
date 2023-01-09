@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <Product>YukiChan</Product>
-        <Version>2.5.0</Version>
+        <Version>2.6.0</Version>
         <Authors>b1acksoil</Authors>
         <Description>Cross-platform chat bot using Flandre.</Description>
 
@@ -40,6 +40,13 @@
         <PackageReference Include="Serilog.Sinks.File" Version="5.0.1-dev-00947" />
         <PackageReference Include="Tomlyn" Version="0.16.2" />
         <PackageReference Include="Tomlyn.Extensions.Configuration" Version="1.0.5" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="..\..\configs\*.toml"
+                 ExcludeFromSingleFile="true"
+                 CopyToOutputDirectory="PreserveNewest"
+                 CopyToPublishDirectory="PreserveNewest" />
     </ItemGroup>
 
     <Target Name="GetBuildStamp" BeforeTargets="GenerateBuildStamp" Condition="'$(BuildHash)' == ''">
