@@ -1,4 +1,5 @@
 ﻿using Flandre.Framework;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using YukiChan.Plugins.Arcaea;
 using YukiChan.Plugins.SandBox;
@@ -7,17 +8,27 @@ namespace YukiChan.Plugins;
 
 public static class PluginExtensions
 {
-    public static FlandreAppBuilder UseArcaeaPlugin(this FlandreAppBuilder builder, ArcaeaPluginConfig? config = null)
+    public static FlandreAppBuilder AddArcaeaPlugin(this FlandreAppBuilder builder, IConfiguration configuration)
     {
         builder.Services.AddSingleton<ArcaeaService>();
-        builder.UsePlugin<ArcaeaPlugin, ArcaeaPluginConfig>(config ?? new ArcaeaPluginConfig());
+        builder.AddPlugin<ArcaeaPlugin, ArcaeaPluginOptions>(configuration);
         return builder;
     }
 
-    public static FlandreAppBuilder UseSandBoxPlugin(this FlandreAppBuilder builder, SandBoxPluginConfig? config = null)
+    public static FlandreAppBuilder AddSandBoxPlugin(this FlandreAppBuilder builder, IConfiguration configuration)
     {
         builder.Services.AddSingleton<SandBoxService>();
-        builder.UsePlugin<SandBoxPlugin, SandBoxPluginConfig>(config ?? new SandBoxPluginConfig());
+        builder.AddPlugin<SandBoxPlugin, SandBoxPluginOptions>(configuration);
         return builder;
+    }
+
+    public static FlandreAppBuilder AddAutoAcceptPlugin(this FlandreAppBuilder builder, IConfiguration configuration)
+    {
+        return builder.AddPlugin<AutoAcceptPlugin, AutoAcceptPluginOptions>(configuration);
+    }
+
+    public static FlandreAppBuilder AddGosenPlugin(this FlandreAppBuilder builder, IConfiguration configuration)
+    {
+        return builder.AddPlugin<GosenPlugin, GosenPluginOptions>(configuration);
     }
 }

@@ -1,36 +1,50 @@
 ﻿using ArcaeaUnlimitedAPI.Lib;
+using Microsoft.Extensions.Options;
 using YukiChan.ImageGen.Arcaea;
 using YukiChan.Shared.Arcaea;
 
 namespace YukiChan.Plugins.Arcaea;
 
-public class ArcaeaService
+public sealed class ArcaeaService : IDisposable
 {
-    public AuaClient AuaClient { get; }
+    public AuaClient AuaClient { get; private set; } = null!;
 
-    public AlaClient AlaClient { get; }
+    public AlaClient AlaClient { get; private set; } = null!;
 
     public ArcaeaImageGenerator ImageGenerator { get; }
 
     public ArcaeaReportManager ReportManager { get; }
 
-    public ArcaeaService(ArcaeaPluginConfig config)
+    private readonly IDisposable? _optionsMonitor;
+
+    public ArcaeaService(IOptionsMonitor<ArcaeaPluginOptions> optionsMonitor)
+    {
+        _optionsMonitor = optionsMonitor.OnChange(UpdateClients);
+        UpdateClients(optionsMonitor.CurrentValue, null);
+
+        ImageGenerator = new ArcaeaImageGenerator();
+        ReportManager = new ArcaeaReportManager();
+    }
+
+    private void UpdateClients(ArcaeaPluginOptions options, string? _)
     {
         AuaClient = new AuaClient
         {
-            ApiUrl = config.AuaApiUrl,
-            UserAgent = config.AuaToken,
-            Token = config.AuaToken,
-            Timeout = config.AuaTimeout
+            ApiUrl = options.AuaApiUrl,
+            UserAgent = options.AuaToken,
+            Token = options.AuaToken,
+            Timeout = options.AuaTimeout
         }.Initialize();
 
         AlaClient = new AlaClient
         {
-            Token = config.AlaToken,
-            Timeout = config.AlaTimeout
+            Token = options.AlaToken,
+            Timeout = options.AlaTimeout
         }.Initialize();
+    }
 
-        ImageGenerator = new ArcaeaImageGenerator();
-        ReportManager = new ArcaeaReportManager();
+    public void Dispose()
+    {
+        _optionsMonitor?.Dispose();
     }
 }

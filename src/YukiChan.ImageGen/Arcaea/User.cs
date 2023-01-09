@@ -164,7 +164,6 @@ public partial class ArcaeaImageGenerator
         void StopEverything()
         {
             timer.Stop();
-            client.Stop(WebSocketCloseStatus.Empty, string.Empty).Wait();
             client.Dispose();
             timer.Close();
             timer.Dispose();

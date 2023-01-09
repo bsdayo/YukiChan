@@ -2,6 +2,7 @@
 using Flandre.Framework.Attributes;
 using Flandre.Framework.Common;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using YukiChan.Shared.Utils;
 
 namespace YukiChan.Plugins;
@@ -10,12 +11,12 @@ public class GosenPlugin : Plugin
 {
     private static readonly HttpClient Client = new();
 
-    private readonly GosenPluginConfig _config;
+    private readonly GosenPluginOptions _options;
 
     private readonly ILogger<GosenPlugin> _logger;
 
-    public GosenPlugin(GosenPluginConfig config, ILogger<GosenPlugin> logger) =>
-        (_config, _logger) = (config, logger);
+    public GosenPlugin(IOptionsSnapshot<GosenPluginOptions> options, ILogger<GosenPlugin> logger) =>
+        (_options, _logger) = (options.Value, logger);
 
     [Command("5k <upper:string> <lower:string>")]
     [Alias("5K")]
@@ -32,7 +33,7 @@ public class GosenPlugin : Plugin
             var offset = args.GetOption<int>("offset");
 
             var image = await Client.GetByteArrayAsync(
-                $"{_config.ApiUrl}/?upper={upper}&lower={lower}&offset={offset}");
+                $"{_options.ApiUrl}/?upper={upper}&lower={lower}&offset={offset}");
 
             return ctx.Reply().Image(image);
         }
@@ -44,7 +45,7 @@ public class GosenPlugin : Plugin
     }
 }
 
-public class GosenPluginConfig
+public class GosenPluginOptions
 {
     public string ApiUrl { get; set; } = string.Empty;
 }

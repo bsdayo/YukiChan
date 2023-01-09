@@ -1,136 +1,51 @@
-﻿using Flandre.Adapters.OneBot;
-using Flandre.Framework;
-using Flandre.Framework.Extensions;
+﻿using Flandre.Framework;
 using Flandre.Plugins.BaiduTranslate;
 using Flandre.Plugins.HttpCat;
 using Flandre.Plugins.WolframAlpha;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Serilog;
-using Tomlyn;
+using Microsoft.Extensions.Hosting;
+using YukiChan;
 using YukiChan.Plugins;
 using YukiChan.Shared;
-using YukiChan.Shared.Database;
 
-namespace YukiChan;
-
-public static class Program
+var builder = FlandreApp.CreateBuilder(new HostApplicationBuilderSettings
 {
-    private static readonly YukiConfig YukiConfig = GetYukiConfig().Customize();
+    Args = args,
+    ContentRootPath = YukiDir.Root
+});
+var pluginOpts = builder.Configuration.GetSection("Plugins");
 
-    public static void Main(string[] args)
-    {
-        YukiDir.EnsureExistence();
+using var app = builder.ConfigureInfrastructure(args).ConfigureSerilog()
+    // Adapters
+    .AddOneBotAdapter()
 
-        var builder = new FlandreAppBuilder(YukiConfig.App);
+    // Plugins
+    .AddArcaeaPlugin(pluginOpts.GetSection("Arcaea"))
+    .AddSandBoxPlugin(pluginOpts.GetSection("SandBox"))
+    .AddBaiduTranslatePlugin(pluginOpts.GetSection("BaiduTranslate"))
+    .AddWolframAlphaPlugin(pluginOpts.GetSection("WolframAlpha"))
+    .AddHttpCatPlugin(pluginOpts.GetSection("HttpCat"))
+    .AddGosenPlugin(pluginOpts.GetSection("Gosen"))
+    .AddAutoAcceptPlugin(pluginOpts.GetSection("AutoAccept"))
+    .AddPlugin<ImagesPlugin>()
+    .AddPlugin<MainBotPlugin>()
+    .AddPlugin<StatusPlugin>()
+    .AddPlugin<MiscPlugin>()
+    .AddPlugin<DebugPlugin>()
+    .CustomizePluginOptions()
 
-        var app = builder.ConfigureSerilog().AddYukiServices()
+    // Build FlandreApp
+    .Build()
 
-            // Adapters
-            .UseAdapter(new OneBotAdapter(GetOneBotAdapterConfig()))
+    // Middlewares
+    .UseMiddleware(Middlewares.QqGroupWarnFilter)
+    .UseMiddleware(Middlewares.QqGuildFilter)
+    .UseMiddleware(Middlewares.HandleGuildAssignee)
 
-            // Plugins
-            .UseArcaeaPlugin(YukiConfig.Plugins.Arcaea)
-            .UseBaiduTranslatePlugin(YukiConfig.Plugins.BaiduTranslate)
-            .UseWolframAlphaPlugin(YukiConfig.Plugins.WolframAlpha)
-            .UseHttpCatPlugin(YukiConfig.Plugins.HttpCat)
-            .UseSandBoxPlugin(YukiConfig.Plugins.SandBox)
-            .UsePlugin<StatusPlugin>()
-            .UsePlugin<ImagesPlugin>()
-            .UsePlugin<DebugPlugin>()
-            .UsePlugin<AutoAcceptPlugin>(YukiConfig.Plugins.AutoAccept)
-            .UsePlugin<GosenPlugin>(YukiConfig.Plugins.Gosen)
-            .UsePlugin<MainBotPlugin>()
+    // Load
+    .LoadGuildAssignees();
 
-            // Build FlandreApp
-            .Build()
+// Events
+app.OnCommandInvoking += YukiEventHandlers.OnCommandInvoking;
+app.OnCommandInvoked += YukiEventHandlers.OnCommandInvoked;
 
-            // Middlewares
-            .UseMiddleware(Middlewares.QqGroupWarnFilter)
-            .UseMiddleware(Middlewares.QqGuildFilter)
-            .UseMiddleware(Middlewares.HandleGuildAssignee)
-
-            // Load
-            .LoadGuildAssignees();
-
-        app.OnCommandInvoking += YukiEventHandlers.OnCommandInvoking;
-        app.OnCommandInvoked += YukiEventHandlers.OnCommandInvoked;
-
-        app.Start();
-    }
-
-    private static FlandreAppBuilder AddYukiServices(this FlandreAppBuilder builder)
-    {
-        builder.Services.AddSingleton(YukiConfig);
-        builder.Services.AddSingleton<YukiDbManager>();
-        return builder;
-    }
-
-    private static FlandreAppBuilder ConfigureSerilog(this FlandreAppBuilder builder)
-    {
-        Log.Logger = new LoggerConfiguration()
-            .Enrich.FromLogContext()
-            .WriteTo.Console()
-            .WriteTo.File($"{YukiDir.Logs}/yuki/.log", rollingInterval: RollingInterval.Day, shared: true)
-            .MinimumLevel.Debug()
-            .CreateLogger();
-
-        builder.Services.AddLogging(lb =>
-        {
-            lb.ClearProviders();
-            lb.AddSerilog(dispose: true);
-            lb.SetMinimumLevel(YukiConfig.EnableDebugLog ? LogLevel.Debug : LogLevel.Information);
-        });
-        return builder;
-    }
-
-    private static FlandreApp LoadGuildAssignees(this FlandreApp app)
-    {
-        foreach (var guildData in app.Services.GetRequiredService<YukiDbManager>().GetAllGuildData().Result)
-            app.SetGuildAssignee(guildData.Platform, guildData.GuildId, guildData.Assignee);
-        return app;
-    }
-
-    #region GetConfigs
-
-    public static YukiConfig GetYukiConfig()
-    {
-        YukiConfig config;
-        if (!File.Exists($"{YukiDir.Configs}/yuki.toml"))
-        {
-            config = new YukiConfig();
-            File.WriteAllText($"{YukiDir.Configs}/yuki.toml", Toml.FromModel(config));
-        }
-        else
-        {
-            config = Toml.ToModel<YukiConfig>(File.ReadAllText($"{YukiDir.Configs}/yuki.toml"));
-        }
-
-        return config;
-    }
-
-    public static OneBotAdapterConfig GetOneBotAdapterConfig()
-    {
-        OneBotAdapterConfig config;
-        if (!File.Exists($"{YukiDir.Configs}/onebot.toml"))
-        {
-            config = new OneBotAdapterConfig();
-            File.WriteAllText($"{YukiDir.Configs}/onebot.toml", Toml.FromModel(config));
-        }
-        else
-        {
-            config = Toml.ToModel<OneBotAdapterConfig>(File.ReadAllText($"{YukiDir.Configs}/onebot.toml"));
-        }
-
-        return config;
-    }
-
-    #endregion
-
-    private static YukiConfig Customize(this YukiConfig config)
-    {
-        config.Plugins.WolframAlpha.FontPath = $"{YukiDir.Assets}/fonts/TitilliumWeb-SemiBold.ttf";
-        config.Plugins.HttpCat.CachePath = YukiDir.HttpCatCache;
-        return config;
-    }
-}
+app.Run();

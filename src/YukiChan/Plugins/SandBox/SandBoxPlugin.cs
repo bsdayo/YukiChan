@@ -1,7 +1,9 @@
 ﻿using Flandre.Core.Messaging;
+using Flandre.Framework;
 using Flandre.Framework.Attributes;
 using Flandre.Framework.Common;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using YukiChan.Shared.Utils;
 
 namespace YukiChan.Plugins.SandBox;
@@ -10,25 +12,25 @@ public sealed class SandBoxPlugin : Plugin
 {
     private readonly SandBoxService _service;
 
-    private readonly SandBoxPluginConfig _config;
+    private readonly SandBoxPluginOptions _options;
 
-    private readonly YukiConfig _yukiConfig;
+    private readonly FlandreAppOptions _appOptions;
 
     private readonly ILogger<SandBoxPlugin> _logger;
 
-    public SandBoxPlugin(SandBoxService service, SandBoxPluginConfig config, YukiConfig yukiConfig,
-        ILogger<SandBoxPlugin> logger)
+    public SandBoxPlugin(SandBoxService service, IOptionsSnapshot<SandBoxPluginOptions> options,
+        IOptionsSnapshot<FlandreAppOptions> appOptions, ILogger<SandBoxPlugin> logger)
     {
         _service = service;
-        _config = config;
-        _yukiConfig = yukiConfig;
+        _options = options.Value;
+        _appOptions = appOptions.Value;
         _logger = logger;
     }
 
     private bool CheckEnabled(MessageContext ctx)
     {
         if (ctx.Platform != "onebot") return false;
-        if (!_config.EnabledGroups.Contains(ctx.GuildId)) return false;
+        if (!_options.EnabledChannels.Contains(ctx.GuildId)) return false;
         return true;
     }
 
@@ -37,7 +39,7 @@ public sealed class SandBoxPlugin : Plugin
         if (!CheckEnabled(ctx)) return;
 
         var code = ctx.Message.GetText();
-        if (code.StartsWith(_yukiConfig.App.CommandPrefix)) return;
+        if (code.StartsWith(_appOptions.CommandPrefix)) return;
 
         var result = (await _service.Execute(code, TimeSpan.FromSeconds(10)))?.ToString();
 

@@ -3,6 +3,7 @@ using Flandre.Framework.Common;
 using Flandre.Framework.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using YukiChan.Shared.Database;
 
 namespace YukiChan;
@@ -16,15 +17,16 @@ public static class Middlewares
         if (ctx.Platform != "onebot") return;
         var isWarn = ctx.Response?.GetText().Contains("未找到指令");
         if (isWarn == null || !isWarn.Value) return;
-        if (ctx.App.Services.GetRequiredService<YukiConfig>().NoWarnQqGroups.Contains(ctx.ChannelId))
+        if (ctx.App.Services.GetRequiredService<IOptionsSnapshot<YukiOptions>>().Value
+            .NoWarnQQGroups.Contains(ctx.ChannelId))
             ctx.Response = null;
     }
 
     public static void QqGuildFilter(MiddlewareContext ctx, Action next)
     {
         if (ctx.Platform == "qqguild"
-            && !ctx.App.Services.GetRequiredService<YukiConfig>()
-                .QqGuildAllowedChannels.Contains(ctx.ChannelId))
+            && !ctx.App.Services.GetRequiredService<IOptionsSnapshot<YukiOptions>>().Value
+                .QQGuildAllowedChannels.Contains(ctx.ChannelId))
             return;
 
         next();

@@ -32,7 +32,7 @@ public static class YukiDir
             Directory.CreateDirectory(path);
     }
 
-    public static void EnsureExistence()
+    static YukiDir()
     {
         var dirs = new[]
         {
