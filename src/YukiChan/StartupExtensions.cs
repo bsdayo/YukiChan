@@ -39,7 +39,7 @@ internal static class StartupExtensions
             // 添加命令行配置
             .AddCommandLine(args);
 
-        builder.Services.ConfigureFlandreAppOptions(builder.Configuration.GetSection("App"));
+        builder.Services.ConfigureFlandreApp(builder.Configuration.GetSection("App"));
         builder.Services.Configure<YukiOptions>(builder.Configuration.GetSection("Yuki"));
 
         builder.Services.AddSingleton<YukiDbManager>();
