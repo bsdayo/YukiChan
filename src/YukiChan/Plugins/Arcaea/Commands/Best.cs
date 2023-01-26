@@ -1,15 +1,10 @@
-﻿using ArcaeaUnlimitedAPI.Lib.Models;
-using ArcaeaUnlimitedAPI.Lib.Responses;
-using ArcaeaUnlimitedAPI.Lib.Utils;
-using Flandre.Core.Messaging;
-using Flandre.Core.Messaging.Segments;
+﻿using Flandre.Core.Messaging;
 using Flandre.Framework.Attributes;
 using Flandre.Framework.Common;
 using Microsoft.Extensions.Logging;
-using YukiChan.Shared.Arcaea;
-using YukiChan.Shared.Arcaea.Factories;
-using YukiChan.Shared.Database.Models.Arcaea;
-using YukiChan.Shared.Utils;
+using YukiChan.Shared.Data;
+using YukiChan.Shared.Models.Arcaea;
+using YukiChan.Utils;
 
 // ReSharper disable CheckNamespace
 
@@ -31,58 +26,23 @@ public partial class ArcaeaPlugin
 
         try
         {
-            var songId = await ArcaeaSongDatabase.Default.FuzzySearchId(songname);
-            if (songId is null) return ctx.Reply().Text("没有找到该曲目哦~");
+            var userResp = await _yukiClient.Arcaea.GetUser(ctx.Platform, ctx.UserId);
+            if (userResp.Code == YukiErrorCode.Arcaea_NotBound)
+                return ctx.Reply("请先使用 /a bind 名称或好友码 绑定你的账号哦~");
+            if (!userResp.Ok) return ctx.ReplyServerError(userResp);
 
-            AuaUserBestContent auaBest;
+            var bestResp = await _yukiClient.Arcaea.GetBest(
+                userResp.Data.ArcaeaId, songname, difficulty);
+            if (!bestResp.Ok) return ctx.ReplyServerError(bestResp);
+            var best = bestResp.Data;
 
-            if (string.IsNullOrEmpty(userArg)) // 未提供用户名/好友码
-            {
-                var dbUser = await _database.GetArcaeaUser(ctx.Bot.Platform, ctx.Message.Sender.UserId);
-                if (dbUser is null)
-                    return ctx.Reply()
-                        .Text("请先使用 /a bind 名称或好友码 绑定你的账号哦~\n")
-                        .Text("你也可以使用 /a best -u 名称或好友码 直接查询指定用户。");
+            var prefResp = await _yukiClient.Arcaea.GetPreferences(ctx.Platform, ctx.UserId);
+            var pref = prefResp.Ok ? prefResp.Data.Preferences : new ArcaeaUserPreferences();
 
-                _logger.LogInformation(
-                    "正在查询 {UserName}({UserId}) -> {ArcaeaName}({ArcaeaId}) 的 {SongId} 最高成绩...",
-                    ctx.Message.Sender.Name, ctx.Message.Sender.UserId,
-                    dbUser.ArcaeaName, dbUser.ArcaeaId, songId);
+            var image = await _service.ImageGenerator.SingleV1(best.User, best.BestRecord,
+                _yukiClient, pref, _logger);
 
-                auaBest = int.TryParse(dbUser.ArcaeaId, out var parsed)
-                    ? await _service.AuaClient.User.Best(parsed, songId, AuaSongQueryType.SongId, difficulty,
-                        AuaReplyWith.All)
-                    : await _service.AuaClient.User.Best(dbUser.ArcaeaId, songId, AuaSongQueryType.SongId, difficulty,
-                        AuaReplyWith.All);
-            }
-            else
-            {
-                _logger.LogInformation("正在查询 {ArcaeaName} 的 {SongId} 最高成绩...", userArg, songId);
-                auaBest = await _service.AuaClient.User.Best(userArg, songId, AuaSongQueryType.SongId, difficulty,
-                    AuaReplyWith.All);
-            }
-
-            _logger.LogInformation(
-                "正在为 {ArcaeaName}({ArcaeaId}) 生成 Best 图片...",
-                auaBest.AccountInfo.Name, auaBest.AccountInfo.Code);
-
-            var pref = await _database.GetArcaeaUserPreferences(ctx.Bot.Platform, ctx.Message.Sender.UserId)
-                       ?? new ArcaeaUserPreferences();
-            pref.Dark = pref.Dark || args.GetOption<bool>("dark");
-            pref.Nya = pref.Nya || args.GetOption<bool>("nya");
-
-            var best = ArcaeaRecordFactory.FromAua(auaBest.Record, auaBest.SongInfo![0]);
-            var user = ArcaeaUserFactory.FromAua(auaBest.AccountInfo);
-            var image = await _service.ImageGenerator.SingleV1(user, best, _service.AuaClient, pref, _logger);
-
-            return ctx.Reply()
-                .Text($"{user.Name} ({user.Potential})\n")
-                .Image(ImageSegment.FromData(image));
-        }
-        catch (AuaException e)
-        {
-            var errMsg = AuaErrorStatus.GetMessage(e.Status, e.Message);
-            return ctx.Reply(errMsg);
+            return ctx.Reply($"{best.User.Name} ({best.User.Potential:F2})\n").Image(image);
         }
         catch (Exception e)
         {

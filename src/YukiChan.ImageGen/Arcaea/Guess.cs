@@ -1,5 +1,5 @@
 ﻿using SkiaSharp;
-using YukiChan.Shared.Arcaea.Models;
+using YukiChan.Shared.Models.Arcaea;
 
 namespace YukiChan.ImageGen.Arcaea;
 

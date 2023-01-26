@@ -1,24 +1,23 @@
-﻿using ArcaeaUnlimitedAPI.Lib;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using SkiaSharp;
+using YukiChan.Client.Console;
+using YukiChan.Core;
 using YukiChan.ImageGen.Utils;
-using YukiChan.Shared;
-using YukiChan.Shared.Arcaea;
-using YukiChan.Shared.Arcaea.Models;
-using YukiChan.Shared.Database.Models.Arcaea;
+using YukiChan.Shared.Models.Arcaea;
+using YukiChan.Shared.Utils;
 
 namespace YukiChan.ImageGen.Arcaea;
 
 public partial class ArcaeaImageGenerator
 {
-    public async Task<byte[]> SingleV1(ArcaeaUser user, ArcaeaRecord record, AuaClient? client,
+    public async Task<byte[]> SingleV1(ArcaeaUser user, ArcaeaRecord record, YukiConsoleClient? client,
         ArcaeaUserPreferences pref, ILogger? logger = null)
     {
         var imageInfo = new SKImageInfo(900, 1520);
         using var surface = SKSurface.Create(imageInfo);
         using var canvas = surface.Canvas;
 
-        var cover = await ArcaeaUtils.GetSongCover(
+        var cover = await ArcaeaImageUtils.GetSongCover(
             client, record.SongId, record.JacketOverride, record.Difficulty, pref.Nya, logger);
 
         var (colorLight, colorDark, colorBorderLight, colorBorderDark, colorInnerLight, colorInnerDark)
@@ -75,12 +74,12 @@ public partial class ArcaeaImageGenerator
                 IsAntialias = true,
                 TextSize = 53
             };
-            canvas.DrawCenteredText(ArcaeaUtils.ReplaceNotSupportedChar(record.Name),
+            canvas.DrawCenteredText(ArcaeaImageUtils.ReplaceNotSupportedChar(record.Name),
                 160, 770, titlePaint, 580);
         }
 
         {
-            var clearImgPath = ArcaeaUtils.GetClearTypeImagePath(record.ClearType);
+            var clearImgPath = ArcaeaImageUtils.GetClearTypeImagePath(record.ClearType);
             using var originalClearImg = SKBitmap.Decode(clearImgPath);
 
             if (originalClearImg.Height > 77)
@@ -160,13 +159,10 @@ public partial class ArcaeaImageGenerator
                 Typeface = TitilliumWeb_Regular
             };
 
-            var milis = (long)(DateTime.Now - DateTime.UnixEpoch).TotalMilliseconds;
-            var days = new TimeSpan(0, 0, 0, 0, (int)(milis - record.TimePlayed)).TotalDays;
+            var days = (int)(DateTime.UtcNow - record.PlayTime).TotalDays;
 
             canvas.DrawRoundRect(150, 1295, 600, 60, 10, 10, rectPaint);
-            canvas.DrawCenteredText(
-                $"{(int)days}d",
-                655, 1337, textPaint, 80);
+            canvas.DrawCenteredText($"{days}d", 655, 1337, textPaint, 80);
         }
 
         {
@@ -186,7 +182,7 @@ public partial class ArcaeaImageGenerator
 
             canvas.DrawRoundRect(150, 1295, 490, 60, 10, 10, rectPaint);
             canvas.DrawLimitedText(
-                $"{record.Difficulty} {record.RatingText} [{record.Rating}]",
+                $"{record.Difficulty} {record.DisplayRating} [{record.Rating}]",
                 332, 1337, textPaint, 334);
 
             // Border
@@ -249,7 +245,7 @@ public partial class ArcaeaImageGenerator
         return data.ToArray();
     }
 
-    public async Task<byte[]> GetSingleV1Background(ArcaeaRecord record, AuaClient? client, ILogger? logger)
+    public async Task<byte[]> GetSingleV1Background(ArcaeaRecord record, YukiConsoleClient? client, ILogger? logger)
     {
         var path = record.JacketOverride
             ? $"{YukiDir.ArcaeaCache}/single-dynamic-bg-v1/{record.SongId}-{record.Difficulty.ToString().ToLower()}.jpg"
@@ -259,7 +255,7 @@ public partial class ArcaeaImageGenerator
             return await File.ReadAllBytesAsync(path);
 
         var coverBitmap = SKBitmap.Decode(
-            await ArcaeaUtils.GetSongCover(client, record.SongId, record.JacketOverride, record.Difficulty, false,
+            await ArcaeaImageUtils.GetSongCover(client, record.SongId, record.JacketOverride, record.Difficulty, false,
                 logger))!;
         using var scaledCoverBitmap = new SKBitmap(1520, 1520);
         coverBitmap.ScalePixels(scaledCoverBitmap, SKFilterQuality.Low);

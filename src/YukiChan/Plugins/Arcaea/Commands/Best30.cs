@@ -1,14 +1,11 @@
-﻿using ArcaeaUnlimitedAPI.Lib.Models;
-using ArcaeaUnlimitedAPI.Lib.Utils;
-using Flandre.Core.Messaging;
+﻿using Flandre.Core.Messaging;
 using Flandre.Core.Messaging.Segments;
 using Flandre.Framework.Attributes;
 using Flandre.Framework.Common;
 using Microsoft.Extensions.Logging;
-using YukiChan.Shared.Arcaea.Factories;
-using YukiChan.Shared.Arcaea.Models;
-using YukiChan.Shared.Database.Models.Arcaea;
-using YukiChan.Shared.Utils;
+using YukiChan.Shared.Data;
+using YukiChan.Shared.Models.Arcaea;
+using YukiChan.Utils;
 
 // ReSharper disable CheckNamespace
 
@@ -29,97 +26,42 @@ public partial class ArcaeaPlugin
 
         try
         {
-            ArcaeaBest30 best30;
+            string arcName, arcId;
 
             if (string.IsNullOrEmpty(userArg)) // 未提供用户名/好友码
             {
-                var user = await _database.GetArcaeaUser(ctx.Bot.Platform, ctx.Message.Sender.UserId);
-                if (user is null)
+                var userResp = await _yukiClient.Arcaea.GetUser(ctx.Platform, ctx.UserId);
+                if (userResp.Code == YukiErrorCode.Arcaea_NotBound)
                     return ctx.Reply()
                         .Text("请先使用 /a bind 名称或好友码 绑定你的账号哦~\n")
                         .Text("你也可以使用 /a b30 名称或好友码 直接查询指定用户。");
-
-                _logger.LogInformation(
-                    "正在使用 {ApiName} 查询 {UserName}({UserId}) -> {ArcaeaName}({ArcaeaId}) 的 Best30 成绩...",
-                    official ? "ALA" : "AUA",
-                    ctx.Message.Sender.Name, ctx.Message.Sender.UserId,
-                    user.ArcaeaName, user.ArcaeaId);
-
-                await ctx.Bot.SendMessage(ctx.Message, official
-                    ? $"正在使用官方 API 查询 {user.ArcaeaName} 的 Best30 成绩，请耐心等候..."
-                    : $"正在查询 {user.ArcaeaName} 的 Best30 成绩，请耐心等候...");
-
-                // 用户绑定时如果使用 -u (--uncheck) 选项，user.ArcaeaId 的类型不可预料（例如使用名字绑定）
-                if (int.TryParse(user.ArcaeaId, out var parsed))
-                {
-                    if (official)
-                    {
-                        var usercode = user.ArcaeaId.PadLeft(9, '0');
-                        best30 = ArcaeaBest30Factory.FromAla(
-                            await _service.AlaClient.User(usercode),
-                            await _service.AlaClient.Best30(usercode), usercode);
-                    }
-                    else
-                    {
-                        best30 = ArcaeaBest30Factory.FromAua(
-                            await _service.AuaClient.User.Best30(parsed, 9, AuaReplyWith.All));
-                    }
-                }
-                else
-                {
-                    if (official)
-                        return ctx.Reply("官方 API 仅支持好友码绑定，请重新使用好友码绑定后重试。");
-
-                    best30 = ArcaeaBest30Factory.FromAua(
-                        await _service.AuaClient.User.Best30(user.ArcaeaId, 9, AuaReplyWith.All));
-                }
+                if (!userResp.Ok) return ctx.ReplyServerError(userResp);
+                arcName = userResp.Data.ArcaeaName;
+                arcId = userResp.Data.ArcaeaId;
             }
             else
             {
-                _logger.LogInformation("正在查询 {UserName} 的 Best30 成绩...", userArg);
-                await ctx.Bot.SendMessage(ctx.Message, "正在查询该用户的 Best30 成绩，请耐心等候...");
-                best30 = ArcaeaBest30Factory.FromAua(
-                    await _service.AuaClient.User.Best30(userArg, 9, AuaReplyWith.All));
-
-                if (official)
-                {
-                    if (!int.TryParse(userArg, out var parsed))
-                        return ctx.Reply("官方 API 仅支持好友码绑定，请重新使用好友码绑定后重试。");
-                    var usercode = parsed.ToString().PadLeft(9, '0');
-                    best30 = ArcaeaBest30Factory.FromAla(
-                        await _service.AlaClient.User(usercode),
-                        await _service.AlaClient.Best30(usercode), usercode);
-                }
+                if (official && (userArg.Length > 9 || !int.TryParse(userArg, out _)))
+                    return ctx.Reply("官方 API 仅支持好友码查询。");
+                arcName = arcId = userArg;
             }
 
-            try
-            {
-                await _service.ReportManager.SaveUserBest30(best30);
-                _logger.LogInformation("已保存用户 {ArcaeaName}({ArcaeaId}) 的 Best30 数据",
-                    best30.User.Name, best30.User.Code);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "保存用户 {ArcaeaName}({ArcaeaId}) Best30 数据时发生错误",
-                    best30.User.Name, best30.User.Code);
-            }
+            await ctx.Bot.SendMessage(ctx.Message, official
+                ? $"正在使用官方 API 查询 {arcName} 的 Best30 成绩，请耐心等候..."
+                : $"正在查询 {arcName} 的 Best30 成绩，请耐心等候...");
 
-            _logger.LogInformation("正在为 {ArcaeaName}({ArcaeaId}) 生成 Best30 图片...",
-                best30.User.Name, best30.User.Code);
+            var best30Resp = await _yukiClient.Arcaea.GetBest30(arcId, official);
+            if (!best30Resp.Ok) return ctx.ReplyServerError(best30Resp);
 
-            var pref = await _database.GetArcaeaUserPreferences(ctx.Bot.Platform, ctx.Message.Sender.UserId)
-                       ?? new ArcaeaUserPreferences();
+            var prefResp = await _yukiClient.Arcaea.GetPreferences(
+                ctx.Bot.Platform, ctx.Message.Sender.UserId);
+            var pref = prefResp.Ok ? prefResp.Data.Preferences : new ArcaeaUserPreferences();
             pref.Dark = pref.Dark || args.GetOption<bool>("dark");
             pref.Nya = pref.Nya || args.GetOption<bool>("nya");
 
-            var image = await _service.ImageGenerator.Best30(best30, pref, _service.AuaClient, _logger);
+            var image = await _service.ImageGenerator.Best30(best30Resp.Data.Best30, pref, _yukiClient, _logger);
 
             return ctx.Reply().Image(ImageSegment.FromData(image));
-        }
-        catch (AuaException e)
-        {
-            var errMsg = AuaErrorStatus.GetMessage(e.Status, e.Message);
-            return ctx.Reply(errMsg);
         }
         catch (Exception e)
         {

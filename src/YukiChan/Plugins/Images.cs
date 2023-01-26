@@ -1,7 +1,7 @@
 ﻿using Flandre.Core.Messaging;
 using Flandre.Framework.Attributes;
 using Flandre.Framework.Common;
-using YukiChan.Shared;
+using YukiChan.Core;
 
 namespace YukiChan.Plugins;
 

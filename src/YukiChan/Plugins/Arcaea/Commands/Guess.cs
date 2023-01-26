@@ -1,13 +1,13 @@
 ﻿// ReSharper disable CheckNamespace
 
-using ArcaeaUnlimitedAPI.Lib.Models;
 using Flandre.Core.Messaging;
 using Flandre.Framework.Attributes;
 using Flandre.Framework.Common;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using YukiChan.Shared.Arcaea;
-using YukiChan.Shared.Arcaea.Models;
-using YukiChan.Shared.Utils;
+using YukiChan.ImageGen.Utils;
+using YukiChan.Shared.Models.Arcaea;
+using YukiChan.Utils;
 
 namespace YukiChan.Plugins.Arcaea;
 
@@ -42,7 +42,7 @@ public partial class ArcaeaPlugin
                 if (!session.IsReady)
                     return ctx.Reply("题目正在初始化中，请稍等...");
 
-                var guessSongId = await ArcaeaSongDatabase.Default.FuzzySearchId(guessOrMode);
+                var guessSongId = await _service.SongDb.FuzzySearchId(guessOrMode);
                 if (guessSongId is null)
                     return ctx.Reply("没有找到该曲目哦！");
 
@@ -51,10 +51,14 @@ public partial class ArcaeaPlugin
                     return ctx.Reply("猜错啦！");
 
                 GuessSessions.Remove(sessionId);
+
+                var set = await _service.SongDb.Packages
+                    .AsNoTracking()
+                    .FirstAsync(package => package.Set == session.Chart.Set);
                 return ctx.Reply("猜对啦！")
                     .Image(session.Cover)
                     .Text($"{session.Chart.NameEn} - {session.Chart.Artist}\n")
-                    .Text($"({ArcaeaSongDatabase.Default.GetPackageBySet(session.Chart.Set)!.Name})");
+                    .Text($"({set.Name})");
             }
 
             var mode = string.IsNullOrWhiteSpace(guessOrMode)
@@ -81,11 +85,11 @@ public partial class ArcaeaPlugin
         GuessSessions.TryAdd(sessionId,
             new ArcaeaGuessSession { Timestamp = timestamp });
 
-        var allCharts = (await ArcaeaSongDatabase.Default.GetAllCharts())
+        var allCharts = await _service.SongDb.Charts
             .Where(chart => chart.RatingClass == (int)ArcaeaDifficulty.Future)
-            .ToArray();
+            .ToArrayAsync();
         var randomChart = allCharts[new Random().Next(allCharts.Length)];
-        var cover = await ArcaeaUtils.GetSongCover(_service.AuaClient,
+        var cover = await ArcaeaImageUtils.GetSongCover(_yukiClient,
             randomChart.SongId, randomChart.JacketOverride,
             (ArcaeaDifficulty)randomChart.RatingClass);
 
@@ -98,18 +102,21 @@ public partial class ArcaeaPlugin
 
         // 超时揭晓答案
 #pragma warning disable CS4014
-        Task.Run(() =>
+        Task.Run(async () =>
         {
-            Task.Delay(30000).Wait();
+            await Task.Delay(TimeSpan.FromSeconds(30));
             if (!GuessSessions.TryGetValue(sessionId, out var session)) return;
             if (session.Timestamp != timestamp) return;
+            GuessSessions.Remove(sessionId);
+            var set = await _service.SongDb.Packages
+                .AsNoTracking()
+                .FirstAsync(package => package.Set == session.Chart.Set);
             ctx.Bot.SendMessage(ctx.Message,
                 new MessageBuilder()
                     .Text("时间到！揭晓答案——")
                     .Image(session.Cover)
                     .Text($"{session.Chart.NameEn} - {session.Chart.Artist}\n")
-                    .Text($"({ArcaeaSongDatabase.Default.GetPackageBySet(session.Chart.Set)!.Name})"));
-            GuessSessions.Remove(sessionId);
+                    .Text($"({set.Name})"));
         });
 #pragma warning restore CS4014
 

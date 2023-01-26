@@ -1,16 +1,15 @@
-﻿using ArcaeaUnlimitedAPI.Lib;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using SkiaSharp;
-using YukiChan.Shared;
-using YukiChan.Shared.Arcaea;
-using YukiChan.Shared.Arcaea.Models;
-using YukiChan.Shared.Database.Models.Arcaea;
+using YukiChan.Client.Console;
+using YukiChan.Core;
+using YukiChan.ImageGen.Utils;
+using YukiChan.Shared.Models.Arcaea;
 
 namespace YukiChan.ImageGen.Arcaea;
 
 public partial class ArcaeaImageGenerator
 {
-    public async Task<byte[]> SingleV2(ArcaeaUser user, ArcaeaRecord record, AuaClient? client,
+    public async Task<byte[]> SingleV2(ArcaeaUser user, ArcaeaRecord record, YukiConsoleClient? client,
         ArcaeaUserPreferences pref, ILogger? logger = null)
     {
         var imageInfo = new SKImageInfo(2000, 1000);
@@ -30,7 +29,7 @@ public partial class ArcaeaImageGenerator
         return data.ToArray();
     }
 
-    public async Task<byte[]> GetSingleV2Background(ArcaeaRecord record, AuaClient? client, ILogger? logger)
+    public async Task<byte[]> GetSingleV2Background(ArcaeaRecord record, YukiConsoleClient? client, ILogger? logger)
     {
         var path = record.JacketOverride
             ? $"{YukiDir.ArcaeaCache}/single-dynamic-bg-v2/{record.SongId}-{record.Difficulty.ToString().ToLower()}.jpg"
@@ -40,7 +39,7 @@ public partial class ArcaeaImageGenerator
             return await File.ReadAllBytesAsync(path);
 
         var coverBitmap = SKBitmap.Decode(
-            await ArcaeaUtils.GetSongCover(client, record.SongId, record.JacketOverride, record.Difficulty, false,
+            await ArcaeaImageUtils.GetSongCover(client, record.SongId, record.JacketOverride, record.Difficulty, false,
                 logger))!;
         using var scaledCoverBitmap = new SKBitmap(2000, 2000);
         coverBitmap.ScalePixels(scaledCoverBitmap, SKFilterQuality.Low);

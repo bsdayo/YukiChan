@@ -4,7 +4,7 @@ using Flandre.Framework.Attributes;
 using Flandre.Framework.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using YukiChan.Shared.Utils;
+using YukiChan.Utils;
 
 namespace YukiChan.Plugins.SandBox;
 

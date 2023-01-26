@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using YukiChan.Plugins.Arcaea;
 using YukiChan.Plugins.SandBox;
+using YukiChan.Shared.Utils;
 
 namespace YukiChan.Plugins;
 
@@ -12,6 +13,7 @@ public static class PluginExtensions
     {
         builder.Services.AddSingleton<ArcaeaService>();
         builder.AddPlugin<ArcaeaPlugin, ArcaeaPluginOptions>(configuration);
+        builder.Services.AddDbContext<ArcaeaSongDbContext>();
         return builder;
     }
 

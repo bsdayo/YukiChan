@@ -1,10 +1,12 @@
-﻿using ArcaeaUnlimitedAPI.Lib.Models;
-using Flandre.Core.Messaging;
+﻿using Flandre.Core.Messaging;
 using Flandre.Framework.Attributes;
 using Flandre.Framework.Common;
-using YukiChan.Shared.Arcaea;
-using YukiChan.Shared.Arcaea.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using YukiChan.ImageGen.Utils;
+using YukiChan.Shared.Models.Arcaea;
 using YukiChan.Shared.Utils;
+using YukiChan.Utils;
 
 // ReSharper disable CheckNamespace
 
@@ -19,7 +21,7 @@ public partial class ArcaeaPlugin
         var range = args.GetArgument<string>("range")
             .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         int start, end;
-        var allCharts = await ArcaeaSongDatabase.Default.GetAllCharts();
+        var allCharts = await _service.SongDb.Charts.AsNoTracking().ToListAsync();
 
         try
         {
@@ -33,8 +35,8 @@ public partial class ArcaeaPlugin
 
                 // 提供定数范围
                 case 1:
-                    start = ArcaeaUtils.GetRatingRange(range[0]).Start;
-                    end = ArcaeaUtils.GetRatingRange(range[0]).End;
+                    start = ArcaeaSharedUtils.GetRatingRange(range[0]).Start;
+                    end = ArcaeaSharedUtils.GetRatingRange(range[0]).End;
 
                     if (start == -1 || end == -1)
                         return ctx.Reply("输入了错误的定数呢...");
@@ -47,8 +49,8 @@ public partial class ArcaeaPlugin
 
                 // 提供最低和最高定数
                 case 2:
-                    start = ArcaeaUtils.GetRatingRange(range[0]).Start;
-                    end = ArcaeaUtils.GetRatingRange(range[1]).End;
+                    start = ArcaeaSharedUtils.GetRatingRange(range[0]).Start;
+                    end = ArcaeaSharedUtils.GetRatingRange(range[1]).End;
 
                     if (start == -1 || end == -1)
                         return ctx.Reply("输入了错误的定数呢...");
@@ -67,12 +69,12 @@ public partial class ArcaeaPlugin
         }
         catch (YukiException e)
         {
-            _logger.LogError(e);
+            _logger.LogError(e, string.Empty);
             return ctx.Reply(e.Message);
         }
         catch (Exception e)
         {
-            _logger.LogError(e);
+            _logger.LogError(e, string.Empty);
             return ctx.Reply($"发生了奇怪的错误！({e.Message})");
         }
     }
@@ -84,15 +86,18 @@ public partial class ArcaeaPlugin
 
         var chart = allCharts[new Random().Next(allCharts.Length)];
 
-        var songCover = await ArcaeaUtils.GetSongCover(_service.AuaClient,
+        var songCover = await ArcaeaImageUtils.GetSongCover(_yukiClient,
             chart.SongId, chart.JacketOverride, (ArcaeaDifficulty)chart.RatingClass);
+        var package = await _service.SongDb.Packages
+            .AsNoTracking()
+            .FirstAsync(package => package.Set == chart.Set);
 
         return ctx.Reply()
             .Text("随机推荐曲目：\n")
             .Image(songCover)
             .Text($"{chart.NameEn}\n")
-            .Text($"({ArcaeaSongDatabase.Default.GetPackageBySet(chart.Set)!.Name})\n")
+            .Text($"({package.Name})\n")
             .Text(
-                $"{(ArcaeaDifficulty)chart.RatingClass} {chart.Rating.GetRatingText()} [{((double)chart.Rating / 10).ToString("0.0")}]");
+                $"{(ArcaeaDifficulty)chart.RatingClass} {chart.Rating.GetRatingText()} [{(double)chart.Rating / 10:0.0}]");
     }
 }

@@ -1,16 +1,18 @@
-﻿using Flandre.Core.Messaging;
-using Flandre.Framework.Common;
-using Flandre.Framework.Extensions;
+﻿using Flandre.Framework.Common;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using YukiChan.Shared.Database;
+using YukiChan.Client.Console;
+using YukiChan.Shared.Data;
+using YukiChan.Shared.Data.Console;
+using YukiChan.Utils;
+
+// ReSharper disable InconsistentNaming
 
 namespace YukiChan;
 
 public static class Middlewares
 {
-    public static void QqGroupWarnFilter(MiddlewareContext ctx, Action next)
+    public static void QQGroupWarnFilter(MiddlewareContext ctx, Action next)
     {
         next();
 
@@ -22,7 +24,7 @@ public static class Middlewares
             ctx.Response = null;
     }
 
-    public static void QqGuildFilter(MiddlewareContext ctx, Action next)
+    public static void QQGuildFilter(MiddlewareContext ctx, Action next)
     {
         if (ctx.Platform == "qqguild"
             && !ctx.App.Services.GetRequiredService<IOptionsSnapshot<YukiOptions>>().Value
@@ -32,22 +34,30 @@ public static class Middlewares
         next();
     }
 
-    public static async Task HandleGuildAssignee(MiddlewareContext ctx, Action next)
+    public static async Task CommandPrechecker(MiddlewareContext ctx, Action next)
     {
-        try
+        if (ctx.Command is not null)
         {
-            if (ctx.Message.SourceType == MessageSourceType.Channel
-                && ctx.GuildId is not null
-                && !ctx.App.IsGuildAssigned(ctx.Platform, ctx.GuildId))
+            var resp = await ctx.App.Services.GetRequiredService<YukiConsoleClient>()
+                .Root.Precheck(new PrecheckRequest
+                {
+                    Platform = ctx.Platform,
+                    GuildId = ctx.GuildId,
+                    UserId = ctx.UserId,
+                    SelfId = ctx.SelfId,
+                    Command = ctx.Command.CommandInfo.Command,
+                    CommandText = ctx.Message.GetText()
+                });
+
+            if (!resp.Ok)
             {
-                ctx.App.SetGuildAssignee(ctx.Platform, ctx.GuildId, ctx.SelfId);
-                await ctx.App.Services.GetRequiredService<YukiDbManager>()
-                    .InsertGuildDataIfNotExists(ctx.Platform, ctx.GuildId, ctx.SelfId);
+                if (resp.Code != YukiErrorCode.UserGotBanned)
+                    ctx.Response = ctx.ReplyServerError(resp);
+                return;
             }
-        }
-        catch (Exception e)
-        {
-            ctx.App.Logger.LogError(e, "");
+
+            if (!resp.Data.IsAssignee)
+                return;
         }
 
         next();

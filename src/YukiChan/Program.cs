@@ -4,8 +4,8 @@ using Flandre.Plugins.HttpCat;
 using Flandre.Plugins.WolframAlpha;
 using Microsoft.Extensions.Hosting;
 using YukiChan;
+using YukiChan.Core;
 using YukiChan.Plugins;
-using YukiChan.Shared;
 
 var builder = FlandreApp.CreateBuilder(new HostApplicationBuilderSettings
 {
@@ -37,15 +37,9 @@ using var app = builder.ConfigureInfrastructure(args).ConfigureSerilog()
     .Build()
 
     // Middlewares
-    .UseMiddleware(Middlewares.QqGroupWarnFilter)
-    .UseMiddleware(Middlewares.QqGuildFilter)
-    .UseMiddleware(Middlewares.HandleGuildAssignee)
-
-    // Load
-    .LoadGuildAssignees();
-
-// Events
-app.OnCommandInvoking += YukiEventHandlers.OnCommandInvoking;
-app.OnCommandInvoked += YukiEventHandlers.OnCommandInvoked;
+    .UseMiddleware(Middlewares.QQGroupWarnFilter)
+    .UseMiddleware(Middlewares.QQGuildFilter)
+    .UseCommandParserMiddleware()
+    .UseMiddleware(Middlewares.CommandPrechecker);
 
 app.Run();

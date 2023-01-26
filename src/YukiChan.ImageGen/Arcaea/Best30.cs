@@ -1,11 +1,9 @@
-﻿using ArcaeaUnlimitedAPI.Lib;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using SkiaSharp;
+using YukiChan.Client.Console;
+using YukiChan.Core;
 using YukiChan.ImageGen.Utils;
-using YukiChan.Shared;
-using YukiChan.Shared.Arcaea;
-using YukiChan.Shared.Arcaea.Models;
-using YukiChan.Shared.Database.Models.Arcaea;
+using YukiChan.Shared.Models.Arcaea;
 using YukiChan.Shared.Utils;
 
 namespace YukiChan.ImageGen.Arcaea;
@@ -13,7 +11,7 @@ namespace YukiChan.ImageGen.Arcaea;
 public partial class ArcaeaImageGenerator
 {
     public async Task<byte[]> Best30(ArcaeaBest30 best30, ArcaeaUserPreferences pref,
-        AuaClient? client = null, ILogger? logger = null)
+        YukiConsoleClient? client = null, ILogger? logger = null)
     {
         var imageInfo = new SKImageInfo(3400, 6200);
         using var surface = SKSurface.Create(imageInfo);
@@ -78,7 +76,7 @@ public partial class ArcaeaImageGenerator
             paint.TextAlign = SKTextAlign.Right;
 
             canvas.DrawText(
-                $"ArcID / {ArcaeaUtils.GetSpacedUserCode(best30.User.Code)}",
+                $"ArcID / {ArcaeaImageUtils.GetSpacedUserCode(best30.User.Code)}",
                 3105, 365, paint);
         }
 
@@ -119,7 +117,7 @@ public partial class ArcaeaImageGenerator
 
             var record = best30.Records[index];
 
-            var songCover = await ArcaeaUtils.GetSongCover(
+            var songCover = await ArcaeaImageUtils.GetSongCover(
                 client, record.SongId, record.JacketOverride, record.Difficulty, pref.Nya, logger);
 
             DrawMiniScoreCard(canvas,
@@ -138,7 +136,7 @@ public partial class ArcaeaImageGenerator
 
                 var record = best30.OverflowRecords![index];
 
-                var songCover = await ArcaeaUtils.GetSongCover(client, record.SongId, record.JacketOverride,
+                var songCover = await ArcaeaImageUtils.GetSongCover(client, record.SongId, record.JacketOverride,
                     record.Difficulty, pref.Nya, logger);
 
                 DrawMiniScoreCard(canvas,
@@ -225,7 +223,7 @@ public partial class ArcaeaImageGenerator
 
             canvas.DrawRoundRect(x + 320, y + 15, rank != 0 ? 560 : 665, 60, 10, 10, rectPaint);
             canvas.DrawLimitedText(
-                $"{record.Difficulty} {record.RatingText} [{record.Rating}]",
+                $"{record.Difficulty} {record.DisplayRating} [{record.Rating}]",
                 x + 526, y + 61, textPaint, rank != 0 ? 339 : 444);
 
             if (dark)
@@ -282,7 +280,7 @@ public partial class ArcaeaImageGenerator
                 Typeface = TitilliumWeb_SemiBold
             };
 
-            canvas.DrawLimitedText(ArcaeaUtils.ReplaceNotSupportedChar(record.Name),
+            canvas.DrawLimitedText(ArcaeaImageUtils.ReplaceNotSupportedChar(record.Name),
                 x + 335, y + 136, textPaint, 635);
         }
 
@@ -341,7 +339,7 @@ public partial class ArcaeaImageGenerator
             // Past Days
             if (!dark) textPaint.Color = SKColors.Gray;
             textPaint.TextAlign = SKTextAlign.Right;
-            canvas.DrawLimitedText(DateTime.Now.GetPastDays(record.TimePlayed, true),
+            canvas.DrawLimitedText($"{(int)(DateTime.UtcNow - record.PlayTime).TotalDays}d",
                 x + 980, y + 296, textPaint, record.LostCount < 100 ? 60 : 52);
         }
     }

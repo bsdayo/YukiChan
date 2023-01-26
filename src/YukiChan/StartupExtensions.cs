@@ -8,16 +8,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Tomlyn.Extensions.Configuration;
-using YukiChan.Shared;
-using YukiChan.Shared.Database;
+using YukiChan.Client.Console;
+using YukiChan.Core;
 
 namespace YukiChan;
 
 internal static class StartupExtensions
 {
-    /// <summary>
-    /// 添加配置源，更新 <see cref="FlandreAppOptions"/> 和 <see cref="YukiOptions"/>，注入 <see cref="YukiDbManager"/>
-    /// </summary>
     internal static FlandreAppBuilder ConfigureInfrastructure(this FlandreAppBuilder builder, string[] args)
     {
         void AddYukiConfig(string name) =>
@@ -42,7 +39,8 @@ internal static class StartupExtensions
         builder.Services.ConfigureFlandreApp(builder.Configuration.GetSection("App"));
         builder.Services.Configure<YukiOptions>(builder.Configuration.GetSection("Yuki"));
 
-        builder.Services.AddSingleton<YukiDbManager>();
+        builder.Services.AddSingleton<YukiConsoleClient>();
+        builder.Services.Configure<YukiConsoleClientOptions>(builder.Configuration.GetSection("Client"));
 
         return builder;
     }
@@ -72,12 +70,5 @@ internal static class StartupExtensions
         builder.Services.PostConfigure<HttpCatPluginOptions>(cfg =>
             cfg.CachePath = YukiDir.HttpCatCache);
         return builder;
-    }
-
-    internal static FlandreApp LoadGuildAssignees(this FlandreApp app)
-    {
-        foreach (var guildData in app.Services.GetRequiredService<YukiDbManager>().GetAllGuildData().Result)
-            app.SetGuildAssignee(guildData.Platform, guildData.GuildId, guildData.Assignee);
-        return app;
     }
 }

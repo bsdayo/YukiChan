@@ -15,7 +15,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\YukiChan.Shared\YukiChan.Shared.csproj" />
+      <ProjectReference Include="..\YukiChan.Core\YukiChan.Core.csproj" />
+      <ProjectReference Include="..\YukiChan.Client.Console\YukiChan.Client.Console.csproj" />
+      <ProjectReference Include="..\YukiChan.Core\YukiChan.Core.csproj" />
+      <ProjectReference Include="..\YukiChan.Shared.Utils\YukiChan.Shared.Utils.csproj" />
     </ItemGroup>
 
 </Project>

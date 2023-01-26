@@ -1,8 +1,7 @@
 ﻿using Flandre.Core.Messaging;
 using Flandre.Framework.Attributes;
 using Flandre.Framework.Common;
-using YukiChan.Shared.Arcaea;
-using YukiChan.Shared.Utils;
+using YukiChan.Utils;
 
 // ReSharper disable CheckNamespace
 
@@ -11,19 +10,19 @@ namespace YukiChan.Plugins.Arcaea;
 public partial class ArcaeaPlugin
 {
     [Command("a.alias <songname:text>")]
+    [Alias("a.alias")]
     [Shortcut("查别名")]
     public async Task<MessageContent> OnAlias(MessageContext ctx, ParsedArgs args)
     {
-        var songId = await ArcaeaSongDatabase.Default.FuzzySearchId(args.GetArgument<string>("songname"));
-        if (songId is null) return ctx.Reply("没有找到该曲目哦~");
+        var query = args.GetArgument<string>("songname");
 
-        var chart = await ArcaeaSongDatabase.Default.GetChartsById(songId);
-        var aliases = (await ArcaeaSongDatabase.Default.GetAliasesById(songId))
-            .Select(alias => alias.Alias);
+        var resp = await _yukiClient.Arcaea.QuerySongAliases(query);
+        if (!resp.Ok)
+            return ctx.ReplyServerError(resp);
 
         return ctx.Reply()
-            .Text($"{chart[0].NameEn} - {chart[0].Artist}\n")
+            .Text($"{resp.Data.Name} - {resp.Data.Artist}\n")
             .Text("可用的别名有：\n")
-            .Text(string.Join('\n', aliases));
+            .Text(string.Join('\n', resp.Data.Aliases));
     }
 }

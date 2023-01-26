@@ -1,5 +1,5 @@
 ﻿using SkiaSharp;
-using YukiChan.Shared;
+using YukiChan.Core;
 
 // ReSharper disable InconsistentNaming
 

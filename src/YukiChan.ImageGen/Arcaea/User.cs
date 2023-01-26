@@ -1,9 +1,6 @@
 ﻿using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
-using ArcaeaUnlimitedAPI.Lib;
-using ArcaeaUnlimitedAPI.Lib.Models;
-using ArcaeaUnlimitedAPI.Lib.Responses;
 using BrotliSharpLib;
 using LiveChartsCore.Defaults;
 using LiveChartsCore.SkiaSharpView;
@@ -13,11 +10,10 @@ using LiveChartsCore.SkiaSharpView.SKCharts;
 using Microsoft.Extensions.Logging;
 using SkiaSharp;
 using Websocket.Client;
+using YukiChan.Client.Console;
+using YukiChan.Core;
 using YukiChan.ImageGen.Utils;
-using YukiChan.Shared;
-using YukiChan.Shared.Arcaea;
-using YukiChan.Shared.Arcaea.Factories;
-using YukiChan.Shared.Database.Models.Arcaea;
+using YukiChan.Shared.Models.Arcaea;
 using YukiChan.Shared.Utils;
 using Timer = System.Timers.Timer;
 
@@ -25,7 +21,8 @@ namespace YukiChan.ImageGen.Arcaea;
 
 public partial class ArcaeaImageGenerator
 {
-    public async Task<byte[]> User(AuaUserInfoContent user, ArcaeaUserPreferences pref, AuaClient auaClient,
+    public async Task<byte[]> User(ArcaeaUser user, ArcaeaRecord recent, ArcaeaUserPreferences pref,
+        YukiConsoleClient auaClient,
         int lastDays, bool smooth, ILogger logger)
     {
         var imageInfo = new SKImageInfo(3400, 2000);
@@ -63,8 +60,8 @@ public partial class ArcaeaImageGenerator
 
         {
             // 立绘
-            var charImage = await ArcaeaUtils.GetCharImage(auaClient,
-                user.AccountInfo.Character, user.AccountInfo.IsCharUncapped, logger);
+            var charImage = await ArcaeaImageUtils.GetCharImage(auaClient,
+                user.PartnerId, user.IsPartnerAwakened, logger);
             using var charBitmap = SKBitmap.Decode(charImage);
             using var resized = new SKBitmap(1550, 1550);
             charBitmap.ScalePixels(resized, SKFilterQuality.Medium);
@@ -79,7 +76,7 @@ public partial class ArcaeaImageGenerator
             logger.LogDebug("Getting chart image...");
             (var chartImage, scopedMax, scopedMin, startPtt, endPtt) =
                 await GetRatingRecordsChartImage(
-                    user.AccountInfo.Code, user.AccountInfo.Rating, 1900, 1320,
+                    user.Code, user.Potential, 1900, 1320,
                     pref, lastDays, smooth, logger);
             logger.LogDebug("Chart image got successfully.");
 
@@ -102,15 +99,12 @@ public partial class ArcaeaImageGenerator
                 Typeface = TitilliumWeb_SemiBold
             };
             canvas.DrawText(
-                $"{user.AccountInfo.Name} ({
-                    (user.AccountInfo.Rating >= 0
-                        ? (user.AccountInfo.Rating / 100d).ToString("F2")
-                        : "?")})",
+                $"{user.Name} ({ArcaeaSharedUtils.GetDisplayPotential(user.Potential)})",
                 200, 290, textPaint);
             textPaint.TextSize = 45;
 
             var descSb = new StringBuilder()
-                .Append($"JoinDate / {DateTimeUtils.FormatUtc8Text(user.AccountInfo.JoinDate, true)}")
+                .Append($"JoinDate / {user.JoinTime.ToDisplayText(true)}")
                 .Append($"    Max / {scopedMax:F2}")
                 .Append($"    Min / {scopedMin:F2}")
                 .Append($"    {startPtt:F2} -> {endPtt:F2}");
@@ -119,11 +113,9 @@ public partial class ArcaeaImageGenerator
 
         {
             // 最近游玩
-            var cover = await ArcaeaUtils.GetSongCover(auaClient,
-                user.RecentScore![0].SongId, user.SongInfo![0].JacketOverride,
-                (ArcaeaDifficulty)user.RecentScore[0].Difficulty, pref.Nya, logger);
-            DrawMiniScoreCard(canvas, 2200, 1480,
-                ArcaeaRecordFactory.FromAua(user.RecentScore[0], user.SongInfo[0]), cover, 0, pref.Dark);
+            var cover = await ArcaeaImageUtils.GetSongCover(auaClient,
+                recent.SongId, recent.JacketOverride, recent.Difficulty, pref.Nya, logger);
+            DrawMiniScoreCard(canvas, 2200, 1480, recent, cover, 0, pref.Dark);
         }
 
         {
@@ -145,7 +137,7 @@ public partial class ArcaeaImageGenerator
     }
 
     private Task<(SKImage, double, double, double, double)> GetRatingRecordsChartImage(string userId,
-        int userPtt, int width,
+        double userPtt, int width,
         int height,
         ArcaeaUserPreferences pref, int lastDays, bool smooth, ILogger logger)
     {
@@ -155,10 +147,10 @@ public partial class ArcaeaImageGenerator
 
         var userPttColorIndex = userPtt switch
         {
-            < 350 => 0,
-            >= 350 and < 700 => 1,
-            >= 700 and < 1100 => 2,
-            >= 110 => 3
+            < 3.50 => 0,
+            >= 3.50 and < 7.00 => 1,
+            >= 7.00 and < 11.00 => 2,
+            _ => 3
         };
 
         void StopEverything()

@@ -1,8 +1,8 @@
 ﻿using Flandre.Core.Messaging;
 using Flandre.Framework.Attributes;
 using Flandre.Framework.Common;
-using YukiChan.Shared.Database.Models.Arcaea;
-using YukiChan.Shared.Utils;
+using YukiChan.Shared.Data.Console.Arcaea;
+using YukiChan.Utils;
 
 // ReSharper disable CheckNamespace
 
@@ -17,8 +17,10 @@ public partial class ArcaeaPlugin
             .Replace('，', ',')
             .Split(',');
 
-        var pref = await _database.GetArcaeaUserPreferences(
-            ctx.Platform, ctx.UserId) ?? new ArcaeaUserPreferences();
+        var prefResp = await _yukiClient.Arcaea.GetPreferences(ctx.Platform, ctx.UserId);
+        if (!prefResp.Ok) return ctx.ReplyServerError(prefResp);
+
+        var pref = prefResp.Data.Preferences;
 
         bool ParseBoolSet(string[] set)
             => set.Length <= 1 || !set[1].Equals("false", StringComparison.OrdinalIgnoreCase);
@@ -42,7 +44,12 @@ public partial class ArcaeaPlugin
             }
         }
 
-        await _database.AddOrUpdateArcaeaUserPreferences(ctx.Platform, ctx.UserId, pref);
+        var updateResp = await _yukiClient.Arcaea.UpdatePreferences(ctx.Platform, ctx.UserId,
+            new ArcaeaPreferencesRequest
+            {
+                Preferences = pref
+            });
+        if (!updateResp.Ok) ctx.ReplyServerError(updateResp);
         return ctx.Reply("已成功为您更新偏好信息。");
     }
 }

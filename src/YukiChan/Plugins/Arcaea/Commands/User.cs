@@ -1,11 +1,10 @@
-﻿using ArcaeaUnlimitedAPI.Lib.Models;
-using ArcaeaUnlimitedAPI.Lib.Utils;
-using Flandre.Core.Messaging;
+﻿using Flandre.Core.Messaging;
 using Flandre.Framework.Attributes;
 using Flandre.Framework.Common;
 using Microsoft.Extensions.Logging;
-using YukiChan.Shared.Database.Models.Arcaea;
-using YukiChan.Shared.Utils;
+using YukiChan.Shared.Data;
+using YukiChan.Shared.Models.Arcaea;
+using YukiChan.Utils;
 
 // ReSharper disable CheckNamespace
 
@@ -24,7 +23,7 @@ public partial class ArcaeaPlugin
     [Option("week", "-w <:bool>")]
     //
     [Shortcut("查用户")]
-    public async Task<MessageContent> OnUser(MessageContext ctx, ParsedArgs args)
+    public async Task<MessageContent> OnUser(CommandContext ctx, ParsedArgs args)
     {
         var userArg = args.GetArgument<string>("user");
         var yearArg = args.GetOption<bool>("year");
@@ -44,31 +43,30 @@ public partial class ArcaeaPlugin
         {
             if (string.IsNullOrWhiteSpace(userArg))
             {
-                var user = await _database.GetArcaeaUser(ctx.Bot.Platform, ctx.Message.Sender.UserId);
-                if (user is null)
+                var userResp = await _yukiClient.Arcaea.GetUser(ctx.Platform, ctx.UserId);
+                if (userResp.Code == YukiErrorCode.Arcaea_NotBound)
                     return ctx.Reply()
                         .Text("请先使用 /a bind 名称或好友码 绑定你的账号哦~\n")
                         .Text("你也可以使用 /a user 名称或好友码 直接查询指定用户。");
-                userId = user.ArcaeaId;
+                if (!userResp.Ok) return ctx.ReplyServerError(userResp);
+                userId = userResp.Data.ArcaeaId;
             }
 
-            var userInfo = await _service.AuaClient.User.Info(userId ?? userArg, 1, AuaReplyWith.All);
-            var pref = await _database.GetArcaeaUserPreferences(ctx.Bot.Platform, ctx.Message.Sender.UserId)
-                       ?? new ArcaeaUserPreferences();
+            var recentResp = await _yukiClient.Arcaea.GetRecent(userId ?? userArg);
+            if (!recentResp.Ok) return ctx.ReplyServerError(recentResp);
+            var prefResp = await _yukiClient.Arcaea.GetPreferences(ctx.Platform, ctx.UserId);
+            var pref = prefResp.Ok ? prefResp.Data.Preferences : new ArcaeaUserPreferences();
             pref.Dark = pref.Dark || args.GetOption<bool>("dark");
             pref.Nya = pref.Nya || args.GetOption<bool>("nya");
-            var image = await _service.ImageGenerator.User(userInfo, pref, _service.AuaClient, lastDays, smooth,
+            var image = await _service.ImageGenerator.User(recentResp.Data.User, recentResp.Data.RecentRecord,
+                pref, _yukiClient, lastDays, smooth,
                 _logger);
             _logger.LogDebug("Generation done.");
             return ctx.Reply().Image(image);
         }
-        catch (AuaException e)
-        {
-            var errMsg = AuaErrorStatus.GetMessage(e.Status, e.Message);
-            return ctx.Reply(errMsg);
-        }
         catch (Exception e)
         {
+            _logger.LogError(e, "Error occurred in a.user");
             return ctx.Reply($"发生了奇怪的错误！({e.Message})");
         }
     }
