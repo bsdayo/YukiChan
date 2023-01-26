@@ -9,8 +9,8 @@
 ![.NET Version](https://img.shields.io/badge/.NET-7-1565c0?style=flat)  
 [![bilibili](https://img.shields.io/badge/bilibili-暮雪酱__Official-f48fb1?style=flat)]()
 [![QQ Group 1](https://img.shields.io/badge/QQ_一群-883632773-42a5fb?style=flat)]()
-[![QQ Group 2](https://img.shields.io/badge/QQ_二群-883632773-42a5fb?style=flat)]()
-[![QQ Guild](https://img.shields.io/badge/QQ_频道-883632773-00bcd4?style=flat)]()
+[![QQ Group 2](https://img.shields.io/badge/QQ_二群-744362693-42a5fb?style=flat)]()
+[![QQ Guild](https://img.shields.io/badge/QQ_频道-e0r35nc9e2-00bcd4?style=flat)](https://qun.qq.com/qqweb/qunpro/share?_wv=3&_wwv=128&appChannel=share&inviteCode=11UIUD&businessType=9&from=246610&biz=ka)
 
 </div>
 
