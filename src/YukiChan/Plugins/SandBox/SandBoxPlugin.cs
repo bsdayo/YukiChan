@@ -35,22 +35,25 @@ public sealed class SandBoxPlugin : Plugin
         return true;
     }
 
-    public override async Task OnMessageReceived(MessageContext ctx)
+    public override Task OnMessageReceived(MessageContext ctx)
     {
-        if (!CheckEnabled(ctx)) return;
-        var code = ctx.Message.GetText();
-        if (code.StartsWith(_appOptions.CommandPrefix)) return;
-
-        if (ctx.Message.SourceType == MessageSourceType.Channel)
+        return Task.Run(async () =>
         {
-            var resp = await _yukiClient.Guilds.GetAssignee(ctx.Platform, ctx.GuildId!);
-            if (!resp.Ok || resp.Data.Assignee != ctx.SelfId) return;
-        }
+            if (!CheckEnabled(ctx)) return;
+            var code = ctx.Message.GetText();
+            if (code.StartsWith(_appOptions.CommandPrefix)) return;
 
-        var result = (await _service.Execute(code, TimeSpan.FromSeconds(10)))?.ToString();
+            if (ctx.Message.SourceType == MessageSourceType.Channel)
+            {
+                var resp = await _yukiClient.Guilds.GetAssignee(ctx.Platform, ctx.GuildId!);
+                if (!resp.Ok || resp.Data.Assignee != ctx.SelfId) return;
+            }
 
-        if (!string.IsNullOrWhiteSpace(result))
-            await ctx.Bot.SendMessage(ctx.Message, ctx.Reply(result));
+            var result = (await _service.Execute(code, TimeSpan.FromSeconds(10)))?.ToString();
+
+            if (!string.IsNullOrWhiteSpace(result))
+                await ctx.Bot.SendMessage(ctx.Message, ctx.Reply(result));
+        });
     }
 
     [Command("sandbox.reset")]
