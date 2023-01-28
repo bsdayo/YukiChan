@@ -7,5 +7,3 @@ riderModule.iml
 *.user
 
 build/
-
-configs/server/

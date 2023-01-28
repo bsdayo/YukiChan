@@ -1,16 +1,16 @@
 # 框架及暮雪酱配置
 
 [App]
-# 指令前缀
-CommandPrefix = ""
+    # 指令前缀
+    CommandPrefix = ""
 
 [Client]
-# 服务器 Url
-ApiUrl = ""
-Token = ""
+    # 服务器 Url
+    ApiUrl = ""
+    Token = ""
 
 [Yuki]
-# 不提示“未找到指令”的 QQ 群
-NoWarnQQGroups = [""]
-# 仅在以下 QQ 频道子频道提供服务
-QQGuildAllowedChannels = [""]
+    # 不提示“未找到指令”的 QQ 群
+    NoWarnQQGroups = [""]
+    # 仅在以下 QQ 频道子频道提供服务
+    QQGuildAllowedChannels = [""]

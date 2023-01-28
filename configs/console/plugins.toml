@@ -2,39 +2,39 @@
 
 # Arcaea
 [Plugins.Arcaea]
-# 开启猜曲绘功能
-EnableGuess = true
+    # 开启猜曲绘功能
+    EnableGuess = true
 
 # HttpCat
 [Plugins.HttpCat]
-# 是否开启缓存
-EnableCache = true
-# 缓存路径
-CachePath = "."
+    # 是否开启缓存
+    EnableCache = true
+    # 缓存路径
+    CachePath = "."
 
 # Wolfram Alpha
 [Plugins.WolframAlpha]
-# APP ID
-AppId = ""
+    # APP ID
+    AppId = ""
 
 # 百度翻译
 [Plugins.BaiduTranslate]
-# APP ID
-AppId = ""
-# 验证令牌
-Token = ""
+    # APP ID
+    AppId = ""
+    # 验证令牌
+    Token = ""
 
 # C# 沙盒
 [Plugins.SandBox]
-# 开启沙盒的频道
-EnabledChannels = [""]
+    # 开启沙盒的频道
+    EnabledChannels = [""]
 
 # 自动同意申请
 [Plugins.AutoAccept]
-# 开启自动同意好友申请/群聊邀请的 Bot QQ 号
-BotIds = [""]
+    # 开启自动同意好友申请/群聊邀请的 Bot QQ 号
+    BotIds = [""]
 
 # 五千兆元图片生成
 [Plugins.Gosen]
-# gosen-api 服务基本 URL，使用 https://github.com/b1acksoil/gosen-api
-ApiUrl = ""
+    # gosen-api 服务基本 URL，使用 https://github.com/b1acksoil/gosen-api
+    ApiUrl = ""
