@@ -4,6 +4,7 @@ using Flandre.Framework.Common;
 using Microsoft.Extensions.Logging;
 using YukiChan.Shared.Data;
 using YukiChan.Shared.Models.Arcaea;
+using YukiChan.Shared.Utils;
 using YukiChan.Utils;
 
 // ReSharper disable CheckNamespace
@@ -42,7 +43,9 @@ public partial class ArcaeaPlugin
             var image = await _service.ImageGenerator.SingleV1(best.User, best.BestRecord,
                 _yukiClient, pref, _logger);
 
-            return ctx.Reply($"{best.User.Name} ({best.User.Potential:F2})\n").Image(image);
+            return ctx
+                .Reply($"{best.User.Name} ({ArcaeaSharedUtils.GetDisplayPotential(best.User.Potential)})\n")
+                .Image(image);
         }
         catch (Exception e)
         {

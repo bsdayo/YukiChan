@@ -40,7 +40,7 @@ public partial class ArcaeaImageGenerator
                 IsAntialias = true,
                 Typeface = TitilliumWeb_SemiBold
             };
-            canvas.DrawText($"{best30.User.Name} ({best30.User.Potential})",
+            canvas.DrawText($"{best30.User.Name} ({ArcaeaSharedUtils.GetDisplayPotential(best30.User.Potential)})",
                 295, 255, paint);
 
             paint.TextAlign = SKTextAlign.Right;

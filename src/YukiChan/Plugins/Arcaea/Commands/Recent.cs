@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using YukiChan.Shared.Data;
 using YukiChan.Shared.Data.Console.Arcaea;
 using YukiChan.Shared.Models.Arcaea;
+using YukiChan.Shared.Utils;
 using YukiChan.Utils;
 
 // ReSharper disable CheckNamespace
@@ -66,7 +67,7 @@ public partial class ArcaeaPlugin
             var image = await _service.ImageGenerator.SingleV1(user, record, _yukiClient, pref, _logger);
 
             return ctx.Reply()
-                .Text($"{recentResp.Data.User.Name} ({recentResp.Data.User.Potential:F4})\n")
+                .Text($"{recentResp.Data.User.Name} ({ArcaeaSharedUtils.GetDisplayPotential(recentResp.Data.User.Potential)})\n")
                 .Image(ImageSegment.FromData(image));
         }
         catch (Exception e)
