@@ -4,6 +4,7 @@ using Flandre.Framework.Attributes;
 using Flandre.Framework.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using YukiChan.Client.Console;
 using YukiChan.Utils;
 
 namespace YukiChan.Plugins.SandBox;
@@ -11,20 +12,20 @@ namespace YukiChan.Plugins.SandBox;
 public sealed class SandBoxPlugin : Plugin
 {
     private readonly SandBoxService _service;
-
     private readonly SandBoxPluginOptions _options;
-
     private readonly FlandreAppOptions _appOptions;
-
     private readonly ILogger<SandBoxPlugin> _logger;
+    private readonly YukiConsoleClient _yukiClient;
 
     public SandBoxPlugin(SandBoxService service, IOptionsSnapshot<SandBoxPluginOptions> options,
-        IOptionsSnapshot<FlandreAppOptions> appOptions, ILogger<SandBoxPlugin> logger)
+        IOptionsSnapshot<FlandreAppOptions> appOptions, ILogger<SandBoxPlugin> logger,
+        YukiConsoleClient yukiClient)
     {
         _service = service;
         _options = options.Value;
         _appOptions = appOptions.Value;
         _logger = logger;
+        _yukiClient = yukiClient;
     }
 
     private bool CheckEnabled(MessageContext ctx)
@@ -38,8 +39,15 @@ public sealed class SandBoxPlugin : Plugin
     {
         if (!CheckEnabled(ctx)) return;
 
+        if (ctx.Message.SourceType == MessageSourceType.Channel)
+        {
+            var resp = await _yukiClient.Guilds.GetAssignee(ctx.Platform, ctx.GuildId!);
+            if (!resp.Ok || resp.Data.Assignee != ctx.SelfId) return;
+        }
+
         var code = ctx.Message.GetText();
         if (code.StartsWith(_appOptions.CommandPrefix)) return;
+
 
         var result = (await _service.Execute(code, TimeSpan.FromSeconds(10)))?.ToString();
 
