@@ -12,6 +12,8 @@
 [![QQ Group 2](https://img.shields.io/badge/QQ_二群-744362693-42a5fb?style=flat)]()
 [![QQ Guild](https://img.shields.io/badge/QQ_频道-e0r35nc9e2-00bcd4?style=flat)](https://qun.qq.com/qqweb/qunpro/share?_wv=3&_wwv=128&appChannel=share&inviteCode=11UIUD&businessType=9&from=246610&biz=ka)
 
+\- **[使用文档](https://yukidocs.sorabs.cc/v3/)** \- **[用户协议](https://yukidocs.sorabs.cc/v3/policy.html)** \-
+
 </div>
 
 暮雪酱是一款完全公益性质的功能性聊天机器人，主要为广大 Arcaea 玩家提供查分服务，基于 .NET
@@ -39,12 +41,12 @@
 
 ### 致谢
 
-使用到的开源项目：
+使用到的开源项目（按首字母排序）：
 
 - [master131/BrotliSharpLib](https://github.com/master131/BrotliSharpLib)
-- [beto-rodriguez/LiveCharts2](https://github.com/beto-rodriguez/LiveCharts2)
 - [FlandreDevs/Flandre](https://github.com/FlandreDevs/Flandre)
 - [b1acksoil/Flandre.Plugins](https://github.com/b1acksoil/Flandre.Plugins)
+- [beto-rodriguez/LiveCharts2](https://github.com/beto-rodriguez/LiveCharts2)
 - [Microsoft.CodeAnalysis.CSharp.Scripting](https://github.com/dotnet/roslyn)
 - [Microsoft.EntityFrameworkCore.Sqlite](https://github.com/dotnet/efcore)
 - [serilog/serilog](https://github.com/serilog/serilog)
