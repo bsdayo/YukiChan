@@ -20,12 +20,12 @@
 自 v3 开始，暮雪酱开始采用客户端-服务器架构，客户端部分以 AGPL v3.0 协议开源（即本仓库），服务端部分暂时闭源。
 暮雪酱**暂时不支持自行搭建**，但暮雪酱 v3 的分布式架构已经为开放搭建做好了准备，如有兴趣可以关注我们的后续公告。
 
-本仓库及源代码仅作交流学习使用，如果你对暮雪酱的相关代码实现有疑问、建议，欢迎 [提交 Issue](https://github.com/b1acksoil/YukiChan/issues)
+本仓库及源代码仅作交流学习使用。如果你对暮雪酱的相关代码实现有疑问、建议，欢迎 [提交 Issue](https://github.com/b1acksoil/YukiChan/issues)
 或者 [发布 Discussion](https://github.com/b1acksoil/YukiChan/discussions) 讨论。v3 之前的旧版本不提供任何支持。
 
 ### 项目结构
 
-本仓库含有以下项目：
+本仓库包含以下项目：
 
 - `YukiChan` - 客户端部分根项目，负责与 Flandre.Framework 交互。
 - `YukiChan.Core` - 包含客户端共享部分
