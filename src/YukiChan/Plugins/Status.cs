@@ -13,7 +13,7 @@ public class StatusPlugin : Plugin
 
     public static Stopwatch UpTimeStopwatch { get; } = new();
 
-    public StatusPlugin()
+    static StatusPlugin()
     {
         UpTimeStopwatch.Start();
     }

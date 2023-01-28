@@ -15,7 +15,7 @@ public sealed class YukiConsoleClient : IDisposable
     public YukiConsoleClient(IOptions<YukiConsoleClientOptions> options)
     {
         _client = new HttpClient();
-        _client.BaseAddress = new Uri(new Uri(options.Value.ApiUrl), new Uri("console/"));
+        _client.BaseAddress = new Uri(new Uri(options.Value.ApiUrl), new Uri("console/", UriKind.Relative));
         _client.Timeout = TimeSpan.FromSeconds(options.Value.Timeout);
         _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {options.Value.Token}");
 

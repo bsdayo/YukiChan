@@ -1,4 +1,5 @@
-﻿using Flandre.Framework.Common;
+﻿using Flandre.Core.Messaging;
+using Flandre.Framework.Common;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using YukiChan.Client.Console;
@@ -43,8 +44,12 @@ public static class Middlewares
                 {
                     Platform = ctx.Platform,
                     GuildId = ctx.GuildId,
+                    ChannelId = ctx.ChannelId,
                     UserId = ctx.UserId,
                     SelfId = ctx.SelfId,
+                    Environment = ctx.Message.SourceType == MessageSourceType.Channel
+                        ? YukiEnvironment.Channel
+                        : YukiEnvironment.Private,
                     Command = ctx.Command.CommandInfo.Command,
                     CommandText = ctx.Message.GetText()
                 });

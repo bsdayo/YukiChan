@@ -36,16 +36,12 @@ public static class YukiDir
     {
         var dirs = new[]
         {
-            Configs, Logs, Cache, Assets, Data, Databases,
-
-            // Logs
-            $"{Logs}/yuki", $"{Logs}/konata",
+            Configs, Logs, Cache, Assets,
 
             // Arcaea
-            $"{ArcaeaAssets}/audio-preview", $"{ArcaeaAssets}/aff", $"{ArcaeaAssets}/images",
+            $"{ArcaeaAssets}/images",
             $"{ArcaeaCache}/song", $"{ArcaeaCache}/char", $"{ArcaeaCache}/preview",
             $"{ArcaeaCache}/single-dynamic-bg-v1", // $"{ArcaeaCache}/single-dynamic-bg-v2",
-            $"{ArcaeaData}/best30",
 
             // Images
             $"{Assets}/cats", $"{Assets}/capoo",

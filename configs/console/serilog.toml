@@ -17,7 +17,7 @@ Name = "Console"
 Name = "File"
 [Serilog.WriteTo.Args]
 # 日志文件路径
-Path = "logs/yuki/.log"
+Path = "logs/.log"
 # 日志滚动周期
 RollingInterval = "Day"
 # 与其他进程共享日志文件

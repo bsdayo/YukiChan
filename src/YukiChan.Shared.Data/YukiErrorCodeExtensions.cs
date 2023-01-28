@@ -7,12 +7,15 @@ public static class YukiErrorCodeExtensions
 {
     public static string GetMessage(this YukiErrorCode code)
     {
-        return code.ToString().FormatMessage();
+        return code switch
+        {
+            _ => code.FormatMessage()
+        };
     }
 
-    private static string FormatMessage(this string message)
+    private static string FormatMessage(this YukiErrorCode code)
     {
-        var span = message.AsSpan();
+        var span = code.ToString().AsSpan();
         var sb = new StringBuilder();
 
         var start = span.LastIndexOf('_') + 1;
