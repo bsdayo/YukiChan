@@ -9,7 +9,7 @@ public static class ArcaeaUtils
     {
         var arr = textArg.Split(' ',
             StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-        var difficulty = ArcaeaSharedUtils.GetRatingClass(arr[^1]);
+        var difficulty = ArcaeaSharedUtils.GetArcaeaDifficulty(arr[^1]);
 
         var songname = difficulty is null
             ? textArg

@@ -37,6 +37,9 @@ public partial class ArcaeaPlugin
                 target = userResp.Data.ArcaeaId;
             }
             else target = userArg;
+            
+            _logger.LogInformation("正在查询 {Target} 的 {SongName} [{Difficulty}] 最高成绩...",
+                target, songname, difficulty.ToShortDisplayDifficulty());
 
             var bestResp = await _yukiClient.Arcaea.GetBest(
                 target, songname, difficulty);
@@ -46,6 +49,9 @@ public partial class ArcaeaPlugin
             var prefResp = await _yukiClient.Arcaea.GetPreferences(ctx.Platform, ctx.UserId);
             var pref = prefResp.Ok ? prefResp.Data.Preferences : new ArcaeaUserPreferences();
 
+            _logger.LogInformation("正在为 {Target} 生成 {SongName} [{Difficulty}] 最高成绩的图查...",
+                target, songname, difficulty.ToShortDisplayDifficulty());
+            
             var image = await _service.ImageGenerator.SingleV1(best.User, best.BestRecord,
                 _yukiClient, pref, _logger);
 

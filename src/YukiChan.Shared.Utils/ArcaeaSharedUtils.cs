@@ -30,6 +30,17 @@ public static class ArcaeaSharedUtils
         return sb.ToString();
     }
 
+    public static string ToShortDisplayDifficulty(this ArcaeaDifficulty difficulty)
+    {
+        return difficulty switch
+        {
+            ArcaeaDifficulty.Past => "PST",
+            ArcaeaDifficulty.Present => "PRS",
+            ArcaeaDifficulty.Future => "FTR",
+            ArcaeaDifficulty.Beyond => "BYD",
+            _ => $"<{(int)difficulty}>"
+        };
+    }
     /// <summary>
     /// 转换难度文本 (eg. 9+) 为难度区间 (eg. 97 ~ 99)
     /// </summary>
@@ -60,7 +71,7 @@ public static class ArcaeaSharedUtils
         };
     }
 
-    public static ArcaeaDifficulty? GetRatingClass(string difficultyText)
+    public static ArcaeaDifficulty? GetArcaeaDifficulty(string difficultyText)
     {
         return difficultyText.ToLower() switch
         {

@@ -47,7 +47,7 @@ public partial class ArcaeaPlugin
             }
             else
             {
-                _logger.LogInformation("正在查询 {ArcaeaName} 的最近成绩...", userArg);
+                _logger.LogInformation("正在查询 {ArcaeaName} 的最近一条成绩...", userArg);
                 recentResp = await _yukiClient.Arcaea.GetRecent(userArg);
             }
 
@@ -57,13 +57,13 @@ public partial class ArcaeaPlugin
 
             var user = recentResp.Data.User;
             var record = recentResp.Data.RecentRecord;
-            _logger.LogInformation("正在为 {ArcaeaName}({ArcaeaId}) 生成最近成绩图片...", user.Name, user.Code);
 
             var prefResp = await _yukiClient.Arcaea.GetPreferences(ctx.Platform, ctx.UserId);
             var pref = prefResp.Ok ? prefResp.Data.Preferences : new ArcaeaUserPreferences();
             pref.Dark = pref.Dark || args.GetOption<bool>("dark");
             pref.Nya = pref.Nya || args.GetOption<bool>("nya");
 
+            _logger.LogInformation("正在为 {ArcaeaName} ({ArcaeaId}) 生成最近成绩图查...", user.Name, user.Code);
             var image = await _service.ImageGenerator.SingleV1(user, record, _yukiClient, pref, _logger);
 
             return ctx.Reply()

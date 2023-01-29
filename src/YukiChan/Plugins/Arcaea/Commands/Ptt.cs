@@ -38,7 +38,7 @@ public partial class ArcaeaPlugin
                 if (scoreIndex < 0) return ctx.Reply("得分格式有误，请检查输入。");
                 songname = string.Join(' ', argsArr[..scoreIndex]);
                 if (argsArr.Length <= scoreIndex + 1) break;
-                var diff = ArcaeaSharedUtils.GetRatingClass(argsArr[scoreIndex + 1]);
+                var diff = ArcaeaSharedUtils.GetArcaeaDifficulty(argsArr[scoreIndex + 1]);
                 if (diff is null)
                     return ctx.Reply("难度输入有误，请检查输入。");
                 difficulty = diff.Value;

@@ -49,6 +49,7 @@ public partial class ArcaeaPlugin
             await ctx.Bot.SendMessage(ctx.Message, official
                 ? $"正在使用官方 API 查询 {arcName} 的 Best30 成绩，请耐心等候..."
                 : $"正在查询 {arcName} 的 Best30 成绩，请耐心等候...");
+            _logger.LogInformation("正在查询 {ArcaeaName} ({ArcaeaId}) 的 Best30 成绩...", arcName, arcId);
 
             var best30Resp = await _yukiClient.Arcaea.GetBest30(arcId, official);
             if (!best30Resp.Ok) return ctx.ReplyServerError(best30Resp);
@@ -59,6 +60,7 @@ public partial class ArcaeaPlugin
             pref.Dark = pref.Dark || args.GetOption<bool>("dark");
             pref.Nya = pref.Nya || args.GetOption<bool>("nya");
 
+            _logger.LogInformation("正在为 {ArcaeaName} ({ArcaeaId}) 生成 Best30 图查...", arcName, arcId);
             var image = await _service.ImageGenerator.Best30(best30Resp.Data.Best30, pref, _yukiClient, _logger);
 
             return ctx.Reply().Image(ImageSegment.FromData(image));
