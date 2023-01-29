@@ -182,7 +182,7 @@ public partial class ArcaeaImageGenerator
 
             canvas.DrawRoundRect(150, 1295, 490, 60, 10, 10, rectPaint);
             canvas.DrawLimitedText(
-                $"{record.Difficulty} {record.Rating.ToDisplayRating()} [{record.Rating}]",
+                $"{record.Difficulty} {record.Rating.ToDisplayRating()} [{record.Rating:N1}]",
                 332, 1337, textPaint, 334);
 
             // Border

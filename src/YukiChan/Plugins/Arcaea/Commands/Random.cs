@@ -91,13 +91,13 @@ public partial class ArcaeaPlugin
         var package = await _service.SongDb.Packages
             .AsNoTracking()
             .FirstAsync(package => package.Set == chart.Set);
+        var rating = chart.Rating / 10d;
 
         return ctx.Reply()
             .Text("随机推荐曲目：\n")
             .Image(songCover)
             .Text($"{chart.NameEn}\n")
             .Text($"({package.Name})\n")
-            .Text(
-                $"{(ArcaeaDifficulty)chart.RatingClass} {(chart.Rating / 10d).ToDisplayRating()} [{chart.Rating}]");
+            .Text($"{(ArcaeaDifficulty)chart.RatingClass} {rating.ToDisplayRating()} [{rating:N1}]");
     }
 }

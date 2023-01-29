@@ -223,7 +223,7 @@ public partial class ArcaeaImageGenerator
 
             canvas.DrawRoundRect(x + 320, y + 15, rank != 0 ? 560 : 665, 60, 10, 10, rectPaint);
             canvas.DrawLimitedText(
-                $"{record.Difficulty} {record.Rating.ToDisplayRating()} [{record.Rating}]",
+                $"{record.Difficulty} {record.Rating.ToDisplayRating()} [{record.Rating:N1}]",
                 x + 526, y + 61, textPaint, rank != 0 ? 339 : 444);
 
             if (dark)
