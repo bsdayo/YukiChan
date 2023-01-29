@@ -21,19 +21,25 @@ public partial class ArcaeaPlugin
     public async Task<MessageContent> OnBest(MessageContext ctx, ParsedArgs args)
     {
         var userArg = args.GetOption<string>("user");
-
         var (songname, difficulty) = ArcaeaUtils.ParseMixedSongNameAndDifficulty(
             args.GetArgument<string>("songnameAndDifficulty"));
 
         try
         {
-            var userResp = await _yukiClient.Arcaea.GetUser(ctx.Platform, ctx.UserId);
-            if (userResp.Code == YukiErrorCode.Arcaea_NotBound)
-                return ctx.Reply("请先使用 /a bind 名称或好友码 绑定你的账号哦~");
-            if (!userResp.Ok) return ctx.ReplyServerError(userResp);
+            string target;
+
+            if (string.IsNullOrEmpty(userArg))
+            {
+                var userResp = await _yukiClient.Arcaea.GetUser(ctx.Platform, ctx.UserId);
+                if (userResp.Code == YukiErrorCode.Arcaea_NotBound)
+                    return ctx.Reply("请先使用 /a bind 名称或好友码 绑定你的账号哦~");
+                if (!userResp.Ok) return ctx.ReplyServerError(userResp);
+                target = userResp.Data.ArcaeaId;
+            }
+            else target = userArg;
 
             var bestResp = await _yukiClient.Arcaea.GetBest(
-                userResp.Data.ArcaeaId, songname, difficulty);
+                target, songname, difficulty);
             if (!bestResp.Ok) return ctx.ReplyServerError(bestResp);
             var best = bestResp.Data;
 
