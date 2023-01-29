@@ -13,6 +13,12 @@ public class ArcaeaSongDbContext : DbContext
 
     public DbSet<ArcaeaSongDbPackage> Packages => Set<ArcaeaSongDbPackage>();
 
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        builder.Entity<ArcaeaSongDbChart>()
+            .HasKey(nameof(ArcaeaSongDbChart.SongId), nameof(ArcaeaSongDbChart.RatingClass));
+    }
+
     protected override void OnConfiguring(DbContextOptionsBuilder options)
         => options.UseSqlite($"DataSource={DefaultPath}");
 
@@ -27,12 +33,15 @@ public class ArcaeaSongDbContext : DbContext
         if (songId is null) return null;
 
         var charts = await Charts
+            // .AsNoTracking()
             .Where(chart => chart.SongId == songId)
+            .OrderBy(chart => chart.RatingClass)
             .ToListAsync();
-        charts.Sort((chartA, chartB) => chartA.RatingClass - chartB.RatingClass);
 
         var set = charts[0].Set;
-        var packageName = (await Packages.FirstAsync(package => package.Set == set)).Name;
+        var packageName = (await Packages
+            .AsNoTracking()
+            .FirstAsync(package => package.Set == set)).Name;
 
         return ArcaeaSong.FromDatabase(charts, packageName);
     }

@@ -40,7 +40,7 @@ public partial class ArcaeaImageGenerator
                 IsAntialias = true,
                 Typeface = TitilliumWeb_SemiBold
             };
-            canvas.DrawText($"{best30.User.Name} ({ArcaeaSharedUtils.GetDisplayPotential(best30.User.Potential)})",
+            canvas.DrawText($"{best30.User.Name} ({ArcaeaSharedUtils.ToDisplayPotential(best30.User.Potential)})",
                 295, 255, paint);
 
             paint.TextAlign = SKTextAlign.Right;
@@ -223,7 +223,7 @@ public partial class ArcaeaImageGenerator
 
             canvas.DrawRoundRect(x + 320, y + 15, rank != 0 ? 560 : 665, 60, 10, 10, rectPaint);
             canvas.DrawLimitedText(
-                $"{record.Difficulty} {record.DisplayRating} [{record.Rating}]",
+                $"{record.Difficulty} {record.Rating.ToDisplayRating()} [{record.Rating}]",
                 x + 526, y + 61, textPaint, rank != 0 ? 339 : 444);
 
             if (dark)
@@ -297,7 +297,7 @@ public partial class ArcaeaImageGenerator
                     IsAntialias = true,
                     Typeface = TitilliumWeb_Regular
                 };
-                canvas.DrawText(record.Score.FormatScore(), x + 340, y + 241, maxPaint);
+                canvas.DrawText(record.Score.ToDisplayScore(), x + 340, y + 241, maxPaint);
             }
 
             using var textPaint = new SKPaint
@@ -307,7 +307,7 @@ public partial class ArcaeaImageGenerator
                 IsAntialias = true,
                 Typeface = TitilliumWeb_Regular
             };
-            canvas.DrawText(record.Score.FormatScore(), x + 335, y + 236, textPaint);
+            canvas.DrawText(record.Score.ToDisplayScore(), x + 335, y + 236, textPaint);
         }
 
         {

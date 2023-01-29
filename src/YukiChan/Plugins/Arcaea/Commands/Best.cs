@@ -44,7 +44,7 @@ public partial class ArcaeaPlugin
                 _yukiClient, pref, _logger);
 
             return ctx
-                .Reply($"{best.User.Name} ({ArcaeaSharedUtils.GetDisplayPotential(best.User.Potential)})\n")
+                .Reply($"{best.User.Name} ({ArcaeaSharedUtils.ToDisplayPotential(best.User.Potential)})\n")
                 .Image(image);
         }
         catch (Exception e)

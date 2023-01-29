@@ -49,7 +49,7 @@ public partial class ArcaeaPlugin
         if (song is null)
             return ctx.Reply("没有找到该曲目呢...");
 
-        var rating = (double)song.Difficulties[(int)difficulty].Rating / 10;
+        var rating = song.Difficulties[(int)difficulty].Rating;
 
         var ptt = ArcaeaSharedUtils.CalculatePotential(rating, score);
 

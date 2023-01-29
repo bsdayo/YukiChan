@@ -104,7 +104,7 @@ public partial class ArcaeaImageGenerator
                 IsAntialias = true,
                 Typeface = GeoSans
             };
-            canvas.DrawCenteredText(record.Score.FormatScore(), 200, 944, textPaint, 500);
+            canvas.DrawCenteredText(record.Score.ToDisplayScore(), 200, 944, textPaint, 500);
         }
 
 
@@ -182,7 +182,7 @@ public partial class ArcaeaImageGenerator
 
             canvas.DrawRoundRect(150, 1295, 490, 60, 10, 10, rectPaint);
             canvas.DrawLimitedText(
-                $"{record.Difficulty} {record.DisplayRating} [{record.Rating}]",
+                $"{record.Difficulty} {record.Rating.ToDisplayRating()} [{record.Rating}]",
                 332, 1337, textPaint, 334);
 
             // Border

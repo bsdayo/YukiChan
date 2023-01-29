@@ -98,6 +98,6 @@ public partial class ArcaeaPlugin
             .Text($"{chart.NameEn}\n")
             .Text($"({package.Name})\n")
             .Text(
-                $"{(ArcaeaDifficulty)chart.RatingClass} {chart.Rating.GetRatingText()} [{(double)chart.Rating / 10:0.0}]");
+                $"{(ArcaeaDifficulty)chart.RatingClass} {(chart.Rating / 10d).ToDisplayRating()} [{chart.Rating}]");
     }
 }

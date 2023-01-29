@@ -21,7 +21,7 @@ public sealed class ArcaeaSong
             SetFriendly = packageName,
             Difficulties = charts.Select(c => new ArcaeaChart
             {
-                RatingClass = c.RatingClass,
+                Difficulty = (ArcaeaDifficulty)c.RatingClass,
                 NameEn = c.NameEn,
                 NameJp = c.NameJp,
                 Artist = c.Artist,
@@ -31,11 +31,10 @@ public sealed class ArcaeaSong
                 Side = c.Side,
                 WorldUnlock = c.WorldUnlock,
                 RemoteDownload = c.RemoteDownload,
-                Bg = c.Bg,
+                Background = c.Bg,
                 Date = c.Date,
                 Version = c.Version,
-                Difficulty = c.Difficulty,
-                Rating = c.Rating,
+                Rating = c.Rating / 10d,
                 Note = c.Note,
                 ChartDesigner = c.ChartDesigner,
                 JacketDesigner = c.JacketDesigner,

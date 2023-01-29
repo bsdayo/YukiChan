@@ -67,7 +67,7 @@ public partial class ArcaeaPlugin
             var image = await _service.ImageGenerator.SingleV1(user, record, _yukiClient, pref, _logger);
 
             return ctx.Reply()
-                .Text($"{recentResp.Data.User.Name} ({ArcaeaSharedUtils.GetDisplayPotential(recentResp.Data.User.Potential)})\n")
+                .Text($"{recentResp.Data.User.Name} ({ArcaeaSharedUtils.ToDisplayPotential(recentResp.Data.User.Potential)})\n")
                 .Image(ImageSegment.FromData(image));
         }
         catch (Exception e)

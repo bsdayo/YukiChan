@@ -14,8 +14,6 @@ public sealed class ArcaeaRecord
 
     public double Rating { get; init; }
 
-    public string DisplayRating { get; init; }
-
     public ArcaeaDifficulty Difficulty { get; init; }
 
     public int Score { get; init; }

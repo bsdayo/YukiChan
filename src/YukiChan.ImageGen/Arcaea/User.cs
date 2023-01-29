@@ -99,7 +99,7 @@ public partial class ArcaeaImageGenerator
                 Typeface = TitilliumWeb_SemiBold
             };
             canvas.DrawText(
-                $"{user.Name} ({ArcaeaSharedUtils.GetDisplayPotential(user.Potential)})",
+                $"{user.Name} ({ArcaeaSharedUtils.ToDisplayPotential(user.Potential)})",
                 200, 290, textPaint);
             textPaint.TextSize = 45;
 

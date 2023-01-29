@@ -46,7 +46,7 @@ public partial class ArcaeaPlugin
         for (var i = 0; i < song.Difficulties.Length; i++)
         {
             var rating = song.Difficulties[i].Rating;
-            mb.Text($"\n{(ArcaeaDifficulty)i} {rating.GetRatingText()} [{((double)rating / 10).ToString("0.0")}]");
+            mb.Text($"\n{(ArcaeaDifficulty)i} {rating.ToDisplayRating()} [{rating}]");
         }
 
         return mb;

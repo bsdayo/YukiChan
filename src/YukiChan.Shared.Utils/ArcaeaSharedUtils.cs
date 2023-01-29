@@ -10,22 +10,24 @@ public static class ArcaeaSharedUtils
     /// </summary>
     /// <param name="rating">曲目 rating (定数*10)</param>
     /// <returns>难度文本</returns>
-    public static string GetRatingText(this int rating)
+    public static string ToDisplayRating(this double rating)
     {
-        var i = rating;
-
-        while (i > 9)
-            i = rating % 10;
-
-        if (rating > 90 && i >= 7)
-            return rating / 10 + "+";
-
-        return (rating / 10).ToString();
+        return (rating > 9 && rating - (int)rating >= 0.7)
+            ? (int)rating + "+"
+            : rating.ToString("N1");
     }
 
-    public static string GetDisplayPotential(double potential)
+    public static string ToDisplayPotential(double potential)
     {
         return potential >= 0 ? potential.ToString("F2") : "?";
+    }
+    
+    public static string ToDisplayScore(this int score)
+    {
+        var span = score.ToString("00000000").AsSpan();
+        var sb = new StringBuilder();
+        sb.Append(span[..2]).Append('\'').Append(span[2..5]).Append('\'').Append(span[5..]);
+        return sb.ToString();
     }
 
     /// <summary>
@@ -56,14 +58,6 @@ public static class ArcaeaSharedUtils
                 ? ((int)(rating * 10), (int)(rating * 10))
                 : (-1, -1)
         };
-    }
-
-    public static string FormatScore(this int score)
-    {
-        var span = score.ToString("00000000").AsSpan();
-        var sb = new StringBuilder();
-        sb.Append(span[..2]).Append('\'').Append(span[2..5]).Append('\'').Append(span[5..]);
-        return sb.ToString();
     }
 
     public static ArcaeaDifficulty? GetRatingClass(string difficultyText)
