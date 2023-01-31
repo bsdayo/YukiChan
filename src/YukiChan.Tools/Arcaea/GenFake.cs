@@ -1,14 +1,14 @@
 ﻿using Spectre.Console.Cli;
 using YukiChan.ImageGen.Arcaea;
-using YukiChan.Shared.Arcaea;
-using YukiChan.Shared.Arcaea.Factories;
-using YukiChan.Shared.Database.Models.Arcaea;
+using YukiChan.Shared.Models.Arcaea;
 using YukiChan.Tools.Utils;
 
 namespace YukiChan.Tools.Arcaea;
 
 public sealed class GenFakeCommand : AsyncCommand<GenFakeCommand.Settings>
 {
+    private readonly ArcaeaFakeData _fakeData;
+
     public sealed class Settings : CommandSettings
     {
         [CommandArgument(0, "<ImageType>")]
@@ -19,6 +19,11 @@ public sealed class GenFakeCommand : AsyncCommand<GenFakeCommand.Settings>
 
         [CommandOption("-d|--dark")]
         public bool Dark { get; init; } = false;
+    }
+
+    public GenFakeCommand(ArcaeaFakeData fakeData)
+    {
+        _fakeData = fakeData;
     }
 
     public override async Task<int> ExecuteAsync(CommandContext ctx, Settings settings)
@@ -36,15 +41,11 @@ public sealed class GenFakeCommand : AsyncCommand<GenFakeCommand.Settings>
         {
             case "b30":
             case "best30":
-                image = await generator.Best30(ArcaeaBest30Factory.GenerateFake(), pref);
+                image = await generator.Best30(_fakeData.Best30(), pref);
                 break;
 
             case "single":
-                image = await generator.SingleV1(
-                    ArcaeaUserFactory.GenerateFake(),
-                    ArcaeaRecordFactory.GenerateFake(
-                        (await ArcaeaSongDatabase.Default.GetChartsById("equilibrium"))[2]),
-                    null, pref);
+                image = await generator.SingleV1(_fakeData.User(), _fakeData.Record(), null, pref);
                 break;
 
             default:

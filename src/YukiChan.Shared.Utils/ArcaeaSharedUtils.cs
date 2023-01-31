@@ -12,16 +12,17 @@ public static class ArcaeaSharedUtils
     /// <returns>难度文本</returns>
     public static string ToDisplayRating(this double rating)
     {
-        return (rating > 9 && rating - (int)rating >= 0.7)
-            ? (int)rating + "+"
-            : rating.ToString("N1");
+        var major = (int)rating;
+        return (rating > 9 && rating - major >= 0.7)
+            ? major + "+"
+            : major.ToString();
     }
 
     public static string ToDisplayPotential(double potential)
     {
         return potential >= 0 ? potential.ToString("F2") : "?";
     }
-    
+
     public static string ToDisplayScore(this int score)
     {
         var span = score.ToString("00000000").AsSpan();
@@ -41,6 +42,7 @@ public static class ArcaeaSharedUtils
             _ => $"<{(int)difficulty}>"
         };
     }
+
     /// <summary>
     /// 转换难度文本 (eg. 9+) 为难度区间 (eg. 97 ~ 99)
     /// </summary>

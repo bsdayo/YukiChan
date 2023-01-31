@@ -100,12 +100,39 @@ public static class ArcaeaImageUtils
             ArcaeaClearType.NormalClear => "clear-tc.png",
             ArcaeaClearType.EasyClear => "clear-tc.png",
             ArcaeaClearType.HardClear => "clear-tc.png",
-
             ArcaeaClearType.TrackLost => "clear-tl.png",
             ArcaeaClearType.FullRecall => "clear-fr.png",
             ArcaeaClearType.PureMemory => "clear-pm.png",
-
             _ => "clear-tc.png"
+        };
+    }
+
+    public static string GetMiniClearTypeImagePath(ArcaeaClearType clearType)
+    {
+        return $"{YukiDir.ArcaeaAssets}/images/" + clearType switch
+        {
+            ArcaeaClearType.NormalClear => "clear-mini-nc.png",
+            ArcaeaClearType.EasyClear => "clear-mini-ec.png",
+            ArcaeaClearType.HardClear => "clear-mini-hc.png",
+            ArcaeaClearType.TrackLost => "clear-mini-tl.png",
+            ArcaeaClearType.FullRecall => "clear-mini-fr.png",
+            ArcaeaClearType.PureMemory => "clear-mini-pm.png",
+            _ => "clear-mini-nc.png"
+        };
+    }
+
+    public static string GetMiniGradeImagePath(ArcaeaGrade grade)
+    {
+        return $"{YukiDir.ArcaeaAssets}/images/" + grade switch
+        {
+            ArcaeaGrade.EXP => "grade-mini-exp.png",
+            ArcaeaGrade.EX => "grade-mini-ex.png",
+            ArcaeaGrade.AA => "grade-mini-aa.png",
+            ArcaeaGrade.A => "grade-mini-a.png",
+            ArcaeaGrade.B => "grade-mini-b.png",
+            ArcaeaGrade.C => "grade-mini-c.png",
+            ArcaeaGrade.D => "grade-mini-d.png",
+            _ => "grade-mini-d.png"
         };
     }
 

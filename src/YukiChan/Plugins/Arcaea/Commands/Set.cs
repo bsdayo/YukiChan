@@ -41,14 +41,15 @@ public partial class ArcaeaPlugin
                 case "singledynamicbg":
                     pref.SingleDynamicBackground = ParseBoolSet(set);
                     break;
+
+                case "b30showgrade":
+                    pref.Best30ShowGrade = ParseBoolSet(set);
+                    break;
             }
         }
 
         var updateResp = await _yukiClient.Arcaea.UpdatePreferences(ctx.Platform, ctx.UserId,
-            new ArcaeaPreferencesRequest
-            {
-                Preferences = pref
-            });
+            new ArcaeaPreferencesRequest { Preferences = pref });
         if (!updateResp.Ok) ctx.ReplyServerError(updateResp);
         return ctx.Reply("已成功为您更新偏好信息。");
     }

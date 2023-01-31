@@ -27,4 +27,7 @@ public class ArcaeaUserPreferences
 
     [Column("single_dynamic_bg")]
     public bool SingleDynamicBackground { get; set; } = true;
+
+    [Column("b30_show_grade")]
+    public bool Best30ShowGrade { get; set; } = true;
 }

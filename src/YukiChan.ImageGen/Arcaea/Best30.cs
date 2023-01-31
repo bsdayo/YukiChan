@@ -22,7 +22,7 @@ public partial class ArcaeaImageGenerator
             using var background = SKBitmap.Decode(bgPath);
 
             if (background is null)
-                logger?.LogWarning($"资源文件缺失: {bgPath}");
+                logger?.LogWarning("资源文件缺失: {BgPath}", bgPath);
 
             using var scaledBackground = new SKBitmap(
                 3400, (background?.Height ?? 6200) * (3400 / (background?.Width ?? 3400)));
@@ -121,7 +121,7 @@ public partial class ArcaeaImageGenerator
                 client, record.SongId, record.JacketOverride, record.Difficulty, pref.Nya, logger);
 
             DrawMiniScoreCard(canvas,
-                100 + col * 1100, 635 + row * 400, record, songCover, index + 1, pref.Dark);
+                100 + col * 1100, 635 + row * 400, record, pref, songCover, index + 1);
         }
 
         // Overflow
@@ -140,7 +140,7 @@ public partial class ArcaeaImageGenerator
                     record.Difficulty, pref.Nya, logger);
 
                 DrawMiniScoreCard(canvas,
-                    100 + col * 1100, 4840 + row * 400, record, songCover, index + 31, pref.Dark);
+                    100 + col * 1100, 4840 + row * 400, record, pref, songCover, index + 31);
             }
 
         using var image = surface.Snapshot();
@@ -149,7 +149,7 @@ public partial class ArcaeaImageGenerator
     }
 
     public void DrawMiniScoreCard(SKCanvas canvas, int x, int y,
-        ArcaeaRecord record, byte[] songCover, int rank = 0, bool dark = false)
+        ArcaeaRecord record, ArcaeaUserPreferences pref, byte[] songCover, int rank = 0)
     {
         var (colorLight, colorDark, colorBorderLight, colorBorderDark, colorInnerLight, colorInnerDark)
             = DifficultyColors[(int)record.Difficulty];
@@ -158,7 +158,7 @@ public partial class ArcaeaImageGenerator
             // 背景
             using var backgroundPaint = new SKPaint
             {
-                Color = dark
+                Color = pref.Dark
                     ? new SKColor(40, 40, 40, 200)
                     : new SKColor(255, 255, 255, 200),
                 IsAntialias = true,
@@ -186,30 +186,36 @@ public partial class ArcaeaImageGenerator
                 IsAntialias = true,
                 Typeface = TitilliumWeb_SemiBold
             };
-            using var rectPaint = new SKPaint();
+            using var rectPaint = new SKPaint { IsAntialias = true };
             textPaint.Color = SKColor.Parse(rank switch
             {
                 < 3 => "#333333",
                 3 => "#ffffff",
-                _ => dark ? "#ffffff" : "#333333"
+                _ => pref.Dark ? "#ffffff" : "#333333"
             });
             rectPaint.Color = SKColor.Parse(rank switch
             {
                 1 => "#ffcc00",
                 2 => "#c0c0c0",
                 3 => "#a57c50",
-                _ => dark ? "#333333" : "#dddddd"
+                _ => pref.Dark ? "#333333" : "#dddddd"
             });
 
             canvas.DrawRoundRect(x + 320, y + 15, 665, 60, 10, 10, rectPaint);
             canvas.DrawText($"#{rank}", x + 895, y + 61, textPaint);
+
+            if (rank <= 3 && pref.Best30ShowGrade)
+            {
+                rectPaint.Color = SKColor.Parse(pref.Dark ? "#333333" : "#dddddd");
+                canvas.DrawRoundRect(x + 320, y + 15, 560, 60, 10, 10, rectPaint);
+            }
         }
 
         {
             // 难度条
             using var rectPaint = new SKPaint
             {
-                Color = SKColor.Parse(dark ? colorInnerDark : colorDark),
+                Color = SKColor.Parse(pref.Dark ? colorInnerDark : colorDark),
                 IsAntialias = true
             };
 
@@ -221,12 +227,27 @@ public partial class ArcaeaImageGenerator
                 Typeface = TitilliumWeb_Regular
             };
 
-            canvas.DrawRoundRect(x + 320, y + 15, rank != 0 ? 560 : 665, 60, 10, 10, rectPaint);
-            canvas.DrawLimitedText(
-                $"{record.Difficulty} {record.Rating.ToDisplayRating()} [{record.Rating:N1}]",
-                x + 526, y + 61, textPaint, rank != 0 ? 339 : 444);
+            if (pref.Best30ShowGrade)
+            {
+                canvas.DrawRoundRect(x + 320, y + 15, 315, 60, 10, 10, rectPaint);
+                canvas.DrawLimitedText(record.Rating.ToString("N1"),
+                    x + 526, y + 61, textPaint, rank != 0 ? 339 : 444);
 
-            if (dark)
+                using var clearImg = SKBitmap.Decode(ArcaeaImageUtils.GetMiniClearTypeImagePath(record.ClearType));
+                using var gradeImg = SKBitmap.Decode(ArcaeaImageUtils.GetMiniGradeImagePath(record.Grade));
+
+                canvas.DrawBitmap(gradeImg, x + 645, y - 8);
+                canvas.DrawBitmap(clearImg, x + 755, y - 8);
+            }
+            else
+            {
+                canvas.DrawRoundRect(x + 320, y + 15, rank != 0 ? 560 : 665, 60, 10, 10, rectPaint);
+                canvas.DrawLimitedText(
+                    $"{record.Difficulty} {record.Rating.ToDisplayRating()} [{record.Rating:N1}]",
+                    x + 526, y + 61, textPaint, rank != 0 ? 339 : 444);
+            }
+
+            if (pref.Dark)
             {
                 using var borderPaint = new SKPaint
                 {
@@ -235,7 +256,7 @@ public partial class ArcaeaImageGenerator
                     IsStroke = true,
                     StrokeWidth = 3
                 };
-                canvas.DrawRoundRect(x + 320, y + 15, rank != 0 ? 560 : 665, 60, 10, 10, borderPaint);
+                canvas.DrawRoundRect(x + 320, y + 15, 315, 60, 10, 10, borderPaint);
             }
         }
 
@@ -243,7 +264,7 @@ public partial class ArcaeaImageGenerator
             // 获得 ptt
             using var rectPaint = new SKPaint
             {
-                Color = SKColor.Parse(dark ? colorInnerLight : colorLight),
+                Color = SKColor.Parse(pref.Dark ? colorInnerLight : colorLight),
                 IsAntialias = true
             };
 
@@ -257,7 +278,7 @@ public partial class ArcaeaImageGenerator
             canvas.DrawRoundRect(x + 320, y + 15, 191, 60, 10, 10, rectPaint);
             canvas.DrawText($"{record.Potential:0.0000}", x + 335, y + 61, textPaint);
 
-            if (dark)
+            if (pref.Dark)
             {
                 using var borderPaint = new SKPaint
                 {
@@ -274,7 +295,7 @@ public partial class ArcaeaImageGenerator
             // 曲名
             using var textPaint = new SKPaint
             {
-                Color = dark ? SKColors.White : SKColor.Parse("#333333"),
+                Color = pref.Dark ? SKColors.White : SKColor.Parse("#333333"),
                 TextSize = 60,
                 IsAntialias = true,
                 Typeface = TitilliumWeb_SemiBold
@@ -302,7 +323,7 @@ public partial class ArcaeaImageGenerator
 
             using var textPaint = new SKPaint
             {
-                Color = dark ? SKColors.White : SKColor.Parse("#333333"),
+                Color = pref.Dark ? SKColors.White : SKColor.Parse("#333333"),
                 TextSize = 97,
                 IsAntialias = true,
                 Typeface = TitilliumWeb_Regular
@@ -322,22 +343,22 @@ public partial class ArcaeaImageGenerator
 
             // 彩色字体
             // Pure
-            if (!dark) textPaint.Color = SKColor.Parse("#6f3a5f");
+            if (!pref.Dark) textPaint.Color = SKColor.Parse("#6f3a5f");
             canvas.DrawLimitedText($"Pure / {record.PureCount} (+{record.ShinyPureCount})",
                 x + 335, y + 296, textPaint, 260);
 
             // Far
-            if (!dark) textPaint.Color = SKColor.Parse("#c19c00");
+            if (!pref.Dark) textPaint.Color = SKColor.Parse("#c19c00");
             canvas.DrawLimitedText($"Far / {record.FarCount}",
                 x + 616, y + 296, textPaint, 98);
 
             // Lost
-            if (!dark) textPaint.Color = SKColor.Parse("#bb2b43");
+            if (!pref.Dark) textPaint.Color = SKColor.Parse("#bb2b43");
             canvas.DrawLimitedText($"Lost / {record.LostCount}",
                 x + 765, y + 296, textPaint, 110);
 
             // Past Days
-            if (!dark) textPaint.Color = SKColors.Gray;
+            if (!pref.Dark) textPaint.Color = SKColors.Gray;
             textPaint.TextAlign = SKTextAlign.Right;
             canvas.DrawLimitedText($"{(int)(DateTime.UtcNow - record.PlayTime).TotalDays}d",
                 x + 980, y + 296, textPaint, record.LostCount < 100 ? 60 : 52);

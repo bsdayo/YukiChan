@@ -115,7 +115,7 @@ public partial class ArcaeaImageGenerator
             // 最近游玩
             var cover = await ArcaeaImageUtils.GetSongCover(auaClient,
                 recent.SongId, recent.JacketOverride, recent.Difficulty, pref.Nya, logger);
-            DrawMiniScoreCard(canvas, 2200, 1480, recent, cover, 0, pref.Dark);
+            DrawMiniScoreCard(canvas, 2200, 1480, recent, pref, cover);
         }
 
         {
