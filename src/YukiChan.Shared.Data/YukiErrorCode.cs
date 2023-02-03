@@ -19,6 +19,7 @@ public enum YukiErrorCode
     Arcaea_SongNotFound = -1003,
     Arcaea_NotPlayedRecently = -1004,
     Arcaea_AliasAlreadyExists = -1005,
+    Arcaea_AliasSubmissionAlreadyExists = -1006,
 
     Arcaea_AuaErrorStart = -1100,
     Arcaea_AuaErrorEnd = -1400
