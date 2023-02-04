@@ -1,0 +1,92 @@
+2023-02-05 01:15:00.958 +08:00 [WRN] WebSocket connection lost, reconnecting in 10s...
+2023-02-05 01:15:01.051 +08:00 [ERR] [WEBSOCKET CLIENT] Exception while connecting. Waiting 10 sec before next reconnection try. Error: 'Unable to connect to the remote server'
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: 由于目标计算机积极拒绝，无法连接。 (127.0.0.1:8080)
+ ---> System.Net.Sockets.SocketException (10061): 由于目标计算机积极拒绝，无法连接。
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|281_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.AddHttp11ConnectionAsync(QueueItem queueItem)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.HttpConnectionWaiter`1.WaitForConnectionAsync(Boolean async, CancellationToken requestCancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at Websocket.Client.WebsocketClient.<>c.<<-ctor>b__17_0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Websocket.Client.WebsocketClient.StartClient(Uri uri, CancellationToken token, ReconnectionType type, Boolean failFast)
+2023-02-05 01:15:34.018 +08:00 [INF] Successfully connected to WebSocket server ws://127.0.0.1:8080.
+2023-02-05 01:15:34.104 +08:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-02-05 01:15:34.109 +08:00 [INF] Hosting environment: Production
+2023-02-05 01:15:34.114 +08:00 [INF] Content root path: D:\Code\YukiChan\build\win-x64\
+2023-02-05 01:15:34.117 +08:00 [INF] App started.
+2023-02-05 01:28:27.965 +08:00 [INF] Application is shutting down...
+2023-02-05 01:28:28.221 +08:00 [INF] App stopped.
+2023-02-05 01:30:41.940 +08:00 [ERR] 自动更新 arcsong.db 失败
+System.Net.Http.HttpRequestException: 由于目标计算机积极拒绝，无法连接。 (localhost:5000)
+ ---> System.Net.Sockets.SocketException (10061): 由于目标计算机积极拒绝，无法连接。
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|281_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.AddHttp11ConnectionAsync(QueueItem queueItem)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.HttpConnectionWaiter`1.WaitForConnectionAsync(Boolean async, CancellationToken requestCancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)
+   at YukiChan.Client.Console.Apis.YukiConsoleBaseApi.Download(String endpoint) in D:\Code\YukiChan\src\YukiChan.Client.Console\Apis\BaseApi.cs:line 56
+   at YukiChan.StartupExtensions.UpdateArcaeaSongDb(FlandreApp app) in D:\Code\YukiChan\src\yukichan\StartupExtensions.cs:line 80
+2023-02-05 01:30:42.418 +08:00 [INF] Successfully connected to WebSocket server ws://127.0.0.1:8080.
+2023-02-05 01:30:42.435 +08:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-02-05 01:30:42.439 +08:00 [INF] Hosting environment: Production
+2023-02-05 01:30:42.443 +08:00 [INF] Content root path: D:\Code\YukiChan\build\win-x64\
+2023-02-05 01:30:42.446 +08:00 [INF] App started.
+2023-02-05 01:30:43.675 +08:00 [INF] Application is shutting down...
+2023-02-05 01:30:43.694 +08:00 [INF] App stopped.
+2023-02-05 01:32:44.531 +08:00 [INF] Successfully connected to WebSocket server ws://127.0.0.1:8080.
+2023-02-05 01:32:44.624 +08:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-02-05 01:32:44.628 +08:00 [INF] Hosting environment: Production
+2023-02-05 01:32:44.632 +08:00 [INF] Content root path: D:\Code\YukiChan\build\win-x64\
+2023-02-05 01:32:44.636 +08:00 [INF] App started.
+2023-02-05 01:37:15.158 +08:00 [INF] Application is shutting down...
+2023-02-05 01:37:15.338 +08:00 [INF] App stopped.
+2023-02-05 01:38:16.258 +08:00 [INF] Successfully connected to WebSocket server ws://127.0.0.1:8080.
+2023-02-05 01:38:16.348 +08:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-02-05 01:38:16.352 +08:00 [INF] Hosting environment: Production
+2023-02-05 01:38:16.356 +08:00 [INF] Content root path: D:\Code\YukiChan\build\win-x64\
+2023-02-05 01:38:16.359 +08:00 [INF] App started.
+2023-02-05 01:41:28.400 +08:00 [INF] Application is shutting down...
+2023-02-05 01:41:28.420 +08:00 [INF] App stopped.
+2023-02-05 01:42:31.884 +08:00 [INF] Successfully connected to WebSocket server ws://127.0.0.1:8080.
+2023-02-05 01:42:32.075 +08:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-02-05 01:42:32.079 +08:00 [INF] Hosting environment: Production
+2023-02-05 01:42:32.082 +08:00 [INF] Content root path: D:\Code\YukiChan\build\win-x64\
+2023-02-05 01:42:32.088 +08:00 [INF] App started.
+2023-02-05 01:42:41.419 +08:00 [INF] 色号 色号测试
+2023-02-05 01:42:58.981 +08:00 [INF] 色号 色号测试
+2023-02-05 01:43:04.043 +08:00 [INF] 色号 色号测
+2023-02-05 02:43:01.003 +08:00 [INF] Application is shutting down...
+2023-02-05 02:43:02.176 +08:00 [INF] App stopped.
+2023-02-05 02:49:30.628 +08:00 [ERR] 自动更新 arcsong.db 失败
+YukiChan.Client.Console.YukiApiException: The process cannot access the file 'D:\Code\YukiChan\build\server\win-x64\assets\arcaea\arcsong.db' because it is being used by another process.
+   at YukiChan.Client.Console.Apis.YukiConsoleBaseApi.Download(String endpoint) in D:\Code\YukiChan\src\YukiChan.Client.Console\Apis\BaseApi.cs:line 62
+   at YukiChan.StartupExtensions.UpdateArcaeaSongDb(FlandreApp app) in D:\Code\YukiChan\src\yukichan\StartupExtensions.cs:line 80
+2023-02-05 02:49:31.053 +08:00 [INF] Successfully connected to WebSocket server ws://127.0.0.1:8080.
+2023-02-05 02:49:31.071 +08:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-02-05 02:49:31.075 +08:00 [INF] Hosting environment: Production
+2023-02-05 02:49:31.080 +08:00 [INF] Content root path: D:\Code\YukiChan\build\win-x64\
+2023-02-05 02:49:31.083 +08:00 [INF] App started.
+2023-02-05 02:56:48.246 +08:00 [INF] Application is shutting down...
+2023-02-05 02:56:48.470 +08:00 [INF] App stopped.

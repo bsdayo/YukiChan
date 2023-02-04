@@ -47,6 +47,9 @@ public sealed class YukiConsoleArcaeaApi : YukiConsoleBaseApi
 
     #region 信息相关
 
+    public Task<YukiResponse<ArcaeaSong>> QuerySong(string query) =>
+        Get<ArcaeaSong>($"v1/arcaea/songs/{query}");
+
     public Task<YukiResponse<ArcaeaSongIdResponse>> QuerySongId(string query) =>
         Get<ArcaeaSongIdResponse>($"v1/arcaea/songs/{query}/id");
 
@@ -55,6 +58,18 @@ public sealed class YukiConsoleArcaeaApi : YukiConsoleBaseApi
 
     public Task<YukiResponse> AddSongAlias(string query, ArcaeaSongAddAliasRequest req) =>
         Put($"v1/arcaea/songs/{query}/aliases", req);
+
+    public Task<YukiResponse<ArcaeaAliasSubmission[]>> GetAliasSubmissions(ArcaeaAliasSubmissionStatus status) =>
+        Get<ArcaeaAliasSubmission[]>($"v1/arcaea/alias-submissions?status={status.ToString()}");
+
+    public Task<YukiResponse<ArcaeaSubmitAliasResponse>> SubmitAlias(ArcaeaSubmitAliasRequest req) =>
+        Post<ArcaeaSubmitAliasRequest, ArcaeaSubmitAliasResponse>("v1/arcaea/alias-submissions", req);
+
+    public Task<YukiResponse<ArcaeaAliasSubmission>> GetAliasSubmission(int id) =>
+        Get<ArcaeaAliasSubmission>($"v1/arcaea/alias-submissions/{id}");
+
+    public Task<YukiResponse> UpdateAliasSubmission(int id, ArcaeaUpdateAliasSubmissionRequest req) =>
+        Put($"v1/arcaea/alias-submissions/{id}", req);
 
     #endregion
 }

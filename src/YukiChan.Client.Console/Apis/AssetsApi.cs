@@ -16,4 +16,7 @@ public sealed class YukiConsoleAssetsApi : YukiConsoleBaseApi
 
     public Task<byte[]> GetArcaeaPreviewImage(string songId, ArcaeaDifficulty difficulty) =>
         Download($"v1/assets/arcaea/preview/{songId}/{(int)difficulty}");
+
+    public Task<byte[]> GetArcaeaSongDb() =>
+        Download("v1/assets/arcaea/songDb");
 }

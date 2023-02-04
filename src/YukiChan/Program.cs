@@ -42,4 +42,6 @@ using var app = builder.ConfigureInfrastructure(args).ConfigureSerilog()
     .UseCommandParserMiddleware()
     .UseMiddleware(Middlewares.CommandPrechecker);
 
+app.UpdateArcaeaSongDb();
+
 app.Run();

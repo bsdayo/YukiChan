@@ -71,4 +71,21 @@ internal static class StartupExtensions
             cfg.CachePath = YukiDir.HttpCatCache);
         return builder;
     }
+
+    internal static FlandreApp UpdateArcaeaSongDb(this FlandreApp app)
+    {
+        try
+        {
+            var client = app.Services.GetRequiredService<YukiConsoleClient>();
+            var songDb = client.Assets.GetArcaeaSongDb().GetAwaiter().GetResult();
+            File.WriteAllBytes($"{YukiDir.ArcaeaAssets}/arcsong.db", songDb);
+        }
+        catch (Exception e)
+        {
+            app.Services.GetRequiredService<ILogger<Program>>()
+                .LogError(e, "自动更新 arcsong.db 失败");
+        }
+
+        return app;
+    }
 }

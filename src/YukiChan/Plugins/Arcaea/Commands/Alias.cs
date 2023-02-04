@@ -10,7 +10,6 @@ namespace YukiChan.Plugins.Arcaea;
 public partial class ArcaeaPlugin
 {
     [Command("a.alias <songname:text>")]
-    [Alias("a.alias")]
     [Shortcut("查别名")]
     public async Task<MessageContent> OnAlias(MessageContext ctx, ParsedArgs args)
     {
