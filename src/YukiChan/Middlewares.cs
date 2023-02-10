@@ -1,4 +1,5 @@
 ﻿using Flandre.Core.Messaging;
+using Flandre.Core.Messaging.Segments;
 using Flandre.Framework.Common;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -60,6 +61,10 @@ public static class Middlewares
                     ctx.Response = ctx.ReplyServerError(resp);
                 return;
             }
+
+            var at = ctx.Message.Content.GetSegment<AtSegment>();
+            if (at is not null)
+                resp.Data.IsAssignee = resp.Data.IsAssignee || at.UserId == ctx.SelfId;
 
             if (!resp.Data.IsAssignee)
                 return;
