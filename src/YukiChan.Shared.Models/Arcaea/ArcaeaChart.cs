@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-#pragma warning disable CS8618
+﻿#pragma warning disable CS8618
 
 namespace YukiChan.Shared.Models.Arcaea;
 

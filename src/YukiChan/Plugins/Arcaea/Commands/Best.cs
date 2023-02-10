@@ -36,8 +36,11 @@ public partial class ArcaeaPlugin
                 if (!userResp.Ok) return ctx.ReplyServerError(userResp);
                 target = userResp.Data.ArcaeaId;
             }
-            else target = userArg;
-            
+            else
+            {
+                target = userArg;
+            }
+
             _logger.LogInformation("正在查询 {Target} 的 {SongName} [{Difficulty}] 最高成绩...",
                 target, songname, difficulty.ToShortDisplayDifficulty());
 
@@ -51,7 +54,7 @@ public partial class ArcaeaPlugin
 
             _logger.LogInformation("正在为 {Target} 生成 {SongName} [{Difficulty}] 最高成绩的图查...",
                 target, songname, difficulty.ToShortDisplayDifficulty());
-            
+
             var image = await _service.ImageGenerator.SingleV1(best.User, best.BestRecord,
                 _yukiClient, pref, _logger);
 

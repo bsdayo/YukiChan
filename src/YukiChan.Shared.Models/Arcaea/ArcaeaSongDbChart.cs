@@ -15,7 +15,7 @@ public sealed class ArcaeaSongDbChart
 
     [Column("rating_class")]
     public int RatingClass { get; init; }
-    
+
     [Column("set")]
     public string Set { get; init; }
 

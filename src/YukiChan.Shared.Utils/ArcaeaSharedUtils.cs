@@ -13,7 +13,7 @@ public static class ArcaeaSharedUtils
     public static string ToDisplayRating(this double rating)
     {
         var major = (int)rating;
-        return (rating > 9 && rating - major >= 0.7)
+        return rating > 9 && rating - major >= 0.7
             ? major + "+"
             : major.ToString();
     }

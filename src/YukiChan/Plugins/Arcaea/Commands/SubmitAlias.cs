@@ -1,7 +1,6 @@
 ﻿using Flandre.Core.Messaging;
 using Flandre.Framework.Attributes;
 using Flandre.Framework.Common;
-using Microsoft.Extensions.Logging;
 using YukiChan.Shared.Data;
 using YukiChan.Shared.Data.Console.Arcaea;
 using YukiChan.Shared.Models.Arcaea;
