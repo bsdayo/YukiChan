@@ -62,9 +62,9 @@ public static class Middlewares
                 return;
             }
 
-            var at = ctx.Message.Content.GetSegment<AtSegment>();
-            if (at is not null)
-                resp.Data.IsAssignee = resp.Data.IsAssignee || at.UserId == ctx.SelfId;
+            var atSegment = ctx.Message.Content.Segments.ElementAtOrDefault(0);
+            if (atSegment is AtSegment at)
+                resp.Data.IsAssignee = at.UserId == ctx.SelfId;
 
             if (!resp.Data.IsAssignee)
                 return;

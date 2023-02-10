@@ -44,7 +44,7 @@ public sealed class HandleAliasSubmissionCommand : AsyncCommand
 
             var status = AnsiConsole.Prompt(
                 new SelectionPrompt<ArcaeaAliasSubmissionStatus>()
-                    .Title($"[blue bold]曲目: [/]{songName}   [green bold]别名: [/]{alias}   [yellow bold]剩余: [/]{remain}"))
+                    .Title($"[blue bold]曲目: [/]{songName}   [green bold]别名: [/]{alias}   [yellow bold]剩余: [/]{remain}")
                     .AddChoices(
                         ArcaeaAliasSubmissionStatus.Accepted,
                         ArcaeaAliasSubmissionStatus.Rejected,
