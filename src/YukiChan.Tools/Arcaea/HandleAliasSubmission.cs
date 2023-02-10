@@ -39,12 +39,12 @@ public sealed class HandleAliasSubmissionCommand : AsyncCommand
                 return 1;
             }
 
-            var title = Markup.Escape(
-                $"[blue bold]曲目: [/]{songResp.Data.Difficulties[0].NameEn}   [green bold]别名: [/]{submission.Alias}   [yellow bold]剩余: [/]{remain}");
+            var songName = Markup.Escape(songResp.Data.Difficulties[0].NameEn);
+            var alias = Markup.Escape(submission.Alias);
 
             var status = AnsiConsole.Prompt(
                 new SelectionPrompt<ArcaeaAliasSubmissionStatus>()
-                    .Title(title)
+                    .Title($"[blue bold]曲目: [/]{songName}   [green bold]别名: [/]{alias}   [yellow bold]剩余: [/]{remain}"))
                     .AddChoices(
                         ArcaeaAliasSubmissionStatus.Accepted,
                         ArcaeaAliasSubmissionStatus.Rejected,
