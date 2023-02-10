@@ -25,7 +25,7 @@ public partial class ArcaeaPlugin
 
             if (resp.Code.IsArcaeaAuaError())
                 return ctx.Reply(resp.Message!);
-            return resp.Ok ? ctx.Reply($"已成功为您绑定用户：{user}。") : ctx.ReplyServerError(resp);
+            return resp.Ok ? ctx.Reply($"已成功为您绑定用户：{resp.Data.Name}。") : ctx.ReplyServerError(resp);
         }
         catch (Exception e)
         {
