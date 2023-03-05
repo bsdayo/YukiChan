@@ -1,6 +1,5 @@
 ﻿using Flandre.Core.Messaging;
 using Flandre.Framework.Attributes;
-using Flandre.Framework.Common;
 using Microsoft.Extensions.Logging;
 using YukiChan.Shared.Data;
 using YukiChan.Shared.Data.Console.Arcaea;
@@ -12,11 +11,9 @@ namespace YukiChan.Plugins.Arcaea;
 
 public partial class ArcaeaPlugin
 {
-    [Command("a.bind <user: string>")]
-    public async Task<MessageContent> OnBind(MessageContext ctx, ParsedArgs args)
+    [Command("a.bind")]
+    public async Task<MessageContent> OnBind(MessageContext ctx, string user)
     {
-        var user = args.GetArgument<string>("user");
-
         try
         {
             var resp = await _yukiClient.Arcaea.BindUser(

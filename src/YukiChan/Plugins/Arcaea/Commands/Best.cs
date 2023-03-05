@@ -1,6 +1,5 @@
 ﻿using Flandre.Core.Messaging;
 using Flandre.Framework.Attributes;
-using Flandre.Framework.Common;
 using Microsoft.Extensions.Logging;
 using YukiChan.Shared.Data;
 using YukiChan.Shared.Models.Arcaea;
@@ -13,22 +12,21 @@ namespace YukiChan.Plugins.Arcaea;
 
 public partial class ArcaeaPlugin
 {
-    [Command("a.best <songnameAndDifficulty:text>")]
-    [Option("nya", "-n <nya:bool>")]
-    [Option("dark", "-d <dark:bool>")]
-    [Option("user", "-u <user:string>")]
-    [Shortcut("查最高")]
-    public async Task<MessageContent> OnBest(MessageContext ctx, ParsedArgs args)
+    [Command("a.best")]
+    [StringShortcut("查最高", AllowArguments = true)]
+    public async Task<MessageContent> OnBest(MessageContext ctx,
+        string[] songnameAndDifficulty,
+        [Option(ShortName = 'n')] bool nya,
+        [Option(ShortName = 'd')] bool dark,
+        [Option(ShortName = 'u')] string user)
     {
-        var userArg = args.GetOption<string>("user");
-        var (songname, difficulty) = ArcaeaUtils.ParseMixedSongNameAndDifficulty(
-            args.GetArgument<string>("songnameAndDifficulty"));
+        var (songname, difficulty) = ArcaeaUtils.ParseMixedSongNameAndDifficulty(songnameAndDifficulty);
 
         try
         {
             string target;
 
-            if (string.IsNullOrEmpty(userArg))
+            if (string.IsNullOrEmpty(user))
             {
                 var userResp = await _yukiClient.Arcaea.GetUser(ctx.Platform, ctx.UserId);
                 if (userResp.Code == YukiErrorCode.Arcaea_NotBound)
@@ -38,7 +36,7 @@ public partial class ArcaeaPlugin
             }
             else
             {
-                target = userArg;
+                target = user;
             }
 
             _logger.LogInformation("正在查询 {Target} 的 {SongName} [{Difficulty}] 最高成绩...",
@@ -51,6 +49,9 @@ public partial class ArcaeaPlugin
 
             var prefResp = await _yukiClient.Arcaea.GetPreferences(ctx.Platform, ctx.UserId);
             var pref = prefResp.Ok ? prefResp.Data.Preferences : new ArcaeaUserPreferences();
+
+            pref.Nya = pref.Nya || nya;
+            pref.Dark = pref.Dark || dark;
 
             _logger.LogInformation("正在为 {Target} 生成 {SongName} [{Difficulty}] 最高成绩的图查...",
                 target, songname, difficulty.ToShortDisplayDifficulty());

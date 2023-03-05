@@ -1,13 +1,12 @@
-﻿// ReSharper disable CheckNamespace
-
-using Flandre.Core.Messaging;
+﻿using Flandre.Core.Messaging;
 using Flandre.Framework.Attributes;
-using Flandre.Framework.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using YukiChan.ImageGen.Utils;
 using YukiChan.Shared.Models.Arcaea;
 using YukiChan.Utils;
+
+// ReSharper disable CheckNamespace
 
 namespace YukiChan.Plugins.Arcaea;
 
@@ -23,11 +22,11 @@ public partial class ArcaeaPlugin
 
     private static readonly Dictionary<string, ArcaeaGuessSession> GuessSessions = new();
 
-    [Command("a.guess [guessOrMode:text]")]
-    [Shortcut("猜曲绘")]
-    public async Task<MessageContent> OnGuess(MessageContext ctx, ParsedArgs args)
+    [Command("a.guess")]
+    [StringShortcut("猜曲绘", AllowArguments = true)]
+    public async Task<MessageContent> OnGuess(MessageContext ctx, string[]? guessOrModeArg = null)
     {
-        var guessOrMode = args.GetArgument<string>("guessOrMode");
+        var guessOrMode = string.Join(' ', guessOrModeArg ?? Array.Empty<string>());
         var sessionId = ctx.Message.SourceType == MessageSourceType.Channel
             ? $"{ctx.Platform}:{ctx.Message.ChannelId}"
             : $"{ctx.Platform}:private:{ctx.UserId}";

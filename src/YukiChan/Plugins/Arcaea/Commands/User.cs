@@ -12,36 +12,31 @@ namespace YukiChan.Plugins.Arcaea;
 
 public partial class ArcaeaPlugin
 {
-    [Command("a.user [user:string]")]
-    [Option("nya", "-n <:bool>")]
-    [Option("dark", "-d <:bool>")]
-    [Option("smooth", "-S <:bool>")]
-    //
-    [Option("year", "-y <:bool>")]
-    [Option("season", "-s <:bool>")]
-    [Option("month", "-m <:bool>")]
-    [Option("week", "-w <:bool>")]
-    //
-    [Shortcut("查用户")]
-    public async Task<MessageContent> OnUser(CommandContext ctx, ParsedArgs args)
+    [Command("a.user")]
+    [StringShortcut("查用户", AllowArguments = true)]
+    public async Task<MessageContent> OnUser(CommandContext ctx,
+        [Option(ShortName = 'n')] bool nya,
+        [Option(ShortName = 'd')] bool dark,
+        [Option(ShortName = 'S')] bool smooth,
+        //
+        [Option(ShortName = 'y')] bool year,
+        [Option(ShortName = 's')] bool season,
+        [Option(ShortName = 'm')] bool month,
+        [Option(ShortName = 'w')] bool week,
+        //
+        string user = "")
     {
-        var userArg = args.GetArgument<string>("user");
-        var yearArg = args.GetOption<bool>("year");
-        var seasonArg = args.GetOption<bool>("season");
-        var monthArg = args.GetOption<bool>("month");
-        var weekArg = args.GetOption<bool>("week");
-        var smooth = args.GetOption<bool>("smooth");
         string? userId = null;
 
         var lastDays = 1_000_000_000;
-        if (yearArg) lastDays = 365;
-        if (seasonArg) lastDays = 90;
-        if (monthArg) lastDays = 30;
-        if (weekArg) lastDays = 7;
+        if (year) lastDays = 365;
+        if (season) lastDays = 90;
+        if (month) lastDays = 30;
+        if (week) lastDays = 7;
 
         try
         {
-            if (string.IsNullOrWhiteSpace(userArg))
+            if (string.IsNullOrWhiteSpace(user))
             {
                 var userResp = await _yukiClient.Arcaea.GetUser(ctx.Platform, ctx.UserId);
                 if (userResp.Code == YukiErrorCode.Arcaea_NotBound)
@@ -52,12 +47,15 @@ public partial class ArcaeaPlugin
                 userId = userResp.Data.ArcaeaId;
             }
 
-            var recentResp = await _yukiClient.Arcaea.GetRecent(userId ?? userArg);
+            var recentResp = await _yukiClient.Arcaea.GetRecent(userId ?? user);
             if (!recentResp.Ok) return ctx.ReplyServerError(recentResp);
+
             var prefResp = await _yukiClient.Arcaea.GetPreferences(ctx.Platform, ctx.UserId);
             var pref = prefResp.Ok ? prefResp.Data.Preferences : new ArcaeaUserPreferences();
-            pref.Dark = pref.Dark || args.GetOption<bool>("dark");
-            pref.Nya = pref.Nya || args.GetOption<bool>("nya");
+
+            pref.Nya = pref.Nya || nya;
+            pref.Dark = pref.Dark || dark;
+
             var image = await _service.ImageGenerator.User(recentResp.Data.User, recentResp.Data.RecentRecord,
                 pref, _yukiClient, lastDays, smooth,
                 _logger);

@@ -15,7 +15,7 @@ public sealed class AutoAcceptPlugin : Plugin
     public AutoAcceptPlugin(IOptionsSnapshot<AutoAcceptPluginOptions> options, ILogger<AutoAcceptPlugin> logger)
         => (_options, _logger) = (options.Value, logger);
 
-    public override async Task OnFriendRequested(Context ctx, BotFriendRequestedEvent e)
+    public override async Task OnFriendRequested(BotContext ctx, BotFriendRequestedEvent e)
     {
         if (!_options.BotIds.Contains(ctx.SelfId)) return;
         await ctx.Bot.HandleFriendRequest(e, true);
@@ -23,7 +23,7 @@ public sealed class AutoAcceptPlugin : Plugin
             e.RequesterName, e.RequesterId);
     }
 
-    public override async Task OnGuildInvited(Context ctx, BotGuildInvitedEvent e)
+    public override async Task OnGuildInvited(BotContext ctx, BotGuildInvitedEvent e)
     {
         if (!_options.BotIds.Contains(ctx.SelfId)) return;
         await ctx.Bot.HandleGuildInvitation(e, true);

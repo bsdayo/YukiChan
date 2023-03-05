@@ -1,6 +1,5 @@
 ﻿using Flandre.Core.Messaging;
 using Flandre.Framework.Attributes;
-using Flandre.Framework.Common;
 using YukiChan.Shared.Models.Arcaea;
 using YukiChan.Shared.Utils;
 using YukiChan.Utils;
@@ -10,16 +9,14 @@ namespace YukiChan.Plugins.Arcaea;
 
 public partial class ArcaeaPlugin
 {
-    [Command("a.ptt <args:text>")]
-    public async Task<MessageContent> OnPtt(MessageContext ctx, ParsedArgs args)
+    [Command("a.ptt")]
+    public async Task<MessageContent> OnPtt(MessageContext ctx, string[] args)
     {
-        var argsArr = args.GetArgument<string>("args").Split(' ',
-            StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
         var difficulty = ArcaeaDifficulty.Future;
         string songname;
         var score = 0;
 
-        switch (argsArr.Length)
+        switch (args.Length)
         {
             case 0:
                 return ctx.Reply("请输入需要计算的曲名哦~");
@@ -28,17 +25,17 @@ public partial class ArcaeaPlugin
                 return ctx.Reply("请输入需要计算的得分哦~");
 
             case 2:
-                songname = argsArr[0];
-                if (!int.TryParse(argsArr[1], out score))
+                songname = args[0];
+                if (!int.TryParse(args[1], out score))
                     return ctx.Reply("得分格式有误，请检查输入。");
                 break;
 
             default:
-                var scoreIndex = Array.FindIndex(argsArr, a => int.TryParse(a, out score));
+                var scoreIndex = Array.FindIndex(args, a => int.TryParse(a, out score));
                 if (scoreIndex < 0) return ctx.Reply("得分格式有误，请检查输入。");
-                songname = string.Join(' ', argsArr[..scoreIndex]);
-                if (argsArr.Length <= scoreIndex + 1) break;
-                var diff = ArcaeaSharedUtils.GetArcaeaDifficulty(argsArr[scoreIndex + 1]);
+                songname = string.Join(' ', args[..scoreIndex]);
+                if (args.Length <= scoreIndex + 1) break;
+                var diff = ArcaeaSharedUtils.GetArcaeaDifficulty(args[scoreIndex + 1]);
                 if (diff is null)
                     return ctx.Reply("难度输入有误，请检查输入。");
                 difficulty = diff.Value;

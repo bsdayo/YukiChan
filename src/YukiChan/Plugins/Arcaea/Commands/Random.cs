@@ -1,6 +1,5 @@
 ﻿using Flandre.Core.Messaging;
 using Flandre.Framework.Attributes;
-using Flandre.Framework.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using YukiChan.ImageGen.Utils;
@@ -14,12 +13,12 @@ namespace YukiChan.Plugins.Arcaea;
 
 public partial class ArcaeaPlugin
 {
-    [Command("a.random [range:text]")]
-    [Shortcut("随机曲目")]
-    public async Task<MessageContent> OnRandom(MessageContext ctx, ParsedArgs args)
+    [Command("a.random")]
+    [StringShortcut("随机曲目", AllowArguments = true)]
+    public async Task<MessageContent> OnRandom(MessageContext ctx, string[]? range = null)
     {
-        var range = args.GetArgument<string>("range")
-            .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        range ??= Array.Empty<string>();
+
         int start, end;
         var allCharts = await _service.SongDb.Charts.AsNoTracking().ToListAsync();
 

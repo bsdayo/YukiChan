@@ -9,11 +9,11 @@ namespace YukiChan.Plugins.Arcaea;
 
 public partial class ArcaeaPlugin
 {
-    [Command("a.alias <songname:text>")]
-    [Shortcut("查别名")]
-    public async Task<MessageContent> OnAlias(MessageContext ctx, ParsedArgs args)
+    [Command("a.alias")]
+    [StringShortcut("查别名", AllowArguments = true)]
+    public async Task<MessageContent> OnAlias(CommandContext ctx, string[] songname)
     {
-        var query = args.GetArgument<string>("songname");
+        var query = string.Join(' ', songname);
 
         var resp = await _yukiClient.Arcaea.QuerySongAliases(query);
         if (!resp.Ok)

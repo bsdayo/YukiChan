@@ -1,6 +1,5 @@
 ﻿using Flandre.Core.Messaging;
 using Flandre.Framework.Attributes;
-using Flandre.Framework.Common;
 using YukiChan.Shared.Data.Console.Arcaea;
 using YukiChan.Utils;
 
@@ -10,11 +9,13 @@ namespace YukiChan.Plugins.Arcaea;
 
 public partial class ArcaeaPlugin
 {
-    [Command("a.set <preferences:string>")]
-    public async Task<MessageContent> OnSet(MessageContext ctx, ParsedArgs args)
+    [Command("a.set")]
+    public async Task<MessageContent> OnSet(MessageContext ctx, string preferences)
     {
-        var prefStrList = args.GetArgument<string>("preferences")
+        var prefStrList = preferences
             .Replace('，', ',')
+            .Replace('；', ',')
+            .Replace(';', ',')
             .Split(',');
 
         var prefResp = await _yukiClient.Arcaea.GetPreferences(ctx.Platform, ctx.UserId);

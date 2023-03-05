@@ -1,7 +1,6 @@
 ﻿using Flandre.Core.Messaging;
 using Flandre.Core.Messaging.Segments;
 using Flandre.Framework.Attributes;
-using Flandre.Framework.Common;
 using Microsoft.Extensions.Logging;
 using YukiChan.Shared.Data;
 using YukiChan.Shared.Data.Console.Arcaea;
@@ -15,16 +14,13 @@ namespace YukiChan.Plugins.Arcaea;
 
 public partial class ArcaeaPlugin
 {
-    [Command("a.recent")]
-    [Option("nya", "-n <nya:bool>")]
-    [Option("dark", "-d <dark:bool>")]
-    [Option("user", "-u <user:string>")]
-    [Shortcut("查最近")]
-    [Alias("a")]
-    public async Task<MessageContent> OnRecent(MessageContext ctx, ParsedArgs args)
+    [Command("a.recent", "a")]
+    [StringShortcut("查最近", AllowArguments = true)]
+    public async Task<MessageContent> OnRecent(MessageContext ctx,
+        [Option(ShortName = 'n')] bool nya,
+        [Option(ShortName = 'd')] bool dark,
+        [Option(ShortName = 'u')] string userArg)
     {
-        var userArg = args.GetOption<string>("user");
-
         try
         {
             YukiResponse<ArcaeaRecentResponse> recentResp;
@@ -60,8 +56,8 @@ public partial class ArcaeaPlugin
 
             var prefResp = await _yukiClient.Arcaea.GetPreferences(ctx.Platform, ctx.UserId);
             var pref = prefResp.Ok ? prefResp.Data.Preferences : new ArcaeaUserPreferences();
-            pref.Dark = pref.Dark || args.GetOption<bool>("dark");
-            pref.Nya = pref.Nya || args.GetOption<bool>("nya");
+            pref.Nya = pref.Nya || nya;
+            pref.Dark = pref.Dark || dark;
 
             _logger.LogInformation("正在为 {ArcaeaName} ({ArcaeaId}) 生成最近成绩图查...", user.Name, user.Code);
             var image = await _service.ImageGenerator.SingleV1(user, record, _yukiClient, pref, _logger);

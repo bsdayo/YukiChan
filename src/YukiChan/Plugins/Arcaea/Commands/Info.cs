@@ -1,7 +1,6 @@
 ﻿using Flandre.Core.Messaging;
 using Flandre.Core.Messaging.Segments;
 using Flandre.Framework.Attributes;
-using Flandre.Framework.Common;
 using YukiChan.ImageGen.Utils;
 using YukiChan.Shared.Models.Arcaea;
 using YukiChan.Shared.Utils;
@@ -13,14 +12,13 @@ namespace YukiChan.Plugins.Arcaea;
 
 public partial class ArcaeaPlugin
 {
-    [Command("a.info <songname:text>")]
-    [Option("nya", "-n <:bool>")]
-    [Shortcut("查定数")]
-    public async Task<MessageContent> OnInfo(MessageContext ctx, ParsedArgs args)
+    [Command("a.info")]
+    [StringShortcut("查定数", AllowArguments = true)]
+    public async Task<MessageContent> OnInfo(MessageContext ctx,
+        string[] songname,
+        [Option(ShortName = 'n')] bool nya)
     {
-        var nya = args.GetOption<bool>("nya");
-
-        var song = await _service.SongDb.FuzzySearchSong(args.GetArgument<string>("songname"));
+        var song = await _service.SongDb.FuzzySearchSong(string.Join(' ', songname));
 
         // TODO: query from server
 

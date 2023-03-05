@@ -5,15 +5,10 @@ namespace YukiChan.Plugins.Arcaea;
 
 public static class ArcaeaUtils
 {
-    public static (string, ArcaeaDifficulty) ParseMixedSongNameAndDifficulty(string textArg)
+    public static (string, ArcaeaDifficulty) ParseMixedSongNameAndDifficulty(string[] mixed)
     {
-        var arr = textArg.Split(' ',
-            StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-        var difficulty = ArcaeaSharedUtils.GetArcaeaDifficulty(arr[^1]);
-
-        var songname = difficulty is null
-            ? textArg
-            : string.Join(' ', arr[..^1]);
+        var difficulty = ArcaeaSharedUtils.GetArcaeaDifficulty(mixed[^1]);
+        var songname = string.Join(' ', difficulty is null ? mixed : mixed[..^1]);
         return (songname, difficulty ?? ArcaeaDifficulty.Future);
     }
 

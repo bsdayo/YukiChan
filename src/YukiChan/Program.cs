@@ -14,7 +14,7 @@ var builder = FlandreApp.CreateBuilder(new HostApplicationBuilderSettings
 });
 var pluginOpts = builder.Configuration.GetSection("Plugins");
 
-using var app = builder.ConfigureInfrastructure(args).ConfigureSerilog()
+var app = builder.ConfigureInfrastructure(args).ConfigureSerilog()
     // Adapters
     .AddOneBotAdapter()
 
@@ -37,11 +37,15 @@ using var app = builder.ConfigureInfrastructure(args).ConfigureSerilog()
     .Build()
 
     // Middlewares
-    .UseMiddleware(Middlewares.QQGroupWarnFilter)
-    .UseMiddleware(Middlewares.QQGuildFilter)
-    .UseCommandParserMiddleware()
-    .UseMiddleware(Middlewares.CommandPrechecker);
+    .UseQQGroupWarnFilter()
+    .UseQQGuildFilter()
+    .UseCommandSession()
+    .UseCommandParser()
+    .UseCommandInvoker()
+    .UseCommandPrechecker();
 
 app.UpdateArcaeaSongDb();
+
+app.OnReady += (_, _) => StatusPlugin.UpTimeStopwatch.Start();
 
 app.Run();

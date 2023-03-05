@@ -18,20 +18,14 @@ public class GosenPlugin : Plugin
     public GosenPlugin(IOptionsSnapshot<GosenPluginOptions> options, ILogger<GosenPlugin> logger) =>
         (_options, _logger) = (options.Value, logger);
 
-    [Command("5k <upper:string> <lower:string>")]
-    [Alias("5K")]
-    [Alias("gosen")]
-    [Shortcut("五千兆")]
-    [Shortcut("五千兆元")]
-    [Option("offset", "-o <offset:int>")]
-    public async Task<MessageContent> On5K(CommandContext ctx, ParsedArgs args)
+    [Command("5k", "5K", "gosen")]
+    [StringShortcut("五千兆", AllowArguments = true)]
+    [StringShortcut("五千兆元", AllowArguments = true)]
+    public async Task<MessageContent> On5K(CommandContext ctx, string upper, string lower,
+        [Option(ShortName = 'o')] int offset)
     {
         try
         {
-            var upper = args.GetArgument<string>("upper");
-            var lower = args.GetArgument<string>("lower");
-            var offset = args.GetOption<int>("offset");
-
             var image = await Client.GetByteArrayAsync(
                 $"{_options.ApiUrl}/?upper={upper}&lower={lower}&offset={offset}");
 

@@ -13,11 +13,6 @@ public class StatusPlugin : Plugin
 
     public static Stopwatch UpTimeStopwatch { get; } = new();
 
-    static StatusPlugin()
-    {
-        UpTimeStopwatch.Start();
-    }
-
     public override Task OnMessageReceived(MessageContext ctx)
     {
         MessageReceived++;
@@ -25,7 +20,7 @@ public class StatusPlugin : Plugin
     }
 
     [Command("status")]
-    public static MessageContent OnStatus(MessageContext ctx)
+    public static MessageContent OnStatus(CommandContext ctx)
     {
         var bs = new BuildStamp(typeof(Program));
         var uptime = new StringBuilder() // "12d 23:45:34.123"
