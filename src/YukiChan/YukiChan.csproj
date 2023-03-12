@@ -15,8 +15,8 @@
         <PublishReadyToRun>true</PublishReadyToRun>
         <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
 
-        <RepositoryUrl>https://github.com/b1acksoil/YukiChan</RepositoryUrl>
-        <PackageProjectUrl>https://github.com/b1acksoil/YukiChan</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/bsdayo/YukiChan</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/bsdayo/YukiChan</PackageProjectUrl>
         <RepositoryType>git</RepositoryType>
     </PropertyGroup>
 
