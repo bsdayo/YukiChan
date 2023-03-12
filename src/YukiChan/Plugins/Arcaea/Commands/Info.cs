@@ -15,8 +15,8 @@ public partial class ArcaeaPlugin
     [Command("a.info")]
     [StringShortcut("查定数", AllowArguments = true)]
     public async Task<MessageContent> OnInfo(MessageContext ctx,
-        string[] songname,
-        [Option(ShortName = 'n')] bool nya)
+        [Option(ShortName = 'n')] bool nya,
+        params string[] songname)
     {
         var song = await _service.SongDb.FuzzySearchSong(string.Join(' ', songname));
 

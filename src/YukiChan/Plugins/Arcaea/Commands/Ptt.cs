@@ -10,7 +10,7 @@ namespace YukiChan.Plugins.Arcaea;
 public partial class ArcaeaPlugin
 {
     [Command("a.ptt")]
-    public async Task<MessageContent> OnPtt(MessageContext ctx, string[] args)
+    public async Task<MessageContent> OnPtt(MessageContext ctx, params string[] args)
     {
         var difficulty = ArcaeaDifficulty.Future;
         string songname;

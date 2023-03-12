@@ -15,10 +15,8 @@ public partial class ArcaeaPlugin
 {
     [Command("a.random")]
     [StringShortcut("随机曲目", AllowArguments = true)]
-    public async Task<MessageContent> OnRandom(MessageContext ctx, string[]? range = null)
+    public async Task<MessageContent> OnRandom(MessageContext ctx, params string[] range)
     {
-        range ??= Array.Empty<string>();
-
         int start, end;
         var allCharts = await _service.SongDb.Charts.AsNoTracking().ToListAsync();
 
@@ -39,7 +37,7 @@ public partial class ArcaeaPlugin
 
                     if (start == -1 || end == -1)
                         return ctx.Reply("输入了错误的定数呢...");
-                    if (start is < 0 or > 120 || end is < 0 or > 120)
+                    if (start is < 0 or > 120 || end is < 0 or > 126)
                         return ctx.Reply("定数超出范围啦！");
 
                     return await ConstructRandomReply(ctx, allCharts

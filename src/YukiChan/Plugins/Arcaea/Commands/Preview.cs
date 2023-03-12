@@ -14,7 +14,7 @@ public partial class ArcaeaPlugin
     [StringShortcut("查预览", AllowArguments = true)]
     [StringShortcut("查谱面", AllowArguments = true)]
     [StringShortcut("查铺面", AllowArguments = true)]
-    public async Task<MessageContent> OnPreview(MessageContext ctx, string[] songnameAndDifficulty)
+    public async Task<MessageContent> OnPreview(MessageContext ctx, params string[] songnameAndDifficulty)
     {
         var (songname, difficulty) = ArcaeaUtils.ParseMixedSongNameAndDifficulty(songnameAndDifficulty);
 

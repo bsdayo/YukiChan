@@ -13,7 +13,7 @@ public class StatusPlugin : Plugin
 
     public static Stopwatch UpTimeStopwatch { get; } = new();
 
-    public override Task OnMessageReceived(MessageContext ctx)
+    public override Task OnMessageReceivedAsync(MessageContext ctx)
     {
         MessageReceived++;
         return Task.CompletedTask;
@@ -37,6 +37,6 @@ public class StatusPlugin : Plugin
             .Text($"已接收 {MessageReceived} 条消息\n\n")
             .Text($"运行时间 - {uptime}\n")
             .Text($"内存占用 - {(double)Process.GetCurrentProcess().PrivateMemorySize64 / 1024 / 1024:F2}MiB\n\n")
-            .Text("Made with love by b1acksoil.");
+            .Text("Made with love by bsdayo.");
     }
 }

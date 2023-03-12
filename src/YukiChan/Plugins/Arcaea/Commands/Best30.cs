@@ -43,7 +43,7 @@ public partial class ArcaeaPlugin
                 arcName = arcId = user;
             }
 
-            await ctx.Bot.SendMessage(ctx.Message, official
+            await ctx.Bot.SendMessageAsync(ctx.Message, official
                 ? $"正在使用官方 API 查询 {arcName} 的 Best30 成绩，请耐心等候..."
                 : $"正在查询 {arcName} 的 Best30 成绩，请耐心等候...");
             _logger.LogInformation("正在查询 {ArcaeaName} ({ArcaeaId}) 的 Best30 成绩...", arcName, arcId);

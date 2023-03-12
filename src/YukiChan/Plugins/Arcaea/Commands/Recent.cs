@@ -19,7 +19,7 @@ public partial class ArcaeaPlugin
     public async Task<MessageContent> OnRecent(MessageContext ctx,
         [Option(ShortName = 'n')] bool nya,
         [Option(ShortName = 'd')] bool dark,
-        [Option(ShortName = 'u')] string userArg)
+        [Option(ShortName = 'u')] string userArg) // TODO: fix shortname not effected
     {
         try
         {
@@ -31,7 +31,7 @@ public partial class ArcaeaPlugin
                 if (userResp.Code == YukiErrorCode.Arcaea_NotBound)
                     return ctx.Reply()
                         .Text("请先使用 /a bind 名称或好友码 绑定你的账号哦~\n")
-                        .Text("你也可以使用 /a best -u 名称或好友码 直接查询指定用户。");
+                        .Text("你也可以使用 /a recent -u 名称或好友码 直接查询指定用户。");
                 if (!userResp.Ok) return ctx.ReplyServerError(userResp);
 
                 _logger.LogInformation(

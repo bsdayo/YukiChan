@@ -35,7 +35,7 @@ public sealed class SandBoxPlugin : Plugin
         return true;
     }
 
-    public override Task OnMessageReceived(MessageContext ctx)
+    public override Task OnMessageReceivedAsync(MessageContext ctx)
     {
         return Task.Run(async () =>
         {
@@ -52,7 +52,7 @@ public sealed class SandBoxPlugin : Plugin
             var result = (await _service.Execute(code, TimeSpan.FromSeconds(10)))?.ToString();
 
             if (!string.IsNullOrWhiteSpace(result))
-                await ctx.Bot.SendMessage(ctx.Message, ctx.Reply(result));
+                await ctx.Bot.SendMessageAsync(ctx.Message, ctx.Reply(result));
         });
     }
 

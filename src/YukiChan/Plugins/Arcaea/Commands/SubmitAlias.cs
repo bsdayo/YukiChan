@@ -13,7 +13,7 @@ namespace YukiChan.Plugins.Arcaea;
 public partial class ArcaeaPlugin
 {
     [Command("a.submit-alias")]
-    public async Task<MessageContent> OnSubmitAlias(MessageContext ctx, string[] songnameAndAlias)
+    public async Task<MessageContent> OnSubmitAlias(MessageContext ctx, params string[] songnameAndAlias)
     {
         if (songnameAndAlias.Length < 2)
             return ctx.Reply("指令格式错误。");

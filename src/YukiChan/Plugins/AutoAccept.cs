@@ -15,18 +15,18 @@ public sealed class AutoAcceptPlugin : Plugin
     public AutoAcceptPlugin(IOptionsSnapshot<AutoAcceptPluginOptions> options, ILogger<AutoAcceptPlugin> logger)
         => (_options, _logger) = (options.Value, logger);
 
-    public override async Task OnFriendRequested(BotContext ctx, BotFriendRequestedEvent e)
+    public override async Task OnFriendRequestedAsync(BotContext ctx, BotFriendRequestedEvent e)
     {
         if (!_options.BotIds.Contains(ctx.SelfId)) return;
-        await ctx.Bot.HandleFriendRequest(e, true);
+        await ctx.Bot.HandleFriendRequestAsync(e, true);
         _logger.LogInformation("已接受来自 {UserName} ({UserId}) 的好友申请。",
             e.RequesterName, e.RequesterId);
     }
 
-    public override async Task OnGuildInvited(BotContext ctx, BotGuildInvitedEvent e)
+    public override async Task OnGuildInvitedAsync(BotContext ctx, BotGuildInvitedEvent e)
     {
         if (!_options.BotIds.Contains(ctx.SelfId)) return;
-        await ctx.Bot.HandleGuildInvitation(e, true);
+        await ctx.Bot.HandleGuildInvitationAsync(e, true);
         _logger.LogInformation("已接受来自 {UserName} ({UserId}) 的邀请，进入群 {GuildName} ({GuildId})。",
             e.InviterName, e.InviterId, e.GuildName, e.GuildId);
     }

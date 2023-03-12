@@ -11,7 +11,7 @@ public partial class ArcaeaPlugin
 {
     [Command("a.alias")]
     [StringShortcut("查别名", AllowArguments = true)]
-    public async Task<MessageContent> OnAlias(CommandContext ctx, string[] songname)
+    public async Task<MessageContent> OnAlias(CommandContext ctx, params string[] songname)
     {
         var query = string.Join(' ', songname);
 

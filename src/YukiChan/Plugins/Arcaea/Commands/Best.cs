@@ -15,10 +15,10 @@ public partial class ArcaeaPlugin
     [Command("a.best")]
     [StringShortcut("查最高", AllowArguments = true)]
     public async Task<MessageContent> OnBest(MessageContext ctx,
-        string[] songnameAndDifficulty,
         [Option(ShortName = 'n')] bool nya,
         [Option(ShortName = 'd')] bool dark,
-        [Option(ShortName = 'u')] string user)
+        [Option(ShortName = 'u')] string user,
+        params string[] songnameAndDifficulty)
     {
         var (songname, difficulty) = ArcaeaUtils.ParseMixedSongNameAndDifficulty(songnameAndDifficulty);
 

@@ -24,9 +24,9 @@ public partial class ArcaeaPlugin
 
     [Command("a.guess")]
     [StringShortcut("猜曲绘", AllowArguments = true)]
-    public async Task<MessageContent> OnGuess(MessageContext ctx, string[]? guessOrModeArg = null)
+    public async Task<MessageContent> OnGuess(MessageContext ctx, params string[] guessOrModeArg)
     {
-        var guessOrMode = string.Join(' ', guessOrModeArg ?? Array.Empty<string>());
+        var guessOrMode = string.Join(' ', guessOrModeArg);
         var sessionId = ctx.Message.SourceType == MessageSourceType.Channel
             ? $"{ctx.Platform}:{ctx.Message.ChannelId}"
             : $"{ctx.Platform}:private:{ctx.UserId}";
@@ -110,7 +110,7 @@ public partial class ArcaeaPlugin
             var set = await _service.SongDb.Packages
                 .AsNoTracking()
                 .FirstAsync(package => package.Set == session.Chart.Set);
-            ctx.Bot.SendMessage(ctx.Message,
+            ctx.Bot.SendMessageAsync(ctx.Message,
                 new MessageBuilder()
                     .Text("时间到！揭晓答案——")
                     .Image(session.Cover)
