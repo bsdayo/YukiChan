@@ -13,7 +13,7 @@
 
 function MakeProjectPath {
     param ([string] $ProjectName)
-    return $ProjectName
+    return Join-Path $ProjectName "$ProjectName.csproj"
 }
 
 # Check there's a build task
@@ -53,6 +53,7 @@ $MSBuildArgs = "-c", "Release", "-r", $Runtime, "--no-self-contained" + $MSBuild
 
 # Build console
 if ($BuildConsole -or $BuildAll) {
+    Write-Output "正在编译项目 $ConsoleProjectPath"
     dotnet publish `
         -o (Join-Path $ConsoleOutput $Runtime) `
         @MSBuildArgs `
@@ -61,6 +62,7 @@ if ($BuildConsole -or $BuildAll) {
 
 # Build console tools
 if ($BuildConsoleTools -or $BuildAll) {
+    Write-Output "正在编译项目 $ConsoleToolsProjectPath"
     dotnet publish `
         -o (Join-Path $ConsoleOutput $Runtime) `
         @MSBuildArgs `
@@ -69,6 +71,7 @@ if ($BuildConsoleTools -or $BuildAll) {
 
 # Build server
 if ($BuildServer -or $BuildAll) {
+    Write-Output "正在编译项目 $ServerProjectPath"
     dotnet publish `
         -o (Join-Path $ServerOutput $Runtime) `
         @MSBuildArgs `
