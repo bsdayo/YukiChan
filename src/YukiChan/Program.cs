@@ -41,8 +41,8 @@ var app = builder.ConfigureInfrastructure(args).ConfigureSerilog()
     .UseQQGuildFilter()
     .UseCommandSession()
     .UseCommandParser()
-    .UseCommandInvoker()
-    .UseCommandPrechecker();
+    .UseCommandPrechecker()
+    .UseCommandInvoker();
 
 app.UpdateArcaeaSongDb();
 
