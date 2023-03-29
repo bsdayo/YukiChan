@@ -16,6 +16,6 @@ public class MiscPlugin : Plugin
     public MessageContent Choose(CommandContext ctx, params string[] items)
     {
         var result = items[new Random().Next(items.Length)];
-        return ctx.Reply("建议你选择{result}");
+        return ctx.Reply($"建议你选择{result}");
     }
 }
