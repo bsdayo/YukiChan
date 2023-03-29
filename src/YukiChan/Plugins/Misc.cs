@@ -12,7 +12,7 @@ public class MiscPlugin : Plugin
     public string Help() => "[暮雪酱帮助文档]\nhttps://yukidocs.sorabs.cc/";
 
     [Command]
-    [StringShortcut("帮我选")]
+    [StringShortcut("帮我选", AllowArguments = true)]
     public MessageContent Choose(CommandContext ctx, params string[] items)
     {
         var result = items[new Random().Next(items.Length)];
