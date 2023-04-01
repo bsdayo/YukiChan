@@ -32,17 +32,36 @@ public sealed class UpdateSongDbCommand : AsyncCommand<UpdateSongDbCommand.Setti
             ? new ArcaeaSongDbContext()
             : new ArcaeaSongDbContext(settings.OldDbPath);
 
-        LogUtils.Info($"Merging [yellow]{settings.OldDbPath}[/] from [yellow]{settings.NewDbPath}[/]...");
-        var charts = await newDb.Charts.ToListAsync();
-        var packages = await newDb.Packages.ToListAsync();
-        var aliases = await newDb.Aliases.ToListAsync();
+        LogUtils.Info($"Merging [yellow]{settings.NewDbPath}[/]...");
+        var charts = await newDb.Charts.AsNoTracking().ToListAsync();
+        var packages = await newDb.Packages.AsNoTracking().ToListAsync();
+        var aliases = await newDb.Aliases.AsNoTracking().ToListAsync();
 
+        LogUtils.Info("Updating charts...");
         foreach (var chart in charts)
-            oldDb.Charts.Update(chart);
+        {
+            if (await oldDb.Charts.AnyAsync(c => c.SongId == chart.SongId && c.RatingClass == chart.RatingClass))
+                oldDb.Charts.Update(chart);
+            else
+                oldDb.Charts.Add(chart);
+        }
+
+
+        LogUtils.Info("Updating packages...");
         foreach (var package in packages)
-            oldDb.Packages.Update(package);
+        {
+            if (await oldDb.Packages.AnyAsync(p => p.Set == package.Set))
+                oldDb.Packages.Update(package);
+            else
+                oldDb.Packages.Add(package);
+        }
+
+        LogUtils.Info("Updating aliases...");
         foreach (var alias in aliases)
-            oldDb.Aliases.Update(alias);
+        {
+            if (!await oldDb.Aliases.AnyAsync(a => a.SongId == alias.SongId && a.Alias == alias.Alias))
+                oldDb.Aliases.Add(alias);
+        }
 
         LogUtils.Info("Saving changes...");
         await oldDb.SaveChangesAsync();
