@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <Product>YukiChan</Product>
-        <Version>3.3.1</Version>
+        <Version>3.3.2</Version>
         <Authors>bsdayo</Authors>
         <Description>Cross-platform chat bot using Flandre.</Description>
 
