@@ -24,7 +24,7 @@ app.Configure(config =>
 {
     config.AddBranch("arcaea", arcaea =>
     {
-        // arcaea.AddCommand<UpdateSongDbCommand>("update-songdb");
+        arcaea.AddCommand<UpdateSongDbCommand>("update-songdb");
         arcaea.AddCommand<GenFakeCommand>("gen-fake");
         arcaea.AddCommand<HandleAliasSubmissionCommand>("handle-alias-submissions");
     });

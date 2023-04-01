@@ -5,13 +5,22 @@ namespace YukiChan.Shared.Utils;
 
 public class ArcaeaSongDbContext : DbContext
 {
-    private const string DefaultPath = "assets/arcaea/arcsong.db";
+    private readonly string _dbPath = "assets/arcaea/arcsong.db";
 
     public DbSet<ArcaeaSongDbChart> Charts => Set<ArcaeaSongDbChart>();
 
     public DbSet<ArcaeaSongDbAlias> Aliases => Set<ArcaeaSongDbAlias>();
 
     public DbSet<ArcaeaSongDbPackage> Packages => Set<ArcaeaSongDbPackage>();
+
+    public ArcaeaSongDbContext()
+    {
+    }
+
+    public ArcaeaSongDbContext(string dbPath)
+    {
+        _dbPath = dbPath;
+    }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -20,7 +29,7 @@ public class ArcaeaSongDbContext : DbContext
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
-        => options.UseSqlite($"DataSource={DefaultPath}");
+        => options.UseSqlite($"DataSource={_dbPath}");
 
     /// <summary>
     /// 模糊搜索曲目，依赖 arcsong.db
