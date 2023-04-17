@@ -1,7 +1,9 @@
-﻿using Flandre.Framework;
+﻿using Flandre.Adapters.OneBot;
+using Flandre.Framework;
 using Flandre.Plugins.BaiduTranslate;
 using Flandre.Plugins.HttpCat;
 using Flandre.Plugins.WolframAlpha;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using YukiChan;
 using YukiChan.Core;
@@ -12,37 +14,50 @@ var builder = FlandreApp.CreateBuilder(new HostApplicationBuilderSettings
     Args = args,
     ContentRootPath = YukiDir.Root
 });
+
+builder.ConfigureInfrastructure(args).ConfigureSerilog();
+
+#region Adapters
+
+builder.Adapters.Add(new OneBotAdapter(
+    builder.Configuration.GetSection("Adapters:OneBot").Get<OneBotAdapterConfig>()
+    ?? new OneBotAdapterConfig()));
+
+#endregion
+
+#region Plugins
+
 var pluginOpts = builder.Configuration.GetSection("Plugins");
 
-var app = builder.ConfigureInfrastructure(args).ConfigureSerilog()
-    // Adapters
-    .AddOneBotAdapter()
+builder.Plugins.AddArcaea(pluginOpts.GetSection("Arcaea"));
+builder.Plugins.AddSandBox(pluginOpts.GetSection("SandBox"));
+builder.Plugins.AddBaiduTranslate(pluginOpts.GetSection("BaiduTranslate"));
+builder.Plugins.AddWolframAlpha(pluginOpts.GetSection("WolframAlpha"));
+builder.Plugins.AddHttpCat(pluginOpts.GetSection("HttpCat"));
+builder.Plugins.AddGosen(pluginOpts.GetSection("Gosen"));
+builder.Plugins.AddAutoAccept(pluginOpts.GetSection("AutoAccept"));
+builder.Plugins.Add<ImagesPlugin>();
+builder.Plugins.Add<MainBotPlugin>();
+builder.Plugins.Add<StatusPlugin>();
+builder.Plugins.Add<MiscPlugin>();
+builder.Plugins.Add<DebugPlugin>();
 
-    // Plugins
-    .AddArcaeaPlugin(pluginOpts.GetSection("Arcaea"))
-    .AddSandBoxPlugin(pluginOpts.GetSection("SandBox"))
-    .AddBaiduTranslatePlugin(pluginOpts.GetSection("BaiduTranslate"))
-    .AddWolframAlphaPlugin(pluginOpts.GetSection("WolframAlpha"))
-    .AddHttpCatPlugin(pluginOpts.GetSection("HttpCat"))
-    .AddGosenPlugin(pluginOpts.GetSection("Gosen"))
-    .AddAutoAcceptPlugin(pluginOpts.GetSection("AutoAccept"))
-    .AddPlugin<ImagesPlugin>()
-    .AddPlugin<MainBotPlugin>()
-    .AddPlugin<StatusPlugin>()
-    .AddPlugin<MiscPlugin>()
-    .AddPlugin<DebugPlugin>()
-    .CustomizePluginOptions()
+builder.CustomizePluginOptions();
 
-    // Build FlandreApp
-    .Build()
+#endregion
 
-    // Middlewares
-    .UseQQGroupWarnFilter()
-    .UseQQGuildFilter()
-    .UseCommandSession()
-    .UseCommandParser()
-    .UseCommandPrechecker()
-    .UseCommandInvoker();
+var app = builder.Build();
+
+#region Middlewares
+
+app.UseQQGroupWarnFilter();
+app.UseQQGuildFilter();
+app.UseCommandSession();
+app.UseCommandParser();
+app.UseCommandPrechecker();
+app.UseCommandInvoker();
+
+#endregion
 
 app.UpdateArcaeaSongDb();
 

@@ -1,4 +1,5 @@
-﻿using Flandre.Core.Messaging;
+﻿using Flandre.Core.Common;
+using Flandre.Core.Messaging;
 using Flandre.Core.Messaging.Segments;
 using Flandre.Framework.Attributes;
 using Microsoft.Extensions.Logging;

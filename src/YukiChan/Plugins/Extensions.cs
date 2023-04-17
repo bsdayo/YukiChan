@@ -9,28 +9,28 @@ namespace YukiChan.Plugins;
 
 public static class PluginExtensions
 {
-    public static FlandreAppBuilder AddArcaeaPlugin(this FlandreAppBuilder builder, IConfiguration configuration)
+    public static IPluginCollection AddArcaea(this IPluginCollection plugins, IConfiguration configuration)
     {
-        builder.Services.AddSingleton<ArcaeaService>();
-        builder.AddPlugin<ArcaeaPlugin, ArcaeaPluginOptions>(configuration);
-        builder.Services.AddDbContext<ArcaeaSongDbContext>();
-        return builder;
+        plugins.Services.AddSingleton<ArcaeaService>();
+        plugins.Services.AddDbContext<ArcaeaSongDbContext>();
+        plugins.Add<ArcaeaPlugin, ArcaeaPluginOptions>(configuration);
+        return plugins;
     }
 
-    public static FlandreAppBuilder AddSandBoxPlugin(this FlandreAppBuilder builder, IConfiguration configuration)
+    public static IPluginCollection AddSandBox(this IPluginCollection plugins, IConfiguration configuration)
     {
-        builder.Services.AddSingleton<SandBoxService>();
-        builder.AddPlugin<SandBoxPlugin, SandBoxPluginOptions>(configuration);
-        return builder;
+        plugins.Services.AddSingleton<SandBoxService>();
+        plugins.Add<SandBoxPlugin, SandBoxPluginOptions>(configuration);
+        return plugins;
     }
 
-    public static FlandreAppBuilder AddAutoAcceptPlugin(this FlandreAppBuilder builder, IConfiguration configuration)
+    public static IPluginCollection AddAutoAccept(this IPluginCollection plugins, IConfiguration configuration)
     {
-        return builder.AddPlugin<AutoAcceptPlugin, AutoAcceptPluginOptions>(configuration);
+        return plugins.Add<AutoAcceptPlugin, AutoAcceptPluginOptions>(configuration);
     }
 
-    public static FlandreAppBuilder AddGosenPlugin(this FlandreAppBuilder builder, IConfiguration configuration)
+    public static IPluginCollection AddGosen(this IPluginCollection plugins, IConfiguration configuration)
     {
-        return builder.AddPlugin<GosenPlugin, GosenPluginOptions>(configuration);
+        return plugins.Add<GosenPlugin, GosenPluginOptions>(configuration);
     }
 }

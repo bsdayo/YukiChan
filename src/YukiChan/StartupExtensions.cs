@@ -1,4 +1,5 @@
 ﻿using Flandre.Adapters.OneBot;
+using Flandre.Core.Common;
 using Flandre.Framework;
 using Flandre.Framework.Extensions;
 using Flandre.Plugins.HttpCat;
@@ -55,12 +56,6 @@ internal static class StartupExtensions
             .CreateLogger();
         builder.Logging.ClearProviders().AddSerilog(dispose: true);
         return builder;
-    }
-
-    internal static FlandreAppBuilder AddOneBotAdapter(this FlandreAppBuilder builder)
-    {
-        var config = builder.Configuration.GetSection("Adapters:OneBot").Get<OneBotAdapterConfig>();
-        return config is not null ? builder.AddAdapter(new OneBotAdapter(config)) : builder;
     }
 
     internal static FlandreAppBuilder CustomizePluginOptions(this FlandreAppBuilder builder)
