@@ -29,7 +29,7 @@
 > 
 > 有关暮雪酱的开发历程，我写成了一篇文章，感兴趣的各位可以前往一看。我想说的话都在里面了。
 > 
-> [《一路走来，感谢有你 —— 暮雪酱 Arcaea 模块的前世今生》](https://sorabs.cc/posts/memories-of-yukichan-arcaea-module/)
+> [《一路走来，感谢有你 —— 暮雪酱 Arcaea 模块的前世今生》](https://bsdayo.moe/posts/memories-of-yukichan-arcaea-module/)
 > 
 > 再次对喜爱暮雪酱的玩家们，致以深深的歉意。
 > 
